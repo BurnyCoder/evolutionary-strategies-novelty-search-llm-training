@@ -2,7 +2,13 @@
 
 This research project tests whether rewarding **correct but different answers** helps evolution strategies fine-tune a language model. It combines an adapted [ExTra](https://arxiv.org/abs/2606.24994) response-memory mechanism with full-weight optimization inspired by [ES at Scale](https://arxiv.org/abs/2509.24372). Each candidate is a small Gaussian perturbation of every unique model parameter; exact arithmetic grades its Countdown answers, and a frozen embedding model measures novelty among correct answers. The combination is an adaptation, not a reproduction of either paper.
 
-**Status:** preregistration and the tested core pipeline are published; the first local GPU experiment is running. No completed comparison is claimed. The experiment compares one main-method seed, one matched reward-only ES seed, and the untrained base model within its persisted twelve-hour deadline. Later multi-seed and scratch studies are gated on its report. See the [generated report](reports/experiment-pilot.md) for observed results and completion flags.
+Preregistration and the tested core pipeline are published. The first local GPU experiment compares one main-method seed, one matched reward-only ES seed, and the untrained base model within its persisted twelve-hour deadline. Later multi-seed and scratch studies are gated on its report. The generated results below and [full report](reports/experiment-pilot.md) identify observed outcomes and incomplete conditions.
+
+<!-- BEGIN GENERATED PILOT RESULTS -->
+The paired endpoint is pending. Run `uv run novelty-es report` to refresh this block from recorded artifacts.
+<!-- END GENERATED PILOT RESULTS -->
+
+![Recorded test accuracy with problem-bootstrap intervals](reports/figures/accuracy.png)
 
 ```mermaid
 flowchart LR
