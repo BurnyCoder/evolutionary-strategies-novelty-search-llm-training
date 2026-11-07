@@ -645,7 +645,8 @@ def write_paper(path: Path, experiment: dict, summary: dict, figures: Path, tabl
         "uv run novelty-es download, and uv run novelty-es run. Repeating run resumes the same clock. "
         "uv run novelty-es report regenerates tables, figures, this paper and the static website. "
         "Atomic checkpoints contain weights, all RNG streams, archive, cursor, config and deadline. "
-        f"Recorded technical failures: {len(summary['failures'])}. Experiment elapsed seconds: {summary['elapsed_seconds']:.3f}. "
+        f"Recorded technical failures: {len(summary['failures'])}. Model-execution elapsed seconds: {summary['elapsed_seconds']:.3f}. "
+        "Final auditing, report preparation and publication follow model execution within the original allowance. "
         "Exact exceptions and incomplete conditions are retained in the generated Markdown report and JSON artifacts.",
     )
     environment = experiment.get("environment", {})
