@@ -1,0 +1,13 @@
+{
+  "collection": "https://huggingface.co/collections/BurnyCoder/evolution-strategies-with-llm-novelty-6aeef0a424ee9d502250b8ff",
+  "models": {
+    "main": "https://huggingface.co/BurnyCoder/novelty-es-qwen2.5-0.5b-main-seed0",
+    "reward_only": "https://huggingface.co/BurnyCoder/novelty-es-qwen2.5-0.5b-reward-only-seed0"
+  },
+  "artifacts": "https://huggingface.co/datasets/BurnyCoder/novelty-es-pilot-artifacts",
+  "revisions": {
+    "main": "7fc12026e96f4d9d0255fb80d8fe0315058a61c1",
+    "reward_only": "4b3ffe8fa26555ca2b784b63ccd4af85e3f5b6ac",
+    "artifacts": "949e2dcb385bc2b7088c40444ef879b76596317d"
+  }
+}
