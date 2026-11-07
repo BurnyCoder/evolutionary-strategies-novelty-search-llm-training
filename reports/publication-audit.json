@@ -1,0 +1,192 @@
+{
+  "verified_at": "2026-11-07T10:42:43.356882+00:00",
+  "elapsed_since_calibration_seconds": 24356.20641374588,
+  "absolute_deadline": 1794067007.1504683,
+  "final_phase_deadline": 1794046670.4415972,
+  "within_absolute_allowance": true,
+  "within_final_phase_allowance": false,
+  "final_phase_overrun_seconds": 1492.915284872055,
+  "collection": "https://huggingface.co/collections/BurnyCoder/evolution-strategies-with-llm-novelty-6aeef0a424ee9d502250b8ff",
+  "repositories": {
+    "main": {
+      "url": "https://huggingface.co/BurnyCoder/novelty-es-qwen2.5-0.5b-main-seed0",
+      "revision": "7fc12026e96f4d9d0255fb80d8fe0315058a61c1",
+      "files": {
+        "LICENSE": {
+          "sha256": "832dd9e00a68dd83b3c3fb9f5588dad7dcf337a0db50f7d9483f310cd292e92e",
+          "bytes": 11343
+        },
+        "README.md": {
+          "sha256": "06b4fcfea0f3cc3934c1d53133b92c04acda213451432e8e2af28a30e1a5b97a",
+          "bytes": 1536
+        },
+        "chat_template.jinja": {
+          "sha256": "8aa40ce145adb73cb3a75194dc0224702a95850ec5275cabb728496bbd749fc6",
+          "bytes": 2561
+        },
+        "config.json": {
+          "sha256": "98e4a63841172c3f6f5d039d6bdeb48b1bf59a62d10b234a6f8646733745ba16",
+          "bytes": 1341
+        },
+        "generation_config.json": {
+          "sha256": "677b75824c50508ba75fe13975c84ec09444ab28f8f2c695f327d8d9977413a3",
+          "bytes": 256
+        },
+        "model.safetensors": {
+          "sha256": "6493314e9e298bb4a15f736bf2b5b62fea6767ea85701ae85883680352d42bab",
+          "bytes": 988097824
+        },
+        "tokenizer.json": {
+          "sha256": "f7f96da3a872b5e901575b2067c744ad336c3a3d77a21584d20024557b1bd7f0",
+          "bytes": 11422059
+        },
+        "tokenizer_config.json": {
+          "sha256": "bd667337917f3d3de225e9407258aa66fea87985bbed9cfb84d00adea253034a",
+          "bytes": 723
+        }
+      }
+    },
+    "reward_only": {
+      "url": "https://huggingface.co/BurnyCoder/novelty-es-qwen2.5-0.5b-reward-only-seed0",
+      "revision": "4b3ffe8fa26555ca2b784b63ccd4af85e3f5b6ac",
+      "files": {
+        "LICENSE": {
+          "sha256": "832dd9e00a68dd83b3c3fb9f5588dad7dcf337a0db50f7d9483f310cd292e92e",
+          "bytes": 11343
+        },
+        "README.md": {
+          "sha256": "fe08b7f9d5effefcf92985482f38e8a153f67787892ce5eb63198979b12365a5",
+          "bytes": 1543
+        },
+        "chat_template.jinja": {
+          "sha256": "8aa40ce145adb73cb3a75194dc0224702a95850ec5275cabb728496bbd749fc6",
+          "bytes": 2561
+        },
+        "config.json": {
+          "sha256": "98e4a63841172c3f6f5d039d6bdeb48b1bf59a62d10b234a6f8646733745ba16",
+          "bytes": 1341
+        },
+        "generation_config.json": {
+          "sha256": "677b75824c50508ba75fe13975c84ec09444ab28f8f2c695f327d8d9977413a3",
+          "bytes": 256
+        },
+        "model.safetensors": {
+          "sha256": "069f2d8cc94b1184c2127b732fb5850cfbaa585b215035757c8ce92a92b47f3e",
+          "bytes": 988097824
+        },
+        "tokenizer.json": {
+          "sha256": "f7f96da3a872b5e901575b2067c744ad336c3a3d77a21584d20024557b1bd7f0",
+          "bytes": 11422059
+        },
+        "tokenizer_config.json": {
+          "sha256": "bd667337917f3d3de225e9407258aa66fea87985bbed9cfb84d00adea253034a",
+          "bytes": 723
+        }
+      }
+    },
+    "artifacts": {
+      "url": "https://huggingface.co/datasets/BurnyCoder/novelty-es-pilot-artifacts",
+      "revision": "949e2dcb385bc2b7088c40444ef879b76596317d",
+      "files": {
+        "LICENSE": {
+          "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+          "bytes": 11358
+        },
+        "README.md": {
+          "sha256": "28225b4f8eab6c61beca83b783860999ae41c4dc77f2a9b94c9e7bdcd0984cbd",
+          "bytes": 2039
+        },
+        "artifact-manifest.json": {
+          "sha256": "93565ed4c8663cfe62379b463367ba0377a4b76b853dcbd179f382559051c88c",
+          "bytes": 3261
+        },
+        "before-amendment-A.json": {
+          "sha256": "6ada1d8424ef546c9462aa7118bc0abb04f03bf43b231b8cb523b70234c70e60",
+          "bytes": 4536
+        },
+        "calibration.json": {
+          "sha256": "51760859534b88194db13b7b7d70599d3c72d79ceb5fb78f14993925bd5e2804",
+          "bytes": 358
+        },
+        "config-amendment-A.json": {
+          "sha256": "38698042b9390076b14c58c39c9aa9e8cdf9b19149588f67f6e91f484c208368",
+          "bytes": 1031
+        },
+        "events.jsonl": {
+          "sha256": "fa0ac6fd32dae576c56545532c50a401a673f76c8d92dbea26469cb724211b3f",
+          "bytes": 155930589
+        },
+        "experiment.json": {
+          "sha256": "acd8122d7cfe211334d273370fe2a7c4115a30dd648c641a89319f55bfcd6c31",
+          "bytes": 7448
+        },
+        "failure-evaluation-uncommitted.json": {
+          "sha256": "10f4d15e6946fa25b09bf78a635003b3a6f4de637a26f4b05769485a20f52af2",
+          "bytes": 8461272
+        },
+        "final-audit.json": {
+          "sha256": "6b1e9bf9db3f2029cfa0ef1410de5c8b4ad5ae575702671e7735c4b74cc7aff5",
+          "bytes": 1355
+        },
+        "main/checkpoint.pt": {
+          "sha256": "786ac734ea7760f2448d4e5307177cfdd0e30ad8767489e342673c9e867836b0",
+          "bytes": 1976288749
+        },
+        "main/evaluation.json": {
+          "sha256": "a17d55e6f2087487ff3dd941a21b7382a4ceaf9aac01a6937cb723e181c76b93",
+          "bytes": 8683137
+        },
+        "main/initialization-audit.json": {
+          "sha256": "79dc1976ffe873c15a367d61ff32c22ae157942bff6fed5e3a48b693e42e16f5",
+          "bytes": 806
+        },
+        "main/metrics.json": {
+          "sha256": "289f3bfdb6ea4397ae679605a1ef9ad67fe47da5e20c265b9bbf1104b72a12c0",
+          "bytes": 45035
+        },
+        "main/progress.json": {
+          "sha256": "b805cd3a98069787c147a2b5546f285db0ad97c8007df5b8b64a8142e113dd63",
+          "bytes": 2425
+        },
+        "original/evaluation.json": {
+          "sha256": "ce25ab9f5f4e64da463f08bcd0effc3eda4b0ec9a4227557b01c44b872276a86",
+          "bytes": 11765382
+        },
+        "recovery-audit.json": {
+          "sha256": "9c872e95f3c95950ab9f79724f1c8c268f670bd4926579ff451df6871f627634",
+          "bytes": 543
+        },
+        "reward_only/checkpoint.pt": {
+          "sha256": "3b367b67a077447ad641da45162fdbd9d804660d54e83d6aadea67218cc426be",
+          "bytes": 1976285423
+        },
+        "reward_only/evaluation.json": {
+          "sha256": "f5cd5d6e70da4f28aafe2700ec31250c386085c105061d7dd3401f2b948dd8cc",
+          "bytes": 8914115
+        },
+        "reward_only/initialization-audit.json": {
+          "sha256": "00dbd9dc28dc029a6c311115b658fb35755a703a21bbb95527d651cabeba74c4",
+          "bytes": 813
+        },
+        "reward_only/metrics.json": {
+          "sha256": "1999d24b9445d3684435bf0ebecef24078174308d698cbffbad0ca32a5f03c18",
+          "bytes": 45101
+        },
+        "reward_only/progress.json": {
+          "sha256": "f1606abe4d580ce3a7e9c02c821b4688e0d1767baef4bbf626383b2fd849b108",
+          "bytes": 2447
+        },
+        "summary.json": {
+          "sha256": "0faa33d1723d43eea89f54096a70f23175ba17e70c4a6b69be7935a8cd9d24bd",
+          "bytes": 65595
+        }
+      }
+    }
+  },
+  "pages": {
+    "url": "https://burnycoder.github.io/evolutionary-strategies-novelty-search-llm-training/",
+    "status_matches_committed_snapshot": true
+  },
+  "paper_sha256": "59d459223c52057549eb5c8b9a663104ef0c7f78539bcacaf791095fc33792f7",
+  "scope": "Large-file server SHA-256 metadata; direct downloaded-byte hashes for small files; no model inference."
+}
