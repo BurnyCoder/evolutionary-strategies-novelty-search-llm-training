@@ -34,6 +34,23 @@ def utc_now() -> str:
     return datetime.now(timezone.utc).isoformat(timespec="milliseconds")
 
 
+def _replace(temporary: Path, destination: Path) -> None:
+    """Retry a short Windows reader lock while retaining atomic replacement.
+
+    Windows rename requires compatible open-handle sharing modes:
+    https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createfilew
+    A bounded retry preserves the old file and never resets an experiment clock.
+    """
+    for attempt in range(20):
+        try:
+            os.replace(temporary, destination)
+            return
+        except PermissionError as error:
+            if getattr(error, "winerror", None) not in (5, 32, 33) or attempt == 19:
+                raise
+            time.sleep(0.05)
+
+
 def atomic_json(path: Path, value: dict | list) -> None:
     """Flush data before replacing a same-directory file, preserving the old on failure."""
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -43,7 +60,7 @@ def atomic_json(path: Path, value: dict | list) -> None:
         stream.write("\n")
         stream.flush()
         os.fsync(stream.fileno())
-    os.replace(temporary, path)
+    _replace(temporary, path)
 
 
 def _rng_state() -> dict:
@@ -65,7 +82,7 @@ def save_checkpoint(path: Path, state: dict) -> None:
         torch.save({**state, "rng_state": _rng_state()}, stream)
         stream.flush()
         os.fsync(stream.fileno())
-    os.replace(temporary, path)
+    _replace(temporary, path)
 
 
 def load_checkpoint(path: Path, restore_rng: bool = False) -> dict:
