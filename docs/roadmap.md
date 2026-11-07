@@ -2,7 +2,7 @@
 
 - [x] Read the closest LLM novelty literature, equations and selected source.
 - [x] Pin source/model revisions and implement tested arithmetic/data primitives.
-- [ ] Publish this registration and dataset manifest before model execution.
+- [x] Publish this registration and dataset manifest before model execution.
 - [ ] Publish and test the complete resumable pilot pipeline before GPU calibration.
 - [ ] Calibrate, freeze the common generation count, and evaluate the original model.
 - [ ] Run main seed 0 and matched reward-only seed 0 within the persisted deadline.

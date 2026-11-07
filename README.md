@@ -2,7 +2,7 @@
 
 This research project tests whether rewarding **correct but different answers** helps evolution strategies fine-tune a language model. It combines an adapted [ExTra](https://arxiv.org/abs/2606.24994) response-memory mechanism with full-weight optimization inspired by [ES at Scale](https://arxiv.org/abs/2509.24372). Each candidate is a small Gaussian perturbation of every unique model parameter; exact arithmetic grades its Countdown answers, and a frozen embedding model measures novelty among correct answers. The combination is an adaptation, not a reproduction of either paper.
 
-**Status:** preregistration and implementation in progress. No model has been run and no positive or negative empirical result is claimed. The first experiment compares one main-method seed, one matched reward-only ES seed, and the untrained base model within twelve hours. Later multi-seed and scratch studies are gated on its report.
+**Status:** preregistration is published and the tested core pipeline is implemented. No model has been run and no positive or negative empirical result is claimed. The first experiment compares one main-method seed, one matched reward-only ES seed, and the untrained base model within twelve hours. Later multi-seed and scratch studies are gated on its report.
 
 ```mermaid
 flowchart LR
@@ -42,7 +42,7 @@ Copy-Item .env.example .env
 uv run pytest
 ```
 
-Planned user-facing commands (published as working core functionality before any model execution):
+User-facing commands (publish and test the core before starting `run`):
 
 ```powershell
 uv run novelty-es prepare
@@ -53,7 +53,7 @@ uv run novelty-es run
 uv run novelty-es report
 ```
 
-Run the dashboard in a second terminal at `http://127.0.0.1:8765`. The training terminal and JSONL files retain complete prompts and outputs. `.env`, caches, private credentials, intermediate weights and raw run directories are ignored by Git. Models and compact evaluation artifacts are published separately to one Hugging Face collection.
+Run the dashboard in a second terminal at `http://127.0.0.1:8765`. The training terminal and JSONL files retain complete prompts and outputs. `.env`, caches, private credentials, intermediate weights and raw run directories are ignored by Git. Models and compact evaluation artifacts are published separately to one Hugging Face collection. See the [operations guide](docs/operations.md) for checkpoints, recovery, and artifact paths. [Generated report](reports/experiment-pilot.md) and [interactive result snapshot](https://BurnyCoder.github.io/evolutionary-strategies-novelty-search-llm-training/) explicitly identify missing or incomplete results.
 
 ## Method and reproducibility
 

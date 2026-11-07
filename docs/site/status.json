@@ -1,0 +1,23 @@
+{
+  "experiment": {
+    "phase": "not_started"
+  },
+  "summary": {
+    "methods": {},
+    "examples": {},
+    "primary": null,
+    "finding": "No completed paired primary endpoint is available.",
+    "generated_at": "2026-11-07T03:50:30.072563+00:00",
+    "interval_scope": "Problem uncertainty conditional on one training seed; excludes seed variability.",
+    "failures": [],
+    "elapsed_seconds": 0
+  },
+  "progress": {
+    "main": {},
+    "reward_only": {}
+  },
+  "curves": {
+    "main": [],
+    "reward_only": []
+  }
+}
