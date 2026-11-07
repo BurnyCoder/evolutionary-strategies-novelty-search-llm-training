@@ -4,6 +4,7 @@ Hub API reference: https://huggingface.co/docs/huggingface_hub/en/package_refere
 The user authorized publishing this research; no credentials or unrelated files are uploaded.
 """
 
+import hashlib
 import json
 import shutil
 from pathlib import Path
@@ -11,6 +12,26 @@ from pathlib import Path
 from huggingface_hub import HfApi, hf_hub_download
 
 from .runtime import atomic_json
+
+
+def artifact_manifest(directory: Path) -> dict:
+    """Hash the explicit release set after the writer has finished, excluding local extras.
+
+    Streaming hashes keep multi-gigabyte FP32 checkpoints out of memory:
+    https://docs.python.org/3.12/library/hashlib.html#hashlib.file_digest .
+    """
+    patterns = [
+        "README.md", "LICENSE", "experiment.json", "calibration.json", "summary.json",
+        "before-amendment-A.json", "config-amendment-A.json", "recovery-audit.json",
+        "failure-evaluation-uncommitted.json", "events.jsonl", "*/checkpoint.pt",
+        "*/evaluation.json", "*/metrics.json", "*/progress.json", "*/initialization-audit.json",
+    ]
+    files = {}
+    for path in sorted({path for pattern in patterns for path in directory.glob(pattern) if path.is_file()}):
+        with path.open("rb") as stream:
+            digest = hashlib.file_digest(stream, "sha256").hexdigest()
+        files[path.relative_to(directory).as_posix()] = {"sha256": digest, "bytes": path.stat().st_size}
+    return {"algorithm": "sha256", "files": files, "note": "The manifest excludes itself and the later upload receipt."}
 
 
 def publish(directory: Path) -> dict:
@@ -26,7 +47,7 @@ def publish(directory: Path) -> dict:
         description="Preregistered full-weight ES, correctness-gated novelty, controls and reports.",
         exists_ok=True,
     )
-    published = {"collection": collection.url, "models": {}, "artifacts": None}
+    published = {"collection": collection.url, "models": {}, "artifacts": None, "revisions": {}}
     for condition in ("main", "reward_only"):
         model_dir = directory / condition / "model"
         if not model_dir.exists():
@@ -37,35 +58,29 @@ def publish(directory: Path) -> dict:
         shutil.copyfile(license_path, model_dir / "LICENSE")
         repo_id = f"{namespace}/novelty-es-qwen2.5-0.5b-{condition.replace('_', '-')}-seed0"
         api.create_repo(repo_id, repo_type="model", exist_ok=True)
-        api.upload_folder(
+        commit = api.upload_folder(
             repo_id=repo_id,
             folder_path=model_dir,
             commit_message=f"Publish registered {condition} pilot checkpoint and model card",
         )
         api.add_collection_item(collection.slug, repo_id, "model", exists_ok=True)
         published["models"][condition] = f"https://huggingface.co/{repo_id}"
+        published["revisions"][condition] = commit.oid
+        atomic_json(directory / "published.json", published)
     repo_id = f"{namespace}/novelty-es-pilot-artifacts"
     api.create_repo(repo_id, repo_type="dataset", exist_ok=True)
-    api.upload_folder(
+    manifest = artifact_manifest(directory)
+    atomic_json(directory / "artifact-manifest.json", manifest)
+    commit = api.upload_folder(
         repo_id=repo_id,
         repo_type="dataset",
         folder_path=directory,
-        allow_patterns=[
-            "experiment.json",
-            "calibration.json",
-            "summary.json",
-            "recovery-audit.json",
-            "failure-evaluation-uncommitted.json",
-            "events.jsonl",
-            "*/evaluation.json",
-            "*/metrics.json",
-            "*/progress.json",
-            "*/initialization-audit.json",
-        ],
+        allow_patterns=[*manifest["files"], "artifact-manifest.json"],
         commit_message="Publish raw pilot evaluations, traces and experiment provenance",
     )
     api.add_collection_item(collection.slug, repo_id, "dataset", exists_ok=True)
     published["artifacts"] = f"https://huggingface.co/datasets/{repo_id}"
+    published["revisions"]["artifacts"] = commit.oid
     atomic_json(directory / "published.json", published)
     print(json.dumps(published, indent=2))
     return published

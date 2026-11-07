@@ -550,6 +550,7 @@ def write_paper(path: Path, experiment: dict, summary: dict, figures: Path, tabl
         "canonical expression trees are an independent syntactic diagnostic, not full algebraic equivalence. "
         "Synthetic arithmetic does not measure general language quality. Similar pretraining patterns cannot be excluded. "
         "The fixed-probe objective can overfit. Small time budgets, laptop thermal variability and batch-level floating-point behavior limit extrapolation. "
+        "CPU tests, report generation, audits and backups ran alongside training; elapsed times are descriptive, not isolated systems benchmarks. "
         "Secondary endpoints are descriptive; no multiple-comparison significance claims are made.",
     )
     section(
@@ -712,7 +713,8 @@ def report(directory: Path, output_root: Path = Path(".")) -> dict:
         "Tests exercise interrupted candidate replay, archive RNG restoration, deadline preservation and exact arithmetic. "
         "Hyperparameters are preregistered choices, not claimed optima. Further training requires reviewing this pilot.\n\n"
         "## Limitations\n\nOne seed; synthetic arithmetic; embedding-proxy and probe-overfitting risks; "
-        "no general-language benchmark; descriptive secondary analyses. Bootstrap intervals omit seed variability.\n"
+        "no general-language benchmark; descriptive secondary analyses. Bootstrap intervals omit seed variability. "
+        "CPU tests, reporting, audits and backups overlapped training, so timing is not an isolated systems benchmark.\n"
     )
     (reports / "experiment-pilot.md").write_text(text, encoding="utf-8")
     refresh_readme(output_root / "README.md", summary, table)
@@ -756,6 +758,30 @@ def report(directory: Path, output_root: Path = Path(".")) -> dict:
                 f"Base revision: `{config['model_revision']}`. Training and evaluation use the recorded seed and configuration.\n",
                 encoding="utf-8",
             )
+    # The artifact repository is a documented research release, not a flat example dataset.
+    # Hub card format: https://huggingface.co/docs/hub/datasets-cards .
+    (directory / "README.md").write_text(
+        "---\nlicense: apache-2.0\nlanguage:\n- en\ntags:\n- evolution-strategies\n- reproducibility\n---\n\n"
+        "# Novelty ES pilot evidence\n\n" + summary["finding"] + "\n\n" + markdown_table(table)
+        + "\n\n" + summary["interval_scope"] + "\n\n"
+        "This repository contains raw evaluations, timestamped generation traces, configuration and code provenance, "
+        "initialization and recovery audits, and the final resumable FP32 training checkpoints. "
+        "Inference-ready BF16 models are separate items in the same Hugging Face collection. "
+        "The checkpoints contain master tensors, RNG states, archive, cursor and the original absolute deadline. "
+        "They preserve the completed run; loading them does not grant a new training allowance. "
+        "Use the project's weights-only checkpoint loader in the recorded environment. "
+        "The SHA-256 manifest covers the explicitly uploaded evidence files. "
+        "The final upload receipt records immutable Hub commit revisions.\n\n"
+        "The source, synthetic datasets and their hashes, frozen configuration, dependency lock, detailed report and PDF are at "
+        "https://github.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training . "
+        "Run `uv run novelty-es report --run-dir PATH` from that checkout to regenerate the report from these artifacts. "
+        "The method adapts [ExTra](https://arxiv.org/abs/2606.24994) and "
+        "[ES at Scale](https://arxiv.org/abs/2509.24372); it is not a reproduction. "
+        "Amendment A preceded all training updates but followed calibration and partial original-model evaluation. "
+        "This single-seed arithmetic study provides no evidence about general language quality or seed robustness.\n",
+        encoding="utf-8",
+    )
+    shutil.copyfile(output_root / "LICENSE", directory / "LICENSE")
     write_paper(output_root / "output/pdf/novelty-es-pilot.pdf", experiment, summary, figures, table)
     print(json.dumps({"report": str(reports / "experiment-pilot.md"), "finding": summary["finding"]}, indent=2))
     return summary
