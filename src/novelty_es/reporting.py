@@ -223,7 +223,7 @@ def write_paper(path: Path, experiment: dict, summary: dict, figures: Path, tabl
     from reportlab.lib import colors
     from reportlab.lib.styles import getSampleStyleSheet
     from reportlab.lib.units import inch
-    from reportlab.platypus import Image, PageBreak, Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
+    from reportlab.platypus import Image, Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
 
     path.parent.mkdir(parents=True, exist_ok=True)
     styles = getSampleStyleSheet()
@@ -301,7 +301,6 @@ def write_paper(path: Path, experiment: dict, summary: dict, figures: Path, tabl
             f"[{primary['low'] * 100:.3f}, {primary['high'] * 100:.3f}], on {primary['n']} paired problems."
         )
     story.append(Image(str(figures / "accuracy.png"), width=6.0 * inch, height=3.0 * inch))
-    story.append(PageBreak())
     section(
         "Training dynamics and output inspection",
         "Population metrics describe perturbed candidates, not the master checkpoint. "
