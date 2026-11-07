@@ -13,9 +13,10 @@ flowchart LR
   G --> Q[Exact AST task reward]
   G --> E[Frozen MiniLM embeddings]
   E --> A[Correct historical and sibling answers]
-  A --> F[Quality plus novelty fitness]
-  Q --> F
-  F --> R[Average centered ranks]
+  A --> F[Add correctness-gated novelty]
+  Q --> Z[Population z-score of task reward]
+  Z --> F
+  F --> R[Weighted Gaussian update]
   R --> M
   M --> C[Atomic checkpoint and live metrics]
   M --> T[Held-out final evaluation]
@@ -26,7 +27,8 @@ flowchart LR
 
 - [Preregistration](reports/preregistration.md): hypothesis, data hashes, primary metric, falsification, timing, controls and analysis.
 - [Literature and source audit](docs/literature.md): LLM-specific alternatives, reuse, licenses and paper/code discrepancies.
-- [Frozen initial configuration](configs/pilot.json), [data manifest](data/manifest.json), [roadmap](docs/roadmap.md).
+- [Source correspondence](docs/source-conformance.md): matching equations, retained differences and differential checks against pinned upstream code.
+- [Amended training configuration](configs/pilot.json), [data manifest](data/manifest.json), [roadmap](docs/roadmap.md).
 
 The main endpoint is held-out greedy accuracy of the final scheduled checkpoint. The reward-only condition isolates the added novelty objective. The original checkpoint is the untrained baseline. Paired problem-bootstrap intervals describe uncertainty **conditional on one training seed**. They cannot establish robustness across seeds. Novelty reward, expression-tree diversity and harder-problem accuracy are secondary diagnostics. Results tables and figures will be generated from recorded artifacts, including incomplete runs and negative findings.
 
@@ -59,6 +61,8 @@ Run the dashboard in a second terminal at `http://127.0.0.1:8765`. The training 
 
 Qwen2.5-0.5B-Instruct and all-MiniLM-L6-v2 are pinned by commit. The synthetic generator creates solvable arithmetic problems and prevents permutations or alternative targets for a number multiset from crossing splits. A restricted AST evaluator uses exact rational arithmetic and requires every supplied number exactly once. Task fitness averages both the rotating training batch and fixed training probes. Only exact correctness enables novelty; the smaller legality reward does not.
 
-Each generation evaluates independent seeded Gaussian candidates. Main fitness combines task reward and nearest-neighbor semantic novelty; the control computes the same probe outputs and embeddings but updates from task reward alone. Average ranks handle ties without arbitrary ordering. Candidate reconstruction starts from the FP32 master to avoid cumulative BF16 add/subtract drift. Checkpoints preserve weights, RNGs, archive, cursor, configuration and the original deadline. The same seed schedules support a paired comparison; validation never selects the primary checkpoint.
+Each generation evaluates independent seeded Gaussian candidates. Task rewards are standardized across the population following ES at Scale. The main condition adds correctness-gated nearest-neighbor novelty afterwards, following ExTra's normalization order; the control uses standardized task reward alone. No second normalization or ranking removes the bonus. The coefficient uses ExTra's reported default in normalized-quality units, without a claim that it is optimal for ES. Candidate reconstruction starts from the FP32 master to avoid cumulative BF16 add/subtract drift. Checkpoints preserve weights, RNGs, archive, cursor, configuration and the original deadline. The same seed schedules support a paired comparison; validation never selects the primary checkpoint.
+
+[Amendment A](reports/preregistration.md#amendment-a-source-aligned-weighting-before-either-trained-condition) supersedes the original centered-rank rule. It was published after calibration and partial original-model evaluation, before either trained condition began. Both trained arms use the amended rule from their first generation and start from the original pretrained weights. The source correspondence audit distinguishes matching equations from intentional numerical and task adaptations.
 
 Technologies: Python, PyTorch, Transformers, Sentence Transformers, NumPy, a standard-library local HTTP dashboard, Matplotlib, and ReportLab. The default pipeline is `prepare → calibrate → original → main → reward-only → held-out evaluation → report`. Details, deviations and experiment outcomes live in `docs/` and `reports/` rather than duplicated prose. See [NOTICE](NOTICE) for adapted code attribution and [LICENSE](LICENSE) for source terms.

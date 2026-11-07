@@ -1,0 +1,41 @@
+{
+  "timestamp": "2026-11-07T04:49:05.803605+00:00",
+  "device": "cpu",
+  "seed": 20261107,
+  "trials": 64,
+  "novelty_values_compared": 1813,
+  "max_absolute_novelty_error": 1.7881393432617188e-07,
+  "max_absolute_z_score_error": 0.0,
+  "passed": true,
+  "sources": [
+    {
+      "repository": "allen4747/extra",
+      "revision": "ea53e68036356f8f276e261e886fbbc102633be3",
+      "files": {
+        "verl/recipe/extra/curiosity_memory.py": {
+          "url": "https://raw.githubusercontent.com/allen4747/extra/ea53e68036356f8f276e261e886fbbc102633be3/verl/recipe/extra/curiosity_memory.py",
+          "sha256": "62e32387a08df7a2665821e349f1ed07d78706419e8549cdfffb1d03a48f5b6e"
+        },
+        "LICENSE": {
+          "url": "https://raw.githubusercontent.com/allen4747/extra/ea53e68036356f8f276e261e886fbbc102633be3/LICENSE",
+          "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+        }
+      }
+    },
+    {
+      "repository": "VsonicV/es-at-scale",
+      "revision": "574a9d134da1ffce2a8bb812019899e5c96b588a",
+      "files": {
+        "es_at_scale/utils/reward_shaping.py": {
+          "url": "https://raw.githubusercontent.com/VsonicV/es-at-scale/574a9d134da1ffce2a8bb812019899e5c96b588a/es_at_scale/utils/reward_shaping.py",
+          "sha256": "54bf3c32a33b73e9ed10153507d3aa99fcae73e49c964b95de8b60c98bc370cb"
+        },
+        "LICENSE.txt": {
+          "url": "https://raw.githubusercontent.com/VsonicV/es-at-scale/574a9d134da1ffce2a8bb812019899e5c96b588a/LICENSE.txt",
+          "sha256": "b89ba927cc6af870cbe121de8dfe8c39e352cc3b9386fc315adb0f5a756840d8"
+        }
+      }
+    }
+  ],
+  "scope": "Shared cosine kernel with correct-only input, nonempty history, no warmup/group rescaling; ES population z-scores. Not full-trainer equivalence."
+}

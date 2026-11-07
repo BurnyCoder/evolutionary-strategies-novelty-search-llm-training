@@ -85,3 +85,24 @@ def test_population_interruption_replay_and_evaluation(tmp_path):
     assert result["complete"]
     assert len(result["sets"]["sampled"]) == 4 * 16
     assert evaluate(resumed, data, config, tmp_path / "resume", "main", deadline, True) == result
+
+
+def test_both_arms_initialize_before_any_candidate_with_amended_config(tmp_path):
+    """Each condition saves its own original master before evaluating candidate zero."""
+    config = json.loads(open("configs/pilot.json", encoding="utf-8").read())
+    config.update(population=4, probe_count=2, rotating_count=4, validation_count=4, batch_size=2)
+    data = generate_dataset(5, {"train": 20, "validation": 6, "test": 8, "hard": 4})
+    deadline = time.time() + 120
+    experiment = {"deadline": deadline, "dataset_manifest": {}, "code_revision": "test-amendment"}
+    for condition in ("main", "reward_only"):
+        path = tmp_path / condition
+        runner = FakeRunner(config, path, fail_candidate=0)
+        original = runner.model.weight.detach().clone()
+        with pytest.raises(RuntimeError, match="simulated interruption"):
+            train(runner, data, path, condition, 1, deadline, experiment)
+        checkpoint = load_checkpoint(path / "checkpoint.pt")
+        assert checkpoint["generation"] == 0
+        assert checkpoint["config"]["weighting"] == "zscore_task_plus_novelty_v1"
+        assert checkpoint["config"]["novelty_weight"] == 1.0
+        assert torch.equal(checkpoint["master"]["weight"], original)
+        assert not checkpoint["memory"]["history"]
