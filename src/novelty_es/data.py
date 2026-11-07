@@ -5,17 +5,19 @@ https://docs.python.org/3.12/library/ast.html
 Exact division uses https://docs.python.org/3.12/library/fractions.html .
 Generation is our synthetic protocol, not the Countdown distribution of ES at Scale.
 """
+
 from __future__ import annotations
 
 import ast
+import hashlib
+import json
+import operator
+import random
+import re
 from collections import Counter
 from dataclasses import dataclass
 from fractions import Fraction
-import hashlib
-import json
 from pathlib import Path
-import random
-import re
 
 
 @dataclass(frozen=True)
@@ -99,8 +101,9 @@ def _witness(numbers: list[int], rng: random.Random) -> tuple[int, str] | None:
         symbol = rng.choice("+-*/")
         if symbol == "/" and right[0] == 0:
             return None
-        value = {"+": lambda: left[0] + right[0], "-": lambda: left[0] - right[0],
-                 "*": lambda: left[0] * right[0], "/": lambda: left[0] / right[0]}[symbol]()
+        value = {"+": operator.add, "-": operator.sub, "*": operator.mul, "/": operator.truediv}[symbol](
+            left[0], right[0]
+        )
         terms.append((value, f"({left[1]}{symbol}{right[1]})"))
     value, expression = terms[0]
     if value.denominator == 1 and 1 <= value <= 999:
@@ -129,8 +132,7 @@ def generate_dataset(seed: int, sizes: dict[str, int] | None = None) -> dict[str
                 continue
             target, witness = solution
             seen.add(group)
-            rows.append({"id": f"{split}-{len(rows):05d}", "numbers": numbers,
-                         "target": target, "witness": witness})
+            rows.append({"id": f"{split}-{len(rows):05d}", "numbers": numbers, "target": target, "witness": witness})
         result[split] = rows
     return result
 

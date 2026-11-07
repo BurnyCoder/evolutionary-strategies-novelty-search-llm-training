@@ -1,0 +1,470 @@
+"""Regenerate every result table/figure from persisted observations, never typed scores.
+
+Matplotlib: https://matplotlib.org/stable/users/explain/quick_start.html .
+ReportLab: https://docs.reportlab.com/reportlab/userguide/ch6_paragraphs/ .
+This module can report partial experiments without presenting them as completed.
+"""
+
+from __future__ import annotations
+
+import html
+import json
+import shutil
+from collections import defaultdict
+from datetime import datetime, timezone
+from pathlib import Path
+
+import matplotlib
+
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+import numpy as np
+
+from .analysis import paired_bootstrap, pass_at_k
+from .dashboard import dashboard_state, read_json
+from .runtime import atomic_json
+
+
+def _split_summary(rows: list[dict], expected: int, replicates: int) -> dict:
+    """Summarize observed rows and retain denominator/completeness separately."""
+    if not rows:
+        return {"n": 0, "expected": expected, "complete": False}
+    ids = [row["problem_id"] for row in rows]
+    if len(set(ids)) != len(ids):
+        raise ValueError("Duplicate greedy evaluation problem IDs")
+    accuracy = np.array([row["correct"] for row in rows], dtype=float)
+    interval = paired_bootstrap(accuracy, np.zeros_like(accuracy), replicates)
+    return {
+        "n": len(rows),
+        "expected": expected,
+        "complete": len(rows) == expected,
+        "accuracy": float(accuracy.mean()),
+        "interval": [interval["low"], interval["high"]],
+        "validity": float(np.mean([row["valid"] for row in rows])),
+        "reward": float(np.mean([row["reward"] for row in rows])),
+        "generated_tokens": sum(row["generated_tokens"] for row in rows),
+        "truncated": sum(row["truncated"] for row in rows),
+        "correct_expression_structures": len({(row["problem_id"], row["structure"]) for row in rows if row["correct"]}),
+    }
+
+
+def summarize(directory: Path) -> dict:
+    """Build a machine-readable audit and registered comparison from raw evaluations."""
+    experiment = read_json(directory / "experiment.json", {})
+    config = experiment.get("config", read_json(Path("configs/pilot.json"), {}))
+    manifest = experiment.get("dataset_manifest", read_json(Path("data/manifest.json"), {}))
+    summary = {
+        "methods": {},
+        "examples": {},
+        "primary": None,
+        "finding": "No completed paired primary endpoint is available.",
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "interval_scope": "Problem uncertainty conditional on one training seed; excludes seed variability.",
+    }
+    evaluations = {}
+    for condition in ("original", "main", "reward_only"):
+        evaluation = read_json(directory / condition / "evaluation.json", {})
+        if not evaluation:
+            continue
+        evaluations[condition] = evaluation
+        method = {
+            "training_complete": evaluation["training_complete"],
+            "evaluation_seconds": evaluation["seconds"],
+            "complete": False,
+        }
+        for split in ("test", "hard", "probes"):
+            expected = config["probe_count"] if split == "probes" else manifest["splits"][split]["count"]
+            method[split] = _split_summary(evaluation["sets"].get(split, []), expected, config["bootstrap_replicates"])
+        groups = defaultdict(list)
+        for row in evaluation["sets"].get("sampled", []):
+            groups[row["problem_id"]].append(row)
+        complete_groups = [rows for rows in groups.values() if len(rows) == config["samples_per_problem"]]
+        for rows in complete_groups:
+            if len({row["sample"] for row in rows}) != config["samples_per_problem"]:
+                raise ValueError("Repeated sampled response indices")
+        sampled = {
+            "complete_problems": len(complete_groups),
+            "expected": config["sampled_problem_count"],
+            "generated_tokens": sum(row["generated_tokens"] for rows in groups.values() for row in rows),
+            "partial_problems": len(groups) - len(complete_groups),
+        }
+        if complete_groups:
+            counts = [sum(row["correct"] for row in rows) for rows in complete_groups]
+            sampled.update(
+                pass1=float(np.mean([pass_at_k(config["samples_per_problem"], c, 1) for c in counts])),
+                pass8=float(np.mean([pass_at_k(config["samples_per_problem"], c, 8) for c in counts])),
+                mean_unique_correct_structures=float(
+                    np.mean([len({row["structure"] for row in rows if row["correct"]}) for rows in complete_groups])
+                ),
+            )
+        method["sampled"] = sampled
+        method["complete"] = bool(
+            method["training_complete"]
+            and all(method[s]["complete"] for s in ("test", "hard", "probes"))
+            and sampled["complete_problems"] == sampled["expected"]
+        )
+        method["training"] = experiment.get("conditions", {}).get(condition, {})
+        phase = experiment.get("phases", {}).get(condition, {})
+        method["training_seconds"] = phase.get("finished_at", phase.get("started_at", 0)) - phase.get("started_at", 0)
+        summary["methods"][condition] = method
+        # Fixed first problems expose matched successes and failures without selection by outcome.
+        summary["examples"][condition] = evaluation["sets"].get("test", [])[:16]
+    if all(
+        name in summary["methods"]
+        and summary["methods"][name]["training_complete"]
+        and summary["methods"][name]["test"]["complete"]
+        for name in ("main", "reward_only")
+    ):
+        main = {r["problem_id"]: r["correct"] for r in evaluations["main"]["sets"]["test"]}
+        control = {r["problem_id"]: r["correct"] for r in evaluations["reward_only"]["sets"]["test"]}
+        if main.keys() != control.keys():
+            raise ValueError("Primary problem IDs do not align")
+        ordered = sorted(main)
+        primary = paired_bootstrap(
+            [main[i] for i in ordered], [control[i] for i in ordered], config["bootstrap_replicates"]
+        )
+        summary["primary"] = primary
+        if primary["difference"] <= 0:
+            summary["finding"] = (
+                "The directional improvement hypothesis was not supported in this seed: main accuracy did not exceed reward-only ES."
+            )
+        elif primary["low"] > 0:
+            summary["finding"] = (
+                "The paired test-problem interval supports an improvement conditional on this seed. Robustness across training seeds remains untested."
+            )
+        else:
+            summary["finding"] = (
+                "The point estimate favors the main method, but the paired interval includes zero; this pilot is inconclusive."
+            )
+    summary["failures"] = experiment.get("failures", [])
+    summary["elapsed_seconds"] = experiment.get("finished_at", experiment.get("started_at", 0)) - experiment.get(
+        "started_at", 0
+    )
+    return summary
+
+
+def _percent(value) -> str:
+    """Render absent observations as missing, not numerical zero."""
+    return "missing" if value is None else f"{100 * value:.2f}%"
+
+
+def result_table(summary: dict) -> list[list[str]]:
+    """One canonical table feeds Markdown, PDF and model cards."""
+    table = [["Condition", "Test accuracy", "95% interval", "Hard accuracy", "pass@1", "pass@8", "Status"]]
+    for name, method in summary["methods"].items():
+        interval = method["test"].get("interval")
+        table.append(
+            [
+                name,
+                _percent(method["test"].get("accuracy")),
+                " - ".join(map(_percent, interval)) if interval else "missing",
+                _percent(method["hard"].get("accuracy")),
+                _percent(method["sampled"].get("pass1")),
+                _percent(method["sampled"].get("pass8")),
+                "complete" if method["complete"] else "incomplete",
+            ]
+        )
+    return table
+
+
+def markdown_table(table: list[list[str]]) -> str:
+    """Render generated numerical rows consistently across repository artifacts."""
+    lines = ["| " + " | ".join(table[0]) + " |", "| " + " | ".join(["---"] * len(table[0])) + " |"]
+    lines.extend("| " + " | ".join(row) + " |" for row in table[1:])
+    return "\n".join(lines)
+
+
+def plot_results(directory: Path, summary: dict, output: Path) -> None:
+    """Plot raw generation metrics and accuracy on honest, zero-based bounded axes."""
+    output.mkdir(parents=True, exist_ok=True)
+    fig, axes = plt.subplots(1, 3, figsize=(12, 3.7), layout="constrained")
+    colors = {"main": "#157f67", "reward_only": "#bc681e"}
+    plotted = False
+    for name, color in colors.items():
+        rows = read_json(directory / name / "metrics.json", [])
+        for axis, key in zip(axes, ("quality", "novelty", "accuracy"), strict=True):
+            if rows:
+                axis.plot([r["generation"] for r in rows], [r[key] for r in rows], label=name, color=color)
+                plotted = True
+            axis.set(xlabel="Generation", ylabel=key, ylim=(0, 2 if key == "novelty" else 1))
+            axis.grid(alpha=0.2)
+    if plotted:
+        axes[0].legend(fontsize=8)
+    else:
+        axes[0].text(
+            0.5, 0.5, "No committed training observations", transform=axes[0].transAxes, ha="center", fontsize=8
+        )
+    fig.suptitle("Population means; perturbed candidates, not final test performance")
+    fig.savefig(output / "training.png", dpi=160)
+    plt.close(fig)
+    fig, axis = plt.subplots(figsize=(7, 3.5), layout="constrained")
+    names = [name for name, m in summary["methods"].items() if "accuracy" in m["test"]]
+    if names:
+        means = np.array([summary["methods"][n]["test"]["accuracy"] for n in names])
+        bounds = np.array([summary["methods"][n]["test"]["interval"] for n in names])
+        axis.bar(
+            names,
+            means,
+            color=[colors.get(n, "#607d9b") for n in names],
+            yerr=np.maximum(0, np.vstack((means - bounds[:, 0], bounds[:, 1] - means))),
+            capsize=5,
+        )
+    else:
+        axis.text(0.5, 0.5, "No evaluation observations", transform=axis.transAxes, ha="center")
+    axis.set(
+        ylabel="Greedy exact accuracy", ylim=(0, 1), title="Held-out test accuracy; problem-bootstrap 95% intervals"
+    )
+    fig.savefig(output / "accuracy.png", dpi=160)
+    plt.close(fig)
+
+
+def write_paper(path: Path, experiment: dict, summary: dict, figures: Path, table: list[list[str]]) -> None:
+    """Build the dated paper from the same canonical results and registered configuration."""
+    from reportlab.lib import colors
+    from reportlab.lib.styles import getSampleStyleSheet
+    from reportlab.lib.units import inch
+    from reportlab.platypus import Image, PageBreak, Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
+
+    path.parent.mkdir(parents=True, exist_ok=True)
+    styles = getSampleStyleSheet()
+    styles["BodyText"].fontSize = 9
+    styles["BodyText"].leading = 13
+    styles["BodyText"].spaceAfter = 7
+    story = []
+
+    def paragraph(text, style="BodyText"):
+        story.append(Paragraph(text, styles[style]))
+
+    def section(title, body):
+        paragraph(title, "Heading2")
+        paragraph(body)
+
+    config = experiment.get("config", read_json(Path("configs/pilot.json"), {}))
+    paragraph("Correct-Response Novelty in Full-Weight LLM Evolution", "Title")
+    paragraph('Libor "Burny" Burian', "Heading2")
+    paragraph(datetime.now().date().isoformat())
+    section(
+        "Abstract",
+        "We test an adaptation of historical response novelty to full-weight Gaussian evolution strategies on witnessed arithmetic problems. "
+        "The comparison uses one paired training seed and an untrained base model. "
+        + html.escape(summary["finding"])
+        + " Problem-resampling intervals exclude training-seed variability. All tables are generated from persisted evaluations; incomplete outcomes are labeled.",
+    )
+    section(
+        "Context, motivation and introduction",
+        "The experiment asks whether exploration among correct answer forms improves held-out task success. "
+        "ExTra [1] supplies the historical semantic novelty concept; ES at Scale [2] supplies the full-weight optimization reference. "
+        "Their combination changes the optimizer, sibling population, task and normalization, so it is an adaptation rather than a reproduction. "
+        "A reward-only ES control is necessary because ES can itself change solution coverage [3].",
+    )
+    section(
+        "Background and related work",
+        "Novelty-seeking ES was previously studied in control [4]. LLM-specific alternatives include EVOL-RL's within-group novelty [5], "
+        "DARLING's quality/diversity objective [6], and the model/task coevolution of AC/DC [7]. These use different training or population mechanisms. "
+        "The repository literature audit distinguishes prompt evolution, artifact search and actual model-parameter training, with code/license verification.",
+    )
+    section(
+        "Method",
+        f"The model is {html.escape(config['model_id'])}, revision {config['model_revision']}. "
+        f"Each generation evaluates {config['population']} independent Gaussian candidates (sigma {config['sigma']}) "
+        f"on {config['rotating_count']} rotating training problems and {config['probe_count']} fixed training probes. "
+        f"Mean task reward is combined with {config['novelty_weight']} times correctness-gated cosine novelty for the main condition. "
+        f"The archive retains {config['memory_size']} correct embeddings per probe after seeded insertion. "
+        f"Average centered fitness ranks weight noise in the update; effective alpha is {config['alpha']}. "
+        "FP32 masters reconstruct BF16 candidates afresh and tied tensors are updated once. Prefix regeneration and backpropagation are absent.",
+    )
+    section(
+        "Data, evaluation and preregistered analysis",
+        "Synthetic problems have exact rational witnesses. Global number-multiset isolation prevents permutations or alternative targets crossing splits. "
+        "Only constants supplied in the prompt and allowlisted arithmetic are accepted. Greedy test accuracy at the final scheduled checkpoint is primary. "
+        "The directional hypothesis is falsified for this pilot if main minus control accuracy is nonpositive. "
+        "A paired problem bootstrap quantifies conditional uncertainty. Sampled pass@k follows the unbiased subset estimator [8]. "
+        "Validation cannot select checkpoints. Exact dataset hashes, schedules, timing rules and sampling settings are recorded in reports/preregistration.md and configs/pilot.json.",
+    )
+    section("Results and claims", html.escape(summary["finding"]))
+    cells = [[Paragraph(html.escape(cell), styles["BodyText"]) for cell in row] for row in table]
+    result = Table(cells, colWidths=[64, 67, 87, 64, 52, 52, 66], repeatRows=1)
+    result.setStyle(
+        TableStyle(
+            [
+                ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#dce9f5")),
+                ("VALIGN", (0, 0), (-1, -1), "TOP"),
+                ("GRID", (0, 0), (-1, -1), 0.25, colors.lightgrey),
+            ]
+        )
+    )
+    story.extend([result, Spacer(1, 12)])
+    primary = summary.get("primary")
+    if primary:
+        paragraph(
+            f"Main minus control: {primary['difference'] * 100:.3f} percentage points; paired 95% interval "
+            f"[{primary['low'] * 100:.3f}, {primary['high'] * 100:.3f}], on {primary['n']} paired problems."
+        )
+    story.append(Image(str(figures / "accuracy.png"), width=6.0 * inch, height=3.0 * inch))
+    story.append(PageBreak())
+    section(
+        "Training dynamics and output inspection",
+        "Population metrics describe perturbed candidates, not the master checkpoint. "
+        "Reward is the optimization signal; no cross-entropy loss is optimized in this pilot. "
+        "The interactive result page shows the same first test problems across methods, including failures, without choosing examples by outcome.",
+    )
+    story.append(Image(str(figures / "training.png"), width=6.2 * inch, height=1.92 * inch))
+    for name, examples in summary["examples"].items():
+        if examples:
+            row = examples[0]
+            section(
+                "Fixed example: " + name, html.escape(row["prompt"]) + "<br/>Output: " + html.escape(row["response"])
+            )
+    section(
+        "Implications and discussion",
+        "This pilot is a controlled objective intervention under one initialization/seed schedule. "
+        "It can identify a conditional difference or a feasibility failure, but cannot establish a general advantage of novelty training. "
+        "Any improvement must be checked across additional seeds and separated from probe memorization. "
+        "A rise in novelty alone, or a selected qualitative example, is insufficient evidence.",
+    )
+    section(
+        "Limitations",
+        "Training-seed sensitivity is unmeasured. Embedding similarity is a proxy and may reward irrelevant wording; "
+        "canonical expression trees are an independent syntactic diagnostic, not full algebraic equivalence. "
+        "Synthetic arithmetic does not measure general language quality. Similar pretraining patterns cannot be excluded. "
+        "The fixed-probe objective can overfit. Small time budgets, laptop thermal variability and batch-level floating-point behavior limit extrapolation. "
+        "Secondary endpoints are descriptive; no multiple-comparison significance claims are made.",
+    )
+    section(
+        "Conclusion",
+        html.escape(summary["finding"])
+        + " Multi-seed studies and archive ablations require a separately frozen amendment after this result is published.",
+    )
+    section(
+        "Appendix: reproducibility and failures",
+        "Run uv sync --locked, uv run pytest, uv run novelty-es prepare, "
+        "uv run novelty-es download, and uv run novelty-es run. Repeating run resumes the same clock. "
+        "uv run novelty-es report regenerates tables, figures, this paper and the static website. "
+        "Atomic checkpoints contain weights, all RNG streams, archive, cursor, config and deadline. "
+        f"Recorded technical failures: {len(summary['failures'])}. Experiment elapsed seconds: {summary['elapsed_seconds']:.3f}. "
+        "Exact exceptions and incomplete conditions are retained in the generated Markdown report and JSON artifacts.",
+    )
+    references = [
+        ("1. ExTra", "https://arxiv.org/abs/2606.24994"),
+        ("2. Evolution Strategies at Scale", "https://arxiv.org/abs/2509.24372"),
+        ("3. Beyond the Best Guess", "https://arxiv.org/abs/2608.12679"),
+        ("4. Novelty-seeking ES", "https://arxiv.org/abs/1712.06560"),
+        ("5. EVOL-RL", "https://arxiv.org/abs/2509.15194"),
+        ("6. DARLING", "https://arxiv.org/abs/2509.02534"),
+        ("7. AC/DC", "https://arxiv.org/abs/2604.14969"),
+        ("8. Evaluating Large Language Models Trained on Code", "https://arxiv.org/abs/2107.03374"),
+        (
+            "Research protocol and source",
+            "https://github.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training",
+        ),
+    ]
+    paragraph("References", "Heading2")
+    for label, url in references:
+        paragraph(f'<link href="{url}" color="#185b96">{html.escape(label)}</link>')
+    section(
+        "AI statement",
+        "Codex wrote this codebase and paper, and human cleanup and rewriting are in progress. "
+        "A human provided the exact specification that was executed.",
+    )
+
+    def footer(canvas, doc):
+        canvas.setFont("Helvetica", 8)
+        canvas.setFillColor(colors.grey)
+        canvas.drawString(45, 25, 'Libor "Burny" Burian | Novelty ES pilot')
+        canvas.drawRightString(565, 25, str(doc.page))
+
+    SimpleDocTemplate(
+        str(path),
+        rightMargin=42,
+        leftMargin=42,
+        topMargin=38,
+        bottomMargin=40,
+        title="Correct-Response Novelty in Full-Weight LLM Evolution",
+        author='Libor "Burny" Burian',
+    ).build(story, onFirstPage=footer, onLaterPages=footer)
+
+
+def report(directory: Path, output_root: Path = Path(".")) -> dict:
+    """Single command regenerates JSON, tables, plots, reports, model cards, Pages and PDF."""
+    summary = summarize(directory)
+    atomic_json(directory / "summary.json", summary)
+    experiment = read_json(directory / "experiment.json", {})
+    table = result_table(summary)
+    reports, figures = output_root / "reports", output_root / "reports/figures"
+    reports.mkdir(parents=True, exist_ok=True)
+    plot_results(directory, summary, figures)
+    primary = summary["primary"]
+    comparison = (
+        f"Paired difference: {primary['difference'] * 100:.3f} percentage points; 95% interval "
+        f"[{primary['low'] * 100:.3f}, {primary['high'] * 100:.3f}]; {primary['n']} paired test problems."
+        if primary
+        else "The registered paired endpoint is incomplete or not yet available."
+    )
+    text = (
+        f'# Pilot experiment\n\nLibor "Burny" Burian · {datetime.now().date().isoformat()}\n\n'
+        f"{summary['finding']}\n\n{comparison}\n\n{summary['interval_scope']}\n\n"
+        f"{markdown_table(table)}\n\n![Accuracy](figures/accuracy.png)\n\n![Training](figures/training.png)\n\n"
+        "## Method and scope\n\nSee the [preregistration](preregistration.md), [configuration](../configs/pilot.json), "
+        "[data hashes](../data/manifest.json), and [literature audit](../docs/literature.md). "
+        "This is an adaptation of [ExTra](https://arxiv.org/abs/2606.24994) and "
+        "[ES at Scale](https://arxiv.org/abs/2509.24372), not a reproduction. "
+        "The archive gate uses exact correctness; positive legality reward is insufficient. "
+        "Validation does not choose the final checkpoint.\n\n"
+        "## Recorded measurements\n\nAll values below come from persisted outcomes. Missing conditions remain missing. "
+        "Population training accuracy is distinct from unperturbed master validation and held-out test accuracy.\n\n"
+        "```json\n"
+        + json.dumps(
+            {
+                "methods": summary["methods"],
+                "elapsed_seconds": summary["elapsed_seconds"],
+                "calibration": experiment.get("calibration", {}),
+            },
+            indent=2,
+        )
+        + "\n```\n\n"
+        "## Failures, deviations and learnings\n\n" + json.dumps(summary["failures"], indent=2) + "\n\n"
+        "The first audit reconciled ExTra's correctness-filtered paper specification with its unfiltered embedding-memory insertion. "
+        "Explicit Boolean masking and separate score/append operations implement the intended experiment. "
+        "FP32 master reconstruction avoids repeated BF16 perturbation subtraction. "
+        "Tests exercise interrupted candidate replay, archive RNG restoration, deadline preservation and exact arithmetic. "
+        "Hyperparameters are preregistered choices, not claimed optima. Further training requires reviewing this pilot.\n\n"
+        "## Limitations\n\nOne seed; synthetic arithmetic; embedding-proxy and probe-overfitting risks; "
+        "no general-language benchmark; descriptive secondary analyses. Bootstrap intervals omit seed variability.\n"
+    )
+    (reports / "experiment-pilot.md").write_text(text, encoding="utf-8")
+    (reports / "all-experiments.md").write_text(
+        "# All experiments\n\nThe current registered study is the paired pretrained pilot. "
+        "No scratch or diagnostic run is represented as executed.\n\n"
+        + markdown_table(table)
+        + "\n\n[Full pilot report](experiment-pilot.md). [Deferred studies](../docs/roadmap.md).\n\n"
+        "ES means comparing random weight changes instead of using backpropagation. Novelty is distance from previous "
+        "correct answers. Quality is verified arithmetic reward. Accuracy is exact success frequency. "
+        "pass@k estimates the chance of at least one success among k samples. A confidence interval here describes "
+        "uncertainty from which test problems were sampled, not uncertainty over training seeds.\n",
+        encoding="utf-8",
+    )
+    site = output_root / "docs/site"
+    site.mkdir(parents=True, exist_ok=True)
+    shutil.copyfile("web/index.html", site / "index.html")
+    atomic_json(site / "status.json", dashboard_state(directory))
+    (site / ".nojekyll").touch()
+    for condition in ("main", "reward_only"):
+        model_dir = directory / condition / "model"
+        if model_dir.exists():
+            config = experiment["config"]
+            (model_dir / "README.md").write_text(
+                f"---\nlicense: apache-2.0\nbase_model: {config['model_id']}\nlibrary_name: transformers\n"
+                "pipeline_tag: text-generation\ntags:\n- evolution-strategies\n- countdown\n---\n\n"
+                f"# Novelty ES pilot: {condition}\n\n"
+                + summary["finding"]
+                + "\n\n"
+                + markdown_table(table)
+                + "\n\nResearch-only arithmetic adaptation, with no evidence of general language improvements. "
+                "Intervals exclude training-seed variability. See the full preregistration, source, provenance and limitations at "
+                "https://github.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training .\n\n"
+                f"Base revision: `{config['model_revision']}`. Training and evaluation use the recorded seed and configuration.\n",
+                encoding="utf-8",
+            )
+    write_paper(output_root / "output/pdf/novelty-es-pilot.pdf", experiment, summary, figures, table)
+    print(json.dumps({"report": str(reports / "experiment-pilot.md"), "finding": summary["finding"]}, indent=2))
+    return summary
