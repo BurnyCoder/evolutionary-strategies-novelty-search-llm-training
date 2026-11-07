@@ -79,7 +79,8 @@ def main():
     now = time.time()
     result = {
         "verified_at": datetime.fromtimestamp(now, timezone.utc).isoformat(),
-        "elapsed_since_calibration_seconds": now - experiment["started_at"],
+        "elapsed_since_start_seconds": now - experiment["started_at"],
+        "clock_origin": "continuation initialization" if continued else "GPU calibration",
         "absolute_deadline": experiment["deadline"],
         "final_phase_deadline": experiment["phases"]["final"]["deadline"],
         "within_absolute_allowance": now <= experiment["deadline"],

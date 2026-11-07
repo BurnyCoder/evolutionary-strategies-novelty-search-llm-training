@@ -603,7 +603,7 @@ def write_paper(path: Path, experiment: dict, summary: dict, figures: Path, tabl
     paragraph(
         "Protocol amendment A replaced combined-reward ranks with source-aligned z-scored quality plus post-normalization novelty. "
         "It was published after calibration and partial original-model evaluation were visible, but before either trained condition began. "
-        "Both arms start from the original pretrained weights using the amended rule from their first generation. "
+        "Both pilot arms started from the original pretrained weights using the amended rule from their first generation. "
         "The original registration, changed configuration, code revisions and unchanged absolute deadline are retained in the run record. "
         "This ordering follows ES at Scale Algorithm 2 and ExTra Equation 2; it is not evidence that the hybrid outperforms the abandoned rule."
     )
@@ -615,7 +615,9 @@ def write_paper(path: Path, experiment: dict, summary: dict, figures: Path, tabl
         "Only constants supplied in the prompt and allowlisted arithmetic are accepted. Greedy test accuracy at the final scheduled checkpoint is primary. "
         "The directional hypothesis is falsified for this pilot if main minus control accuracy is nonpositive. "
         "A paired problem bootstrap quantifies conditional uncertainty. Sampled pass@k follows the unbiased subset estimator [8]. "
-        "Validation cannot select checkpoints. Exact dataset hashes, schedules, timing rules and sampling settings are recorded in reports/preregistration.md and configs/pilot.json.",
+        "Validation cannot select checkpoints. Exact dataset hashes, schedules, timing rules and sampling settings are recorded in "
+        + ("reports/preregistration-continuation.md and configs/continuation.json."
+           if summary.get("continuation") else "reports/preregistration.md and configs/pilot.json."),
     )
     manifest = experiment.get("dataset_manifest", read_json(Path("data/manifest.json"), {}))
     counts = manifest.get("splits", {})
@@ -747,9 +749,14 @@ def write_paper(path: Path, experiment: dict, summary: dict, figures: Path, tabl
     )
     section(
         "Appendix: reproducibility and failures",
-        "Run uv sync --locked, uv run pytest, uv run novelty-es prepare, "
-        "uv run novelty-es download, and uv run novelty-es run. Repeating run resumes the same clock. "
-        "uv run novelty-es report regenerates tables, figures, this paper and the static website. "
+        ("Restore the pinned parent release as described in docs/continuation.md, then run uv sync --locked, "
+         "uv run pytest, uv run novelty-es download, and uv run novelty-es run --config configs/continuation.json --run-dir PATH. "
+         "uv run novelty-es report --run-dir PATH regenerates tables, figures, this paper and the static website. "
+         if summary.get("continuation") else
+         "Run uv sync --locked, uv run pytest, uv run novelty-es prepare, "
+         "uv run novelty-es download, and uv run novelty-es run. "
+         "uv run novelty-es report regenerates tables, figures, this paper and the static website. ")
+        + "Repeating run resumes the same clock. "
         "Atomic checkpoints contain weights, all RNG streams, archive, cursor, config and deadline. "
         f"Recorded technical failures: {len(summary['failures'])}. Model-execution elapsed seconds: {summary['elapsed_seconds']:.3f}. "
         "Final auditing, report preparation and publication follow model execution within the original allowance. "
@@ -821,7 +828,7 @@ def write_paper(path: Path, experiment: dict, summary: dict, figures: Path, tabl
     def footer(canvas, doc):
         canvas.setFont("Helvetica", 8)
         canvas.setFillColor(colors.grey)
-        canvas.drawString(45, 25, 'Libor "Burny" Burian | Novelty ES pilot')
+        canvas.drawString(45, 25, 'Libor "Burny" Burian | Novelty ES study')
         canvas.drawRightString(565, 25, str(doc.page))
 
     SimpleDocTemplate(
@@ -866,13 +873,16 @@ def report(directory: Path, output_root: Path = Path(".")) -> dict:
         f"{summary['interval_caveat']}\n\n"
         f"{markdown_table(table)}\n\n{coverage_description(summary)}\n\n"
         f"{markdown_table(comparison_table(summary))}\n\n"
-        "Comparisons with the original checkpoint are descriptive secondary estimates with unadjusted intervals.\n\n"
+        "All comparisons other than the final main-minus-control primary endpoint are descriptive secondary estimates with unadjusted intervals.\n\n"
         f"![Accuracy]({figures.relative_to(reports).as_posix()}/accuracy.png)\n\n"
         f"![Training]({figures.relative_to(reports).as_posix()}/training.png)\n\n"
         f"## Probe performance, validity and resources\n\n{markdown_table(diagnostic_table(summary))}\n\n"
         "Train tokens count only candidates in committed generations; evaluation tokens count persisted evaluation responses. "
         "Calibration, validation, interrupted batches and replay costs are excluded from those columns. "
-        "Training hours include phase overhead and checkpointing. Probes are training examples, not held-out data.\n\n"
+        "Training hours include phase overhead and checkpointing. "
+        + ("Training tokens in this diagnostic table are cumulative, whereas training hours and the earlier added-token column cover this continuation only. "
+           "The original model's older evaluation outcomes and token counts are reused from the pinned parent release. " if continued else "")
+        + "Probes are training examples, not held-out data.\n\n"
         f"## Novelty intervention diagnostic\n\n{intervention_description(summary)}\n\n"
         "See [analysis notes](analysis-notes.md) for when this descriptive check was added.\n\n"
         f"## Within-problem expression diversity\n\n{markdown_table(diversity_table(summary))}\n\n"
@@ -887,7 +897,7 @@ def report(directory: Path, output_root: Path = Path(".")) -> dict:
         "Validation does not choose the final checkpoint. "
         "Amendment A replaces combined-reward ranks with population-z-scored task reward plus post-normalization novelty. "
         "It was published after calibration and partial original-model evaluation, before either trained condition. "
-        "Both trained arms start from original pretrained weights using the amended rule from generation one.\n\n"
+        "Both pilot arms started from original pretrained weights using the amended rule from generation one.\n\n"
         + model_description(summary) + "\n\n"
         "## Recorded measurements\n\nAll values below come from persisted outcomes. Missing conditions remain missing. "
         "Population training accuracy is distinct from unperturbed master validation and held-out test accuracy.\n\n"
