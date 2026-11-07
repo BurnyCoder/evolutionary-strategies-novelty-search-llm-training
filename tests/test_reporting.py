@@ -68,3 +68,21 @@ def test_missing_evaluation_does_not_hide_an_incomplete_condition(tmp_path):
     assert method["training"]["generation"] == 2
     assert method["test"]["n"] == 0 and method["test"]["expected"] == 2
     assert summary["primary"] is None
+
+
+def test_baseline_comparisons_pair_problem_ids_and_require_complete_training(tmp_path):
+    """Secondary differences use paired outcomes, never independent error-bar subtraction."""
+    config = json.loads(open("configs/pilot.json", encoding="utf-8").read())
+    experiment = {"config": config, "dataset_manifest": {"splits": {"test": {"count": 2}, "hard": {"count": 1}}}}
+    (tmp_path / "experiment.json").write_text(json.dumps(experiment))
+    for name in ("original", "main", "reward_only"):
+        (tmp_path / name).mkdir()
+        evaluation = _evaluation(name != "reward_only")
+        if name == "original":
+            evaluation["sets"]["test"].reverse()
+        (tmp_path / name / "evaluation.json").write_text(json.dumps(evaluation))
+    summary = summarize(tmp_path)
+    assert summary["primary"] is None
+    assert set(summary["baseline_comparisons"]) == {"main"}
+    assert summary["baseline_comparisons"]["main"]["difference"] == 0.0
+    assert summary["baseline_comparisons"]["main"]["n"] == 2
