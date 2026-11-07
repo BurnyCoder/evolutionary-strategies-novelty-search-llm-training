@@ -5,9 +5,10 @@ The user authorized publishing this research; no credentials or unrelated files 
 """
 
 import json
+import shutil
 from pathlib import Path
 
-from huggingface_hub import HfApi
+from huggingface_hub import HfApi, hf_hub_download
 
 from .runtime import atomic_json
 
@@ -30,6 +31,10 @@ def publish(directory: Path) -> dict:
         model_dir = directory / condition / "model"
         if not model_dir.exists():
             continue
+        # Preserve the pinned base model's redistribution license in each derivative.
+        config = experiment["config"]
+        license_path = hf_hub_download(config["model_id"], "LICENSE", revision=config["model_revision"])
+        shutil.copyfile(license_path, model_dir / "LICENSE")
         repo_id = f"{namespace}/novelty-es-qwen2.5-0.5b-{condition.replace('_', '-')}-seed0"
         api.create_repo(repo_id, repo_type="model", exist_ok=True)
         api.upload_folder(

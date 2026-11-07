@@ -32,7 +32,7 @@ def main() -> None:
             path = snapshot_download(
                 config[f"{prefix}_id"],
                 revision=config[f"{prefix}_revision"],
-                allow_patterns=["*.json", "*.safetensors", "*.txt", "*.model"],
+                allow_patterns=["*.json", "*.safetensors", "*.txt", "*.model", "LICENSE*", "NOTICE*"],
             )
             print(f"Pinned {prefix} downloaded to {path}")
     elif args.command == "run":
