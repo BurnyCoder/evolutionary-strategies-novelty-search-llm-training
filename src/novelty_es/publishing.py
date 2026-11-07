@@ -58,6 +58,7 @@ def publish(directory: Path) -> dict:
             "*/evaluation.json",
             "*/metrics.json",
             "*/progress.json",
+            "*/initialization-audit.json",
         ],
         commit_message="Publish raw pilot evaluations, traces and experiment provenance",
     )
