@@ -50,3 +50,21 @@ def test_primary_requires_completed_training_and_aligned_test_problems(tmp_path)
     (tmp_path / "main/evaluation.json").write_text(json.dumps(bad), encoding="utf-8")
     with pytest.raises(ValueError, match="do not align"):
         summarize(tmp_path)
+
+
+def test_missing_evaluation_does_not_hide_an_incomplete_condition(tmp_path):
+    """A failed arm remains visible even when it never reaches held-out evaluation."""
+    config = json.loads(open("configs/pilot.json", encoding="utf-8").read())
+    experiment = {
+        "config": config,
+        "dataset_manifest": {"splits": {"test": {"count": 2}, "hard": {"count": 1}}},
+        "conditions": {"reward_only": {"complete": False, "generation": 2, "generations": 5}},
+    }
+    (tmp_path / "experiment.json").write_text(json.dumps(experiment), encoding="utf-8")
+    summary = summarize(tmp_path)
+    assert set(summary["methods"]) == {"original", "main", "reward_only"}
+    method = summary["methods"]["reward_only"]
+    assert not method["training_complete"] and not method["complete"]
+    assert method["training"]["generation"] == 2
+    assert method["test"]["n"] == 0 and method["test"]["expected"] == 2
+    assert summary["primary"] is None

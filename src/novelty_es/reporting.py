@@ -97,9 +97,11 @@ def summarize(directory: Path) -> dict:
     }
     evaluations = {}
     for condition in ("original", "main", "reward_only"):
-        evaluation = read_json(directory / condition / "evaluation.json", {})
-        if not evaluation:
-            continue
+        training = experiment.get("conditions", {}).get(condition, {})
+        evaluation = read_json(directory / condition / "evaluation.json", {
+            "training_complete": condition == "original" or training.get("complete", False),
+            "seconds": 0.0, "sets": {},
+        })
         evaluations[condition] = evaluation
         method = {
             "training_complete": evaluation["training_complete"],
@@ -137,7 +139,7 @@ def summarize(directory: Path) -> dict:
             and all(method[s]["complete"] for s in ("test", "hard", "probes"))
             and sampled["complete_problems"] == sampled["expected"]
         )
-        method["training"] = experiment.get("conditions", {}).get(condition, {})
+        method["training"] = training
         generations = read_json(directory / condition / "metrics.json", [])
         method["training_observations"] = {
             "responses": sum(row["responses"] for row in generations),
@@ -146,7 +148,7 @@ def summarize(directory: Path) -> dict:
             "weight_diagnostic": novelty_intervention(generations, config["novelty_weight"]),
         }
         phase = experiment.get("phases", {}).get(condition, {})
-        method["training_seconds"] = phase.get("finished_at", phase.get("started_at", 0)) - phase.get("started_at", 0)
+        method["training_seconds"] = phase.get("finished_at", time.time()) - phase["started_at"] if phase else 0.0
         summary["methods"][condition] = method
         # Fixed first problems expose matched successes and failures without selection by outcome.
         summary["examples"][condition] = evaluation["sets"].get("test", [])[:16]
@@ -176,6 +178,12 @@ def summarize(directory: Path) -> dict:
         else:
             summary["finding"] = (
                 "The point estimate favors the main method, but the paired interval includes zero; this pilot is inconclusive."
+            )
+        diagnostic = summary["methods"]["main"]["training_observations"]["weight_diagnostic"]
+        if diagnostic["generations_observed"] and not diagnostic["generations_weight_changed"]:
+            summary["finding"] += (
+                " Adding novelty changed no main-condition update coefficients on the recorded populations; "
+                "this pilot did not exercise an active novelty intervention."
             )
     summary["failures"] = experiment.get("failures", [])
     summary["protocol_amendments"] = experiment.get("protocol_amendments", [])
@@ -324,7 +332,7 @@ def plot_results(directory: Path, summary: dict, output: Path) -> None:
         rows = read_json(directory / name / "metrics.json", [])
         for axis, key in zip(axes, ("quality", "novelty", "accuracy"), strict=True):
             if rows:
-                axis.plot([r["generation"] for r in rows], [r[key] for r in rows], label=name, color=color)
+                axis.plot([r["generation"] for r in rows], [r[key] for r in rows], label=name, color=color, marker="o", markersize=3)
                 plotted = True
             axis.set(xlabel="Generation", ylabel=key, ylim=(0, 2 if key == "novelty" else 1))
             axis.grid(alpha=0.2)
