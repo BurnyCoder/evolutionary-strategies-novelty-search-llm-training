@@ -1,0 +1,12 @@
+Novelty ES research implementation
+Copyright 2026 Libor Burian
+
+src/novelty_es/novelty.py adapts embedding-memory operations from:
+ExTra, Copyright 2025 ExTra Authors, Apache License 2.0.
+https://github.com/allen4747/extra
+Commit ea53e68036356f8f276e261e886fbbc102633be3
+Original path: verl/recipe/extra/curiosity_memory.py
+
+Changes are documented in that module and docs/literature.md.
+No ES-at-Scale repository source code is included.
+Qwen and MiniLM model weights retain their respective upstream licenses.

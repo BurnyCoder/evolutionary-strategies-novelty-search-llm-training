@@ -1,0 +1,42 @@
+[project]
+name = "novelty-es"
+version = "0.1.0"
+description = "Reproducible full-weight evolution strategies with correctness-gated LLM novelty"
+readme = "README.md"
+authors = [
+    { name = "BurnyCoder", email = "happymancz@email.cz" }
+]
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "huggingface-hub>=2.4.0",
+    "matplotlib>=3.11.2",
+    "numpy>=2.5.4",
+    "pymupdf>=2.1",
+    "pypdf>=7.0.0",
+    "python-dotenv>=1.2.4",
+    "reportlab>=5.1.0",
+    "sentence-transformers>=6.2.0",
+    "torch>=2.14.1",
+    "transformers>=5.22.2",
+]
+
+[project.scripts]
+novelty-es = "novelty_es.cli:main"
+
+[build-system]
+requires = ["uv_build>=0.13.6,<0.14.0"]
+build-backend = "uv_build"
+
+[tool.uv.sources]
+torch = { index = "pytorch" }
+
+[[tool.uv.index]]
+name = "pytorch"
+url = "https://download.pytorch.org/whl/cu130"
+explicit = true
+
+[dependency-groups]
+dev = [
+    "pytest>=9.2.0",
+    "ruff>=0.17.4",
+]

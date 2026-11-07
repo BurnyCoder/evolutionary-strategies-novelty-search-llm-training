@@ -1,0 +1,512 @@
+{"id": "validation-00000", "numbers": [26, 12, 3], "target": 35, "witness": "((26+12)-3)"}
+{"id": "validation-00001", "numbers": [40, 43, 42, 8], "target": 339, "witness": "((43+(8*42))-40)"}
+{"id": "validation-00002", "numbers": [38, 47, 5], "target": 425, "witness": "(5*(38+47))"}
+{"id": "validation-00003", "numbers": [6, 44, 16, 17], "target": 770, "witness": "(6+((44*17)+16))"}
+{"id": "validation-00004", "numbers": [22, 2, 6], "target": 120, "witness": "(6*(22-2))"}
+{"id": "validation-00005", "numbers": [45, 3, 2, 40], "target": 47, "witness": "(((45*2)-3)-40)"}
+{"id": "validation-00006", "numbers": [5, 20, 49], "target": 53, "witness": "(49+(20/5))"}
+{"id": "validation-00007", "numbers": [5, 11, 34, 5], "target": 35, "witness": "(11-(5+(5-34)))"}
+{"id": "validation-00008", "numbers": [49, 3, 15], "target": 67, "witness": "(3+(49+15))"}
+{"id": "validation-00009", "numbers": [21, 13, 8, 34], "target": 26, "witness": "((34+8)/(21/13))"}
+{"id": "validation-00010", "numbers": [28, 50, 16], "target": 828, "witness": "(28+(16*50))"}
+{"id": "validation-00011", "numbers": [36, 43, 36, 36], "target": 79, "witness": "((36-36)+(43+36))"}
+{"id": "validation-00012", "numbers": [6, 35, 38], "target": 67, "witness": "((35-6)+38)"}
+{"id": "validation-00013", "numbers": [44, 9, 4, 10], "target": 36, "witness": "((44-4)*(9/10))"}
+{"id": "validation-00014", "numbers": [5, 37, 41], "target": 20, "witness": "(5*(41-37))"}
+{"id": "validation-00015", "numbers": [22, 48, 2, 34], "target": 126, "witness": "(34+(48+(2*22)))"}
+{"id": "validation-00016", "numbers": [11, 11, 4], "target": 125, "witness": "(4+(11*11))"}
+{"id": "validation-00017", "numbers": [3, 3, 49, 13], "target": 62, "witness": "((13+(49-3))+3)"}
+{"id": "validation-00018", "numbers": [14, 42, 44], "target": 658, "witness": "((14*44)+42)"}
+{"id": "validation-00019", "numbers": [14, 17, 8, 8], "target": 254, "witness": "((8+(14*17))+8)"}
+{"id": "validation-00020", "numbers": [3, 14, 3], "target": 14, "witness": "(3+(14-3))"}
+{"id": "validation-00021", "numbers": [17, 4, 8, 38], "target": 59, "witness": "((8-4)+(38+17))"}
+{"id": "validation-00022", "numbers": [28, 13, 24], "target": 340, "witness": "(28+(13*24))"}
+{"id": "validation-00023", "numbers": [34, 33, 10, 36], "target": 27, "witness": "(34-(33-(36-10)))"}
+{"id": "validation-00024", "numbers": [22, 8, 5], "target": 25, "witness": "((22+8)-5)"}
+{"id": "validation-00025", "numbers": [12, 30, 24, 10], "target": 36, "witness": "(((12-10)*30)-24)"}
+{"id": "validation-00026", "numbers": [11, 12, 8], "target": 220, "witness": "(11*(8+12))"}
+{"id": "validation-00027", "numbers": [24, 22, 32, 24], "target": 704, "witness": "(((22/24)*24)*32)"}
+{"id": "validation-00028", "numbers": [48, 9, 10], "target": 47, "witness": "((9+48)-10)"}
+{"id": "validation-00029", "numbers": [9, 45, 22, 4], "target": 157, "witness": "(((22*9)-45)+4)"}
+{"id": "validation-00030", "numbers": [25, 8, 15], "target": 32, "witness": "(15-(8-25))"}
+{"id": "validation-00031", "numbers": [4, 36, 18, 31], "target": 106, "witness": "((18+(31*4))-36)"}
+{"id": "validation-00032", "numbers": [30, 9, 23], "target": 16, "witness": "(30+(9-23))"}
+{"id": "validation-00033", "numbers": [43, 19, 7, 10], "target": 132, "witness": "((10*7)+(19+43))"}
+{"id": "validation-00034", "numbers": [38, 23, 27], "target": 88, "witness": "((23+38)+27)"}
+{"id": "validation-00035", "numbers": [34, 39, 44, 14], "target": 621, "witness": "((44*14)+(39-34))"}
+{"id": "validation-00036", "numbers": [11, 20, 25], "target": 511, "witness": "(11+(25*20))"}
+{"id": "validation-00037", "numbers": [38, 3, 37, 10], "target": 68, "witness": "((3+37)+(38-10))"}
+{"id": "validation-00038", "numbers": [19, 25, 28], "target": 447, "witness": "((19*25)-28)"}
+{"id": "validation-00039", "numbers": [28, 21, 28, 37], "target": 721, "witness": "((37*21)-(28+28))"}
+{"id": "validation-00040", "numbers": [30, 34, 32], "target": 96, "witness": "((32+30)+34)"}
+{"id": "validation-00041", "numbers": [14, 11, 22, 24], "target": 1, "witness": "((14-(24-22))-11)"}
+{"id": "validation-00042", "numbers": [30, 1, 6], "target": 210, "witness": "(30*(6+1))"}
+{"id": "validation-00043", "numbers": [29, 4, 12, 6], "target": 182, "witness": "(12-(4-(6*29)))"}
+{"id": "validation-00044", "numbers": [42, 39, 37], "target": 118, "witness": "(39+(37+42))"}
+{"id": "validation-00045", "numbers": [4, 25, 42, 30], "target": 73, "witness": "(25+((42-30)*4))"}
+{"id": "validation-00046", "numbers": [33, 46, 21], "target": 825, "witness": "(33*(46-21))"}
+{"id": "validation-00047", "numbers": [35, 19, 20, 23], "target": 368, "witness": "((23-35)+(19*20))"}
+{"id": "validation-00048", "numbers": [2, 46, 49], "target": 6, "witness": "((49-46)*2)"}
+{"id": "validation-00049", "numbers": [12, 24, 30, 21], "target": 270, "witness": "(((12-24)+21)*30)"}
+{"id": "validation-00050", "numbers": [16, 47, 22], "target": 400, "witness": "(16*(47-22))"}
+{"id": "validation-00051", "numbers": [22, 20, 27, 15], "target": 810, "witness": "((15*27)*(22-20))"}
+{"id": "validation-00052", "numbers": [43, 31, 6], "target": 80, "witness": "(6+(31+43))"}
+{"id": "validation-00053", "numbers": [41, 47, 48, 45], "target": 4, "witness": "(((47-48)*41)+45)"}
+{"id": "validation-00054", "numbers": [32, 24, 48], "target": 36, "witness": "((48/32)*24)"}
+{"id": "validation-00055", "numbers": [38, 33, 3, 7], "target": 75, "witness": "((33+(38-3))+7)"}
+{"id": "validation-00056", "numbers": [16, 45, 48], "target": 109, "witness": "(16+(48+45))"}
+{"id": "validation-00057", "numbers": [41, 1, 4, 20], "target": 65, "witness": "(20+((41*1)+4))"}
+{"id": "validation-00058", "numbers": [8, 42, 23], "target": 73, "witness": "(8+(23+42))"}
+{"id": "validation-00059", "numbers": [36, 22, 37, 34], "target": 863, "witness": "((37+(36*22))+34)"}
+{"id": "validation-00060", "numbers": [3, 25, 18], "target": 93, "witness": "(18+(25*3))"}
+{"id": "validation-00061", "numbers": [49, 24, 41, 19], "target": 464, "witness": "(((24*19)-41)+49)"}
+{"id": "validation-00062", "numbers": [13, 10, 23], "target": 429, "witness": "((10+23)*13)"}
+{"id": "validation-00063", "numbers": [46, 10, 45, 22], "target": 12, "witness": "((22/(46-45))-10)"}
+{"id": "validation-00064", "numbers": [43, 32, 17], "target": 28, "witness": "(17-(32-43))"}
+{"id": "validation-00065", "numbers": [26, 1, 1, 40], "target": 40, "witness": "(40+((1-1)*26))"}
+{"id": "validation-00066", "numbers": [7, 42, 32], "target": 192, "witness": "(32/(7/42))"}
+{"id": "validation-00067", "numbers": [45, 16, 9, 27], "target": 107, "witness": "(27+((16*45)/9))"}
+{"id": "validation-00068", "numbers": [24, 14, 39], "target": 390, "witness": "((24-14)*39)"}
+{"id": "validation-00069", "numbers": [2, 9, 4, 42], "target": 63, "witness": "((42*9)/(2+4))"}
+{"id": "validation-00070", "numbers": [44, 9, 12], "target": 384, "witness": "((9*44)-12)"}
+{"id": "validation-00071", "numbers": [24, 33, 42, 27], "target": 126, "witness": "((27+33)+(24+42))"}
+{"id": "validation-00072", "numbers": [22, 37, 39], "target": 98, "witness": "((22+39)+37)"}
+{"id": "validation-00073", "numbers": [4, 1, 20, 19], "target": 42, "witness": "(20-(1-(19+4)))"}
+{"id": "validation-00074", "numbers": [2, 46, 34], "target": 10, "witness": "((46-2)-34)"}
+{"id": "validation-00075", "numbers": [49, 20, 10, 35], "target": 186, "witness": "((35-49)+(20*10))"}
+{"id": "validation-00076", "numbers": [2, 36, 26], "target": 64, "witness": "((26+2)+36)"}
+{"id": "validation-00077", "numbers": [31, 38, 4, 12], "target": 23, "witness": "(((12+4)-31)+38)"}
+{"id": "validation-00078", "numbers": [7, 45, 30], "target": 82, "witness": "(45+(30+7))"}
+{"id": "validation-00079", "numbers": [17, 5, 16, 34], "target": 40, "witness": "(((5+17)-16)+34)"}
+{"id": "validation-00080", "numbers": [50, 4, 20], "target": 10, "witness": "(4*(50/20))"}
+{"id": "validation-00081", "numbers": [20, 28, 43, 14], "target": 531, "witness": "(14+((20*28)-43))"}
+{"id": "validation-00082", "numbers": [39, 13, 25], "target": 1, "witness": "(39-(25+13))"}
+{"id": "validation-00083", "numbers": [15, 35, 38, 38], "target": 919, "witness": "((38*38)-(15*35))"}
+{"id": "validation-00084", "numbers": [27, 15, 19], "target": 312, "witness": "(27+(19*15))"}
+{"id": "validation-00085", "numbers": [16, 7, 39, 25], "target": 5, "witness": "((7+39)-(16+25))"}
+{"id": "validation-00086", "numbers": [2, 34, 21], "target": 89, "witness": "(21+(34*2))"}
+{"id": "validation-00087", "numbers": [39, 7, 7, 40], "target": 93, "witness": "((7+39)+(7+40))"}
+{"id": "validation-00088", "numbers": [34, 6, 30], "target": 214, "witness": "(34+(6*30))"}
+{"id": "validation-00089", "numbers": [5, 6, 28, 46], "target": 85, "witness": "(6+((46+28)+5))"}
+{"id": "validation-00090", "numbers": [1, 30, 23], "target": 691, "witness": "((23*30)+1)"}
+{"id": "validation-00091", "numbers": [7, 2, 30, 28], "target": 36, "witness": "(28+((30/2)-7))"}
+{"id": "validation-00092", "numbers": [34, 16, 48], "target": 98, "witness": "(34+(16+48))"}
+{"id": "validation-00093", "numbers": [7, 17, 26, 7], "target": 23, "witness": "((7+(26-17))+7)"}
+{"id": "validation-00094", "numbers": [4, 8, 5], "target": 72, "witness": "((4+5)*8)"}
+{"id": "validation-00095", "numbers": [28, 46, 6, 33], "target": 47, "witness": "((46-(33-6))+28)"}
+{"id": "validation-00096", "numbers": [29, 26, 16], "target": 19, "witness": "((29-26)+16)"}
+{"id": "validation-00097", "numbers": [42, 5, 20, 2], "target": 46, "witness": "((42/2)+(20+5))"}
+{"id": "validation-00098", "numbers": [5, 3, 28], "target": 155, "witness": "((3+28)*5)"}
+{"id": "validation-00099", "numbers": [34, 4, 34, 1], "target": 5, "witness": "((4+1)*(34/34))"}
+{"id": "validation-00100", "numbers": [41, 28, 33], "target": 965, "witness": "(41+(33*28))"}
+{"id": "validation-00101", "numbers": [43, 35, 19, 4], "target": 259, "witness": "(43+(4*(35+19)))"}
+{"id": "validation-00102", "numbers": [42, 41, 35], "target": 35, "witness": "((42-41)*35)"}
+{"id": "validation-00103", "numbers": [26, 22, 20, 18], "target": 520, "witness": "(26*((22+18)-20))"}
+{"id": "validation-00104", "numbers": [2, 23, 18], "target": 32, "witness": "((18/2)+23)"}
+{"id": "validation-00105", "numbers": [22, 22, 16, 2], "target": 512, "witness": "((22*(2+22))-16)"}
+{"id": "validation-00106", "numbers": [20, 48, 8], "target": 76, "witness": "(8+(20+48))"}
+{"id": "validation-00107", "numbers": [31, 18, 21, 29], "target": 965, "witness": "((18*(31+21))+29)"}
+{"id": "validation-00108", "numbers": [15, 19, 4], "target": 136, "witness": "((19+15)*4)"}
+{"id": "validation-00109", "numbers": [25, 1, 17, 48], "target": 90, "witness": "((25+17)+(48/1))"}
+{"id": "validation-00110", "numbers": [20, 5, 6], "target": 130, "witness": "((6+20)*5)"}
+{"id": "validation-00111", "numbers": [21, 49, 4, 10], "target": 28, "witness": "(4/(10/(21+49)))"}
+{"id": "validation-00112", "numbers": [12, 35, 17], "target": 391, "witness": "(17*(35-12))"}
+{"id": "validation-00113", "numbers": [24, 45, 35, 25], "target": 63, "witness": "((25+24)*(45/35))"}
+{"id": "validation-00114", "numbers": [2, 27, 49], "target": 44, "witness": "(2*(49-27))"}
+{"id": "validation-00115", "numbers": [16, 16, 6, 42], "target": 252, "witness": "((6-(16-16))*42)"}
+{"id": "validation-00116", "numbers": [37, 35, 34], "target": 38, "witness": "((37+35)-34)"}
+{"id": "validation-00117", "numbers": [25, 2, 22, 40], "target": 41, "witness": "(40-((22-25)+2))"}
+{"id": "validation-00118", "numbers": [16, 5, 41], "target": 285, "witness": "((41+16)*5)"}
+{"id": "validation-00119", "numbers": [10, 3, 13, 17], "target": 3, "witness": "((13-3)+(10-17))"}
+{"id": "validation-00120", "numbers": [10, 22, 13], "target": 1, "witness": "((10+13)-22)"}
+{"id": "validation-00121", "numbers": [44, 4, 2, 21], "target": 253, "witness": "((44/4)*(2+21))"}
+{"id": "validation-00122", "numbers": [45, 9, 19], "target": 95, "witness": "(45*(19/9))"}
+{"id": "validation-00123", "numbers": [28, 9, 37, 17], "target": 416, "witness": "(((28-17)*37)+9)"}
+{"id": "validation-00124", "numbers": [23, 19, 17], "target": 59, "witness": "((17+19)+23)"}
+{"id": "validation-00125", "numbers": [5, 23, 36, 3], "target": 57, "witness": "((3+23)-(5-36))"}
+{"id": "validation-00126", "numbers": [3, 15, 40], "target": 200, "witness": "(40*(15/3))"}
+{"id": "validation-00127", "numbers": [26, 34, 46, 42], "target": 162, "witness": "(((46-42)*34)+26)"}
+{"id": "validation-00128", "numbers": [30, 21, 35], "target": 18, "witness": "((30*21)/35)"}
+{"id": "validation-00129", "numbers": [9, 13, 1, 21], "target": 138, "witness": "((13*9)+(21/1))"}
+{"id": "validation-00130", "numbers": [49, 29, 19], "target": 1, "witness": "(49-(19+29))"}
+{"id": "validation-00131", "numbers": [31, 50, 5, 36], "target": 60, "witness": "(((5-31)+50)+36)"}
+{"id": "validation-00132", "numbers": [4, 2, 33], "target": 74, "witness": "((4+33)*2)"}
+{"id": "validation-00133", "numbers": [38, 7, 35, 9], "target": 240, "witness": "((9+(7*38))-35)"}
+{"id": "validation-00134", "numbers": [21, 19, 33], "target": 432, "witness": "((21*19)+33)"}
+{"id": "validation-00135", "numbers": [37, 34, 45, 37], "target": 85, "witness": "(37+((45-34)+37))"}
+{"id": "validation-00136", "numbers": [34, 12, 43], "target": 924, "witness": "((43+34)*12)"}
+{"id": "validation-00137", "numbers": [19, 21, 45, 13], "target": 271, "witness": "(45-(21-(19*13)))"}
+{"id": "validation-00138", "numbers": [1, 15, 1], "target": 17, "witness": "(1+(1+15))"}
+{"id": "validation-00139", "numbers": [12, 23, 18, 2], "target": 736, "witness": "((18+(2+12))*23)"}
+{"id": "validation-00140", "numbers": [7, 30, 48], "target": 85, "witness": "((30+48)+7)"}
+{"id": "validation-00141", "numbers": [1, 41, 10, 29], "target": 81, "witness": "(29+(10+(1+41)))"}
+{"id": "validation-00142", "numbers": [37, 18, 31], "target": 108, "witness": "(18*(37-31))"}
+{"id": "validation-00143", "numbers": [8, 49, 34, 8], "target": 366, "witness": "(((8*49)-34)+8)"}
+{"id": "validation-00144", "numbers": [15, 15, 11], "target": 214, "witness": "((15*15)-11)"}
+{"id": "validation-00145", "numbers": [12, 32, 9, 12], "target": 492, "witness": "((12*32)+(9*12))"}
+{"id": "validation-00146", "numbers": [21, 35, 45], "target": 27, "witness": "(45/(35/21))"}
+{"id": "validation-00147", "numbers": [10, 38, 7, 4], "target": 31, "witness": "((38-10)+(7-4))"}
+{"id": "validation-00148", "numbers": [23, 49, 1], "target": 71, "witness": "((49+23)-1)"}
+{"id": "validation-00149", "numbers": [38, 44, 21, 28], "target": 272, "witness": "((28-44)*(21-38))"}
+{"id": "validation-00150", "numbers": [14, 15, 19], "target": 20, "witness": "(19+(15-14))"}
+{"id": "validation-00151", "numbers": [9, 21, 10, 33], "target": 55, "witness": "(10-((9-21)-33))"}
+{"id": "validation-00152", "numbers": [11, 26, 20], "target": 66, "witness": "((26-20)*11)"}
+{"id": "validation-00153", "numbers": [9, 3, 9, 34], "target": 414, "witness": "(((3+9)+34)*9)"}
+{"id": "validation-00154", "numbers": [11, 25, 21], "target": 57, "witness": "((11+25)+21)"}
+{"id": "validation-00155", "numbers": [25, 28, 18, 19], "target": 973, "witness": "(((28+25)*18)+19)"}
+{"id": "validation-00156", "numbers": [41, 32, 36], "target": 109, "witness": "(32+(36+41))"}
+{"id": "validation-00157", "numbers": [8, 24, 7, 36], "target": 59, "witness": "((24-8)+(7+36))"}
+{"id": "validation-00158", "numbers": [30, 13, 7], "target": 36, "witness": "((30-7)+13)"}
+{"id": "validation-00159", "numbers": [14, 7, 39, 10], "target": 98, "witness": "(14/(7/(39+10)))"}
+{"id": "validation-00160", "numbers": [27, 34, 3], "target": 306, "witness": "((27/3)*34)"}
+{"id": "validation-00161", "numbers": [37, 24, 22, 18], "target": 583, "witness": "((24*22)+(18+37))"}
+{"id": "validation-00162", "numbers": [30, 12, 28], "target": 70, "witness": "((30/12)*28)"}
+{"id": "validation-00163", "numbers": [4, 1, 13, 47], "target": 39, "witness": "(((47-13)+1)+4)"}
+{"id": "validation-00164", "numbers": [13, 42, 50], "target": 79, "witness": "((50-13)+42)"}
+{"id": "validation-00165", "numbers": [16, 1, 44, 26], "target": 54, "witness": "(((44-16)+26)/1)"}
+{"id": "validation-00166", "numbers": [14, 8, 33], "target": 198, "witness": "((14-8)*33)"}
+{"id": "validation-00167", "numbers": [25, 4, 47, 47], "target": 241, "witness": "(((47+25)*4)-47)"}
+{"id": "validation-00168", "numbers": [20, 16, 14], "target": 22, "witness": "((16+20)-14)"}
+{"id": "validation-00169", "numbers": [8, 16, 23, 36], "target": 600, "witness": "(8*(23+(16+36)))"}
+{"id": "validation-00170", "numbers": [43, 45, 6], "target": 213, "witness": "((6*43)-45)"}
+{"id": "validation-00171", "numbers": [10, 14, 13, 1], "target": 154, "witness": "((1+13)+(14*10))"}
+{"id": "validation-00172", "numbers": [11, 28, 6], "target": 33, "witness": "(28+(11-6))"}
+{"id": "validation-00173", "numbers": [21, 24, 33, 3], "target": 39, "witness": "(33-(21-(3+24)))"}
+{"id": "validation-00174", "numbers": [8, 11, 27], "target": 30, "witness": "((11+27)-8)"}
+{"id": "validation-00175", "numbers": [2, 6, 2, 39], "target": 45, "witness": "((6-2)+(2+39))"}
+{"id": "validation-00176", "numbers": [43, 30, 28], "target": 101, "witness": "((30+28)+43)"}
+{"id": "validation-00177", "numbers": [41, 19, 14, 5], "target": 209, "witness": "(((14+41)/5)*19)"}
+{"id": "validation-00178", "numbers": [34, 11, 20], "target": 254, "witness": "((11*20)+34)"}
+{"id": "validation-00179", "numbers": [20, 44, 34, 30], "target": 60, "witness": "(20+((44-34)+30))"}
+{"id": "validation-00180", "numbers": [48, 46, 30], "target": 828, "witness": "(46*(48-30))"}
+{"id": "validation-00181", "numbers": [48, 1, 34, 14], "target": 28, "witness": "(48-((34-14)*1))"}
+{"id": "validation-00182", "numbers": [45, 26, 26], "target": 7, "witness": "(26-(45-26))"}
+{"id": "validation-00183", "numbers": [20, 3, 26, 4], "target": 62, "witness": "((4-20)+(3*26))"}
+{"id": "validation-00184", "numbers": [30, 4, 43], "target": 202, "witness": "(30+(43*4))"}
+{"id": "validation-00185", "numbers": [10, 42, 19, 30], "target": 17, "witness": "(30+(19-(42-10)))"}
+{"id": "validation-00186", "numbers": [42, 49, 40], "target": 51, "witness": "(49+(42-40))"}
+{"id": "validation-00187", "numbers": [33, 28, 26, 35], "target": 205, "witness": "((33*(35-28))-26)"}
+{"id": "validation-00188", "numbers": [2, 38, 47], "target": 11, "witness": "(47+(2-38))"}
+{"id": "validation-00189", "numbers": [26, 31, 37, 25], "target": 7, "witness": "((26+37)-(25+31))"}
+{"id": "validation-00190", "numbers": [43, 5, 45], "target": 52, "witness": "(43+(45/5))"}
+{"id": "validation-00191", "numbers": [26, 43, 46, 7], "target": 108, "witness": "(46+(26-(7-43)))"}
+{"id": "validation-00192", "numbers": [29, 35, 6], "target": 1, "witness": "((29+6)/35)"}
+{"id": "validation-00193", "numbers": [16, 48, 47, 35], "target": 52, "witness": "((48+(35-47))+16)"}
+{"id": "validation-00194", "numbers": [2, 15, 28], "target": 15, "witness": "(2-(15-28))"}
+{"id": "validation-00195", "numbers": [29, 29, 18, 3], "target": 548, "witness": "((18*29)+(29-3))"}
+{"id": "validation-00196", "numbers": [7, 47, 47], "target": 101, "witness": "(7+(47+47))"}
+{"id": "validation-00197", "numbers": [11, 48, 6, 37], "target": 6, "witness": "((6*(11+37))/48)"}
+{"id": "validation-00198", "numbers": [21, 41, 35], "target": 55, "witness": "(41-(21-35))"}
+{"id": "validation-00199", "numbers": [6, 28, 21, 1], "target": 43, "witness": "(1*(28+(21-6)))"}
+{"id": "validation-00200", "numbers": [12, 46, 50], "target": 108, "witness": "((50+12)+46)"}
+{"id": "validation-00201", "numbers": [42, 21, 16, 40], "target": 968, "witness": "(((21+42)*16)-40)"}
+{"id": "validation-00202", "numbers": [43, 34, 27], "target": 243, "witness": "((43-34)*27)"}
+{"id": "validation-00203", "numbers": [29, 21, 8, 14], "target": 8, "witness": "(((21+14)+29)/8)"}
+{"id": "validation-00204", "numbers": [14, 5, 22], "target": 92, "witness": "((14*5)+22)"}
+{"id": "validation-00205", "numbers": [32, 18, 49, 44], "target": 143, "witness": "(((49+18)+32)+44)"}
+{"id": "validation-00206", "numbers": [46, 49, 23], "target": 20, "witness": "((23+46)-49)"}
+{"id": "validation-00207", "numbers": [20, 37, 3, 25], "target": 188, "witness": "(3-(37*(20-25)))"}
+{"id": "validation-00208", "numbers": [25, 18, 10], "target": 700, "witness": "((10+18)*25)"}
+{"id": "validation-00209", "numbers": [6, 22, 22, 22], "target": 154, "witness": "(((22/22)+6)*22)"}
+{"id": "validation-00210", "numbers": [5, 29, 17], "target": 41, "witness": "((17-5)+29)"}
+{"id": "validation-00211", "numbers": [16, 41, 32, 24], "target": 304, "witness": "(32+((41-24)*16))"}
+{"id": "validation-00212", "numbers": [37, 19, 27], "target": 296, "witness": "(37*(27-19))"}
+{"id": "validation-00213", "numbers": [40, 24, 15, 10], "target": 985, "witness": "((40*24)+(15+10))"}
+{"id": "validation-00214", "numbers": [33, 20, 8], "target": 668, "witness": "((20*33)+8)"}
+{"id": "validation-00215", "numbers": [33, 21, 14, 5], "target": 686, "witness": "(((21-5)+33)*14)"}
+{"id": "validation-00216", "numbers": [10, 28, 1], "target": 270, "witness": "((28-1)*10)"}
+{"id": "validation-00217", "numbers": [21, 48, 31, 24], "target": 147, "witness": "(21*((24-48)+31))"}
+{"id": "validation-00218", "numbers": [15, 31, 17], "target": 63, "witness": "(17+(31+15))"}
+{"id": "validation-00219", "numbers": [19, 6, 44, 12], "target": 57, "witness": "((44+19)+(6-12))"}
+{"id": "validation-00220", "numbers": [7, 11, 39], "target": 57, "witness": "((39+11)+7)"}
+{"id": "validation-00221", "numbers": [13, 1, 18, 18], "target": 14, "witness": "(((18+13)-18)+1)"}
+{"id": "validation-00222", "numbers": [7, 5, 33], "target": 31, "witness": "((33-7)+5)"}
+{"id": "validation-00223", "numbers": [20, 8, 30, 45], "target": 310, "witness": "((8*45)-(30+20))"}
+{"id": "validation-00224", "numbers": [40, 23, 1], "target": 62, "witness": "(23-(1-40))"}
+{"id": "validation-00225", "numbers": [22, 2, 36, 4], "target": 988, "witness": "((4+22)*(2+36))"}
+{"id": "validation-00226", "numbers": [11, 26, 21], "target": 58, "witness": "((21+26)+11)"}
+{"id": "validation-00227", "numbers": [23, 45, 33, 33], "target": 68, "witness": "(23+(33-(33-45)))"}
+{"id": "validation-00228", "numbers": [14, 43, 26], "target": 754, "witness": "(26*(43-14))"}
+{"id": "validation-00229", "numbers": [45, 15, 17, 30], "target": 170, "witness": "((30*15)*(17/45))"}
+{"id": "validation-00230", "numbers": [4, 24, 36], "target": 56, "witness": "((36+24)-4)"}
+{"id": "validation-00231", "numbers": [7, 14, 41, 36], "target": 12, "witness": "(14+(41-(36+7)))"}
+{"id": "validation-00232", "numbers": [18, 9, 6], "target": 21, "witness": "(9-(6-18))"}
+{"id": "validation-00233", "numbers": [6, 21, 45, 30], "target": 1, "witness": "(45/(30+(21-6)))"}
+{"id": "validation-00234", "numbers": [44, 50, 37], "target": 31, "witness": "((44+37)-50)"}
+{"id": "validation-00235", "numbers": [15, 25, 32, 12], "target": 440, "witness": "((12+32)*(25-15))"}
+{"id": "validation-00236", "numbers": [1, 42, 24], "target": 18, "witness": "((1*42)-24)"}
+{"id": "validation-00237", "numbers": [43, 17, 31, 7], "target": 98, "witness": "(((7+43)+17)+31)"}
+{"id": "validation-00238", "numbers": [42, 38, 39], "target": 41, "witness": "((42-39)+38)"}
+{"id": "validation-00239", "numbers": [10, 14, 3, 35], "target": 51, "witness": "((35+(10*3))-14)"}
+{"id": "validation-00240", "numbers": [3, 12, 39], "target": 585, "witness": "(39*(3+12))"}
+{"id": "validation-00241", "numbers": [18, 27, 1, 24], "target": 36, "witness": "((1*27)/(18/24))"}
+{"id": "validation-00242", "numbers": [42, 27, 13], "target": 393, "witness": "(42+(27*13))"}
+{"id": "validation-00243", "numbers": [22, 13, 28, 11], "target": 871, "witness": "(13+(22*(28+11)))"}
+{"id": "validation-00244", "numbers": [13, 15, 20], "target": 560, "witness": "(20*(13+15))"}
+{"id": "validation-00245", "numbers": [50, 9, 39, 20], "target": 191, "witness": "((9*20)-(39-50))"}
+{"id": "validation-00246", "numbers": [21, 17, 34], "target": 4, "witness": "((21+17)-34)"}
+{"id": "validation-00247", "numbers": [9, 32, 34, 12], "target": 486, "witness": "(9*(34+(32-12)))"}
+{"id": "validation-00248", "numbers": [20, 40, 4], "target": 8, "witness": "(4/(20/40))"}
+{"id": "validation-00249", "numbers": [9, 12, 13, 26], "target": 446, "witness": "((13*26)+(12*9))"}
+{"id": "validation-00250", "numbers": [8, 48, 39], "target": 72, "witness": "(8*(48-39))"}
+{"id": "validation-00251", "numbers": [18, 4, 7, 9], "target": 360, "witness": "(18*((9+4)+7))"}
+{"id": "validation-00252", "numbers": [46, 50, 24], "target": 96, "witness": "((50-46)*24)"}
+{"id": "validation-00253", "numbers": [8, 32, 10, 23], "target": 206, "witness": "(((10*23)+8)-32)"}
+{"id": "validation-00254", "numbers": [43, 35, 31], "target": 39, "witness": "((31+43)-35)"}
+{"id": "validation-00255", "numbers": [33, 50, 19, 13], "target": 51, "witness": "((33-(19+13))+50)"}
+{"id": "validation-00256", "numbers": [30, 5, 24], "target": 840, "witness": "((5+30)*24)"}
+{"id": "validation-00257", "numbers": [36, 33, 6, 34], "target": 43, "witness": "(((34-33)+36)+6)"}
+{"id": "validation-00258", "numbers": [41, 1, 1], "target": 40, "witness": "(41-(1*1))"}
+{"id": "validation-00259", "numbers": [13, 44, 24, 1], "target": 55, "witness": "((1*(24+44))-13)"}
+{"id": "validation-00260", "numbers": [49, 28, 21], "target": 98, "witness": "(21+(28+49))"}
+{"id": "validation-00261", "numbers": [45, 10, 6, 13], "target": 314, "witness": "(((45-13)*10)-6)"}
+{"id": "validation-00262", "numbers": [5, 48, 49], "target": 92, "witness": "((48+49)-5)"}
+{"id": "validation-00263", "numbers": [5, 10, 46, 2], "target": 373, "witness": "((46*(10-2))+5)"}
+{"id": "validation-00264", "numbers": [28, 19, 42], "target": 89, "witness": "(42+(28+19))"}
+{"id": "validation-00265", "numbers": [13, 28, 24, 4], "target": 35, "witness": "((24-13)-(4-28))"}
+{"id": "validation-00266", "numbers": [22, 34, 33], "target": 89, "witness": "((33+22)+34)"}
+{"id": "validation-00267", "numbers": [45, 34, 14, 7], "target": 56, "witness": "(((14/7)*45)-34)"}
+{"id": "validation-00268", "numbers": [7, 23, 11], "target": 260, "witness": "((23*11)+7)"}
+{"id": "validation-00269", "numbers": [37, 27, 20, 43], "target": 73, "witness": "(43+(20-(27-37)))"}
+{"id": "validation-00270", "numbers": [7, 1, 6], "target": 2, "witness": "(7+(1-6))"}
+{"id": "validation-00271", "numbers": [20, 14, 25, 42], "target": 583, "witness": "((42*14)+(20-25))"}
+{"id": "validation-00272", "numbers": [9, 24, 21], "target": 213, "witness": "(24+(9*21))"}
+{"id": "validation-00273", "numbers": [33, 32, 37, 41], "target": 293, "witness": "(37-((33-41)*32))"}
+{"id": "validation-00274", "numbers": [1, 36, 1], "target": 36, "witness": "(36/(1/1))"}
+{"id": "validation-00275", "numbers": [41, 7, 23, 20], "target": 77, "witness": "(41+(23+(20-7)))"}
+{"id": "validation-00276", "numbers": [32, 39, 3], "target": 416, "witness": "((32*39)/3)"}
+{"id": "validation-00277", "numbers": [7, 8, 50, 6], "target": 105, "witness": "((8*6)+(7+50))"}
+{"id": "validation-00278", "numbers": [45, 24, 13], "target": 8, "witness": "(45-(24+13))"}
+{"id": "validation-00279", "numbers": [6, 39, 39, 10], "target": 104, "witness": "(((39/6)*10)+39)"}
+{"id": "validation-00280", "numbers": [18, 30, 13], "target": 35, "witness": "((30-13)+18)"}
+{"id": "validation-00281", "numbers": [35, 12, 41, 48], "target": 570, "witness": "((35-41)+(48*12))"}
+{"id": "validation-00282", "numbers": [11, 50, 33], "target": 94, "witness": "(50+(11+33))"}
+{"id": "validation-00283", "numbers": [22, 34, 14, 43], "target": 85, "witness": "((43-14)+(22+34))"}
+{"id": "validation-00284", "numbers": [48, 13, 13], "target": 48, "witness": "(48/(13/13))"}
+{"id": "validation-00285", "numbers": [5, 41, 4, 32], "target": 533, "witness": "(41*((32/4)+5))"}
+{"id": "validation-00286", "numbers": [41, 13, 30], "target": 923, "witness": "((30+41)*13)"}
+{"id": "validation-00287", "numbers": [2, 27, 50, 1], "target": 26, "witness": "(((2+1)+50)-27)"}
+{"id": "validation-00288", "numbers": [23, 23, 4], "target": 50, "witness": "((23+4)+23)"}
+{"id": "validation-00289", "numbers": [22, 29, 38, 6], "target": 39, "witness": "((38-6)+(29-22))"}
+{"id": "validation-00290", "numbers": [47, 13, 19], "target": 906, "witness": "(13+(47*19))"}
+{"id": "validation-00291", "numbers": [41, 49, 15, 13], "target": 401, "witness": "(((49-15)*13)-41)"}
+{"id": "validation-00292", "numbers": [3, 36, 47], "target": 14, "witness": "(47-(36-3))"}
+{"id": "validation-00293", "numbers": [35, 2, 21, 42], "target": 12, "witness": "((35-(42+2))+21)"}
+{"id": "validation-00294", "numbers": [42, 37, 40], "target": 200, "witness": "(40*(42-37))"}
+{"id": "validation-00295", "numbers": [21, 16, 47, 19], "target": 23, "witness": "((16-(19-47))-21)"}
+{"id": "validation-00296", "numbers": [32, 15, 33], "target": 14, "witness": "(32+(15-33))"}
+{"id": "validation-00297", "numbers": [48, 31, 3, 2], "target": 78, "witness": "((2+48)+(31-3))"}
+{"id": "validation-00298", "numbers": [4, 2, 14], "target": 22, "witness": "((4*2)+14)"}
+{"id": "validation-00299", "numbers": [17, 7, 34, 20], "target": 70, "witness": "(20/(34/(17*7)))"}
+{"id": "validation-00300", "numbers": [6, 28, 3], "target": 90, "witness": "(6+(28*3))"}
+{"id": "validation-00301", "numbers": [20, 24, 28, 26], "target": 632, "witness": "((28+(24*26))-20)"}
+{"id": "validation-00302", "numbers": [31, 18, 33], "target": 16, "witness": "(31-(33-18))"}
+{"id": "validation-00303", "numbers": [35, 21, 10, 22], "target": 487, "witness": "(35+((22*21)-10))"}
+{"id": "validation-00304", "numbers": [40, 9, 30], "target": 61, "witness": "((40+30)-9)"}
+{"id": "validation-00305", "numbers": [1, 26, 44, 31], "target": 39, "witness": "(((44/1)+26)-31)"}
+{"id": "validation-00306", "numbers": [32, 1, 31], "target": 992, "witness": "(32*(31*1))"}
+{"id": "validation-00307", "numbers": [10, 21, 21, 50], "target": 458, "witness": "((50*10)-(21+21))"}
+{"id": "validation-00308", "numbers": [35, 11, 32], "target": 417, "witness": "(32+(35*11))"}
+{"id": "validation-00309", "numbers": [10, 50, 5, 45], "target": 7, "witness": "((10/(50-45))+5)"}
+{"id": "validation-00310", "numbers": [42, 38, 34], "target": 30, "witness": "((34-42)+38)"}
+{"id": "validation-00311", "numbers": [2, 1, 22, 43], "target": 473, "witness": "((43/(2/1))*22)"}
+{"id": "validation-00312", "numbers": [46, 40, 5], "target": 246, "witness": "(46+(40*5))"}
+{"id": "validation-00313", "numbers": [32, 25, 43, 22], "target": 58, "witness": "(25-((32-43)-22))"}
+{"id": "validation-00314", "numbers": [34, 28, 3], "target": 9, "witness": "((3-28)+34)"}
+{"id": "validation-00315", "numbers": [12, 35, 42, 15], "target": 4, "witness": "((42-35)-(15-12))"}
+{"id": "validation-00316", "numbers": [35, 5, 42], "target": 175, "witness": "((42*5)-35)"}
+{"id": "validation-00317", "numbers": [27, 33, 50, 16], "target": 515, "witness": "((50+(16*27))+33)"}
+{"id": "validation-00318", "numbers": [40, 2, 45], "target": 900, "witness": "((45*40)/2)"}
+{"id": "validation-00319", "numbers": [11, 31, 46, 28], "target": 69, "witness": "((46/28)*(11+31))"}
+{"id": "validation-00320", "numbers": [50, 34, 38], "target": 22, "witness": "((38+34)-50)"}
+{"id": "validation-00321", "numbers": [4, 47, 40, 7], "target": 76, "witness": "((40+(47-7))-4)"}
+{"id": "validation-00322", "numbers": [50, 38, 19], "target": 69, "witness": "(50+(38-19))"}
+{"id": "validation-00323", "numbers": [18, 34, 45, 1], "target": 14, "witness": "(18*((1+34)/45))"}
+{"id": "validation-00324", "numbers": [48, 15, 15], "target": 78, "witness": "(48+(15+15))"}
+{"id": "validation-00325", "numbers": [27, 12, 32, 12], "target": 780, "witness": "((12+27)*(32-12))"}
+{"id": "validation-00326", "numbers": [11, 17, 20], "target": 527, "witness": "((20+11)*17)"}
+{"id": "validation-00327", "numbers": [18, 2, 10, 39], "target": 486, "witness": "(18+(39*(10+2)))"}
+{"id": "validation-00328", "numbers": [34, 5, 17], "target": 748, "witness": "(34*(17+5))"}
+{"id": "validation-00329", "numbers": [39, 22, 38, 42], "target": 64, "witness": "(42-(22/(38-39)))"}
+{"id": "validation-00330", "numbers": [35, 29, 47], "target": 968, "witness": "((35*29)-47)"}
+{"id": "validation-00331", "numbers": [42, 44, 21, 42], "target": 924, "witness": "((21*42)/(42/44))"}
+{"id": "validation-00332", "numbers": [37, 45, 21], "target": 29, "witness": "(45+(21-37))"}
+{"id": "validation-00333", "numbers": [43, 14, 50, 9], "target": 16, "witness": "((14-50)+(9+43))"}
+{"id": "validation-00334", "numbers": [3, 28, 25], "target": 6, "witness": "(3-(25-28))"}
+{"id": "validation-00335", "numbers": [29, 16, 6, 12], "target": 19, "witness": "((29-(16-12))-6)"}
+{"id": "validation-00336", "numbers": [19, 47, 4], "target": 62, "witness": "(19+(47-4))"}
+{"id": "validation-00337", "numbers": [30, 37, 10, 29], "target": 46, "witness": "((37-30)+(29+10))"}
+{"id": "validation-00338", "numbers": [10, 42, 12], "target": 64, "witness": "(42+(10+12))"}
+{"id": "validation-00339", "numbers": [25, 5, 16, 44], "target": 684, "witness": "((44*16)-(25-5))"}
+{"id": "validation-00340", "numbers": [45, 1, 4], "target": 9, "witness": "(45/(4+1))"}
+{"id": "validation-00341", "numbers": [2, 37, 29, 21], "target": 4, "witness": "((21+37)*(2/29))"}
+{"id": "validation-00342", "numbers": [41, 28, 29], "target": 42, "witness": "((29+41)-28)"}
+{"id": "validation-00343", "numbers": [3, 2, 26, 33], "target": 54, "witness": "(26-(3+(2-33)))"}
+{"id": "validation-00344", "numbers": [50, 29, 4], "target": 316, "witness": "((29+50)*4)"}
+{"id": "validation-00345", "numbers": [33, 49, 18, 40], "target": 891, "witness": "((49+(18-40))*33)"}
+{"id": "validation-00346", "numbers": [47, 14, 7], "target": 231, "witness": "(7*(47-14))"}
+{"id": "validation-00347", "numbers": [7, 8, 35, 7], "target": 246, "witness": "((7*35)-(7-8))"}
+{"id": "validation-00348", "numbers": [47, 12, 21], "target": 38, "witness": "(47+(12-21))"}
+{"id": "validation-00349", "numbers": [8, 50, 34, 25], "target": 892, "witness": "(((34*25)+50)-8)"}
+{"id": "validation-00350", "numbers": [32, 22, 23], "target": 727, "witness": "((22*32)+23)"}
+{"id": "validation-00351", "numbers": [30, 23, 47, 26], "target": 156, "witness": "(26*((23+30)-47))"}
+{"id": "validation-00352", "numbers": [50, 43, 22], "target": 29, "witness": "((50+22)-43)"}
+{"id": "validation-00353", "numbers": [6, 33, 34, 34], "target": 39, "witness": "((34+(33-34))+6)"}
+{"id": "validation-00354", "numbers": [24, 7, 27], "target": 21, "witness": "((27-24)*7)"}
+{"id": "validation-00355", "numbers": [21, 46, 9, 30], "target": 265, "witness": "((21*9)+(30+46))"}
+{"id": "validation-00356", "numbers": [48, 42, 6], "target": 336, "witness": "((42/6)*48)"}
+{"id": "validation-00357", "numbers": [21, 29, 23, 8], "target": 86, "witness": "(((29*23)+21)/8)"}
+{"id": "validation-00358", "numbers": [32, 40, 35], "target": 37, "witness": "(32-(35-40))"}
+{"id": "validation-00359", "numbers": [10, 20, 27, 16], "target": 41, "witness": "(20+((10+27)-16))"}
+{"id": "validation-00360", "numbers": [22, 5, 13], "target": 4, "witness": "((22-5)-13)"}
+{"id": "validation-00361", "numbers": [5, 46, 45, 9], "target": 864, "witness": "(9*(45+(46+5)))"}
+{"id": "validation-00362", "numbers": [1, 49, 3], "target": 52, "witness": "((1*3)+49)"}
+{"id": "validation-00363", "numbers": [24, 22, 18, 39], "target": 67, "witness": "(24+(22+(39-18)))"}
+{"id": "validation-00364", "numbers": [15, 4, 23], "target": 37, "witness": "((4*15)-23)"}
+{"id": "validation-00365", "numbers": [9, 15, 39, 20], "target": 468, "witness": "((39/15)*(9*20))"}
+{"id": "validation-00366", "numbers": [33, 21, 21], "target": 9, "witness": "((21-33)+21)"}
+{"id": "validation-00367", "numbers": [18, 13, 9, 3], "target": 48, "witness": "((18-9)+(3*13))"}
+{"id": "validation-00368", "numbers": [1, 42, 2], "target": 45, "witness": "(42+(2+1))"}
+{"id": "validation-00369", "numbers": [35, 34, 3, 40], "target": 112, "witness": "(((40+35)+3)+34)"}
+{"id": "validation-00370", "numbers": [40, 41, 28], "target": 109, "witness": "((40+41)+28)"}
+{"id": "validation-00371", "numbers": [15, 28, 22, 42], "target": 77, "witness": "((42-15)+(22+28))"}
+{"id": "validation-00372", "numbers": [3, 44, 30], "target": 440, "witness": "((44/3)*30)"}
+{"id": "validation-00373", "numbers": [29, 7, 16, 20], "target": 72, "witness": "((7+(16+20))+29)"}
+{"id": "validation-00374", "numbers": [20, 4, 47], "target": 23, "witness": "((47-20)-4)"}
+{"id": "validation-00375", "numbers": [15, 18, 6, 31], "target": 648, "witness": "((15*6)+(18*31))"}
+{"id": "validation-00376", "numbers": [50, 44, 48], "target": 142, "witness": "((44+50)+48)"}
+{"id": "validation-00377", "numbers": [11, 48, 42, 46], "target": 125, "witness": "((48+(46-11))+42)"}
+{"id": "validation-00378", "numbers": [16, 15, 9], "target": 96, "witness": "((15-9)*16)"}
+{"id": "validation-00379", "numbers": [43, 17, 7, 28], "target": 5, "witness": "(43+((7-17)-28))"}
+{"id": "validation-00380", "numbers": [38, 7, 1], "target": 46, "witness": "((1+7)+38)"}
+{"id": "validation-00381", "numbers": [18, 10, 36, 21], "target": 65, "witness": "(36+((18-10)+21))"}
+{"id": "validation-00382", "numbers": [29, 48, 26], "target": 51, "witness": "((29+48)-26)"}
+{"id": "validation-00383", "numbers": [27, 7, 12, 34], "target": 143, "witness": "((27*7)-(12+34))"}
+{"id": "validation-00384", "numbers": [32, 22, 29], "target": 83, "witness": "(22+(29+32))"}
+{"id": "validation-00385", "numbers": [18, 8, 41, 16], "target": 730, "witness": "((41*18)+(8-16))"}
+{"id": "validation-00386", "numbers": [2, 28, 6], "target": 84, "witness": "((28/2)*6)"}
+{"id": "validation-00387", "numbers": [37, 3, 11, 15], "target": 20, "witness": "(((37/3)-11)*15)"}
+{"id": "validation-00388", "numbers": [20, 28, 45], "target": 53, "witness": "(45-(20-28))"}
+{"id": "validation-00389", "numbers": [38, 20, 7, 18], "target": 970, "witness": "(20+((18+7)*38))"}
+{"id": "validation-00390", "numbers": [42, 49, 24], "target": 17, "witness": "(42+(24-49))"}
+{"id": "validation-00391", "numbers": [25, 22, 14, 10], "target": 27, "witness": "((10-22)+(14+25))"}
+{"id": "validation-00392", "numbers": [34, 35, 15], "target": 16, "witness": "(15-(34-35))"}
+{"id": "validation-00393", "numbers": [36, 13, 16, 11], "target": 648, "witness": "(36*((16-11)+13))"}
+{"id": "validation-00394", "numbers": [49, 26, 34], "target": 41, "witness": "((26+49)-34)"}
+{"id": "validation-00395", "numbers": [12, 27, 37, 30], "target": 525, "witness": "(((27-12)*37)-30)"}
+{"id": "validation-00396", "numbers": [41, 1, 2], "target": 42, "witness": "((41-1)+2)"}
+{"id": "validation-00397", "numbers": [48, 30, 44, 17], "target": 79, "witness": "(44+((48+17)-30))"}
+{"id": "validation-00398", "numbers": [1, 46, 40], "target": 87, "witness": "((1+40)+46)"}
+{"id": "validation-00399", "numbers": [41, 15, 39, 19], "target": 607, "witness": "((41-19)+(39*15))"}
+{"id": "validation-00400", "numbers": [23, 28, 42], "target": 93, "witness": "((28+23)+42)"}
+{"id": "validation-00401", "numbers": [21, 3, 27, 10], "target": 100, "witness": "((27+(21*3))+10)"}
+{"id": "validation-00402", "numbers": [41, 48, 2], "target": 9, "witness": "((2+48)-41)"}
+{"id": "validation-00403", "numbers": [22, 25, 2, 1], "target": 5, "witness": "((25+2)-(22*1))"}
+{"id": "validation-00404", "numbers": [19, 8, 9], "target": 19, "witness": "(19/(9-8))"}
+{"id": "validation-00405", "numbers": [29, 11, 22, 42], "target": 899, "witness": "(((11+42)-22)*29)"}
+{"id": "validation-00406", "numbers": [14, 14, 15], "target": 406, "witness": "((14+15)*14)"}
+{"id": "validation-00407", "numbers": [35, 1, 3, 7], "target": 14, "witness": "(35-((7*3)/1))"}
+{"id": "validation-00408", "numbers": [40, 12, 33], "target": 85, "witness": "((12+33)+40)"}
+{"id": "validation-00409", "numbers": [18, 26, 37, 13], "target": 993, "witness": "((13+18)+(37*26))"}
+{"id": "validation-00410", "numbers": [45, 28, 8], "target": 65, "witness": "((45-8)+28)"}
+{"id": "validation-00411", "numbers": [9, 1, 20, 15], "target": 44, "witness": "((20+(1*15))+9)"}
+{"id": "validation-00412", "numbers": [25, 12, 12], "target": 169, "witness": "((12*12)+25)"}
+{"id": "validation-00413", "numbers": [9, 37, 19, 13], "target": 111, "witness": "(((9-19)+13)*37)"}
+{"id": "validation-00414", "numbers": [32, 31, 49], "target": 48, "witness": "((31-32)+49)"}
+{"id": "validation-00415", "numbers": [36, 39, 30, 16], "target": 89, "witness": "(36+((39-16)+30))"}
+{"id": "validation-00416", "numbers": [4, 27, 32], "target": 236, "witness": "(4*(27+32))"}
+{"id": "validation-00417", "numbers": [11, 18, 11, 10], "target": 6, "witness": "(18-(11-(10-11)))"}
+{"id": "validation-00418", "numbers": [2, 14, 15], "target": 58, "witness": "(2*(14+15))"}
+{"id": "validation-00419", "numbers": [37, 43, 7, 26], "target": 99, "witness": "(26+((37+43)-7))"}
+{"id": "validation-00420", "numbers": [26, 32, 38], "target": 96, "witness": "((26+32)+38)"}
+{"id": "validation-00421", "numbers": [17, 40, 16, 40], "target": 663, "witness": "((16*40)+(40-17))"}
+{"id": "validation-00422", "numbers": [38, 5, 41], "target": 243, "witness": "((41*5)+38)"}
+{"id": "validation-00423", "numbers": [23, 9, 28, 4], "target": 856, "witness": "((4*(23*9))+28)"}
+{"id": "validation-00424", "numbers": [20, 46, 32], "target": 58, "witness": "((32+46)-20)"}
+{"id": "validation-00425", "numbers": [22, 24, 31, 24], "target": 178, "witness": "(24-(22*(24-31)))"}
+{"id": "validation-00426", "numbers": [40, 8, 30], "target": 350, "witness": "(30+(40*8))"}
+{"id": "validation-00427", "numbers": [18, 19, 27, 36], "target": 541, "witness": "((18*27)+(19+36))"}
+{"id": "validation-00428", "numbers": [30, 28, 49], "target": 9, "witness": "((30+28)-49)"}
+{"id": "validation-00429", "numbers": [11, 32, 16, 34], "target": 71, "witness": "(34-((11-16)-32))"}
+{"id": "validation-00430", "numbers": [24, 37, 17], "target": 221, "witness": "((37-24)*17)"}
+{"id": "validation-00431", "numbers": [25, 26, 7, 7], "target": 651, "witness": "((25*26)+(7/7))"}
+{"id": "validation-00432", "numbers": [19, 5, 38], "target": 912, "witness": "(38*(5+19))"}
+{"id": "validation-00433", "numbers": [8, 8, 28, 42], "target": 71, "witness": "(((8/8)+28)+42)"}
+{"id": "validation-00434", "numbers": [3, 2, 16], "target": 21, "witness": "((2+3)+16)"}
+{"id": "validation-00435", "numbers": [31, 11, 13, 31], "target": 1, "witness": "((13-11)-(31/31))"}
+{"id": "validation-00436", "numbers": [45, 11, 8], "target": 448, "witness": "(8*(11+45))"}
+{"id": "validation-00437", "numbers": [6, 47, 12, 3], "target": 573, "witness": "(3+((12*47)+6))"}
+{"id": "validation-00438", "numbers": [26, 2, 34], "target": 58, "witness": "((26-2)+34)"}
+{"id": "validation-00439", "numbers": [13, 17, 46, 46], "target": 529, "witness": "(46/((17-13)/46))"}
+{"id": "validation-00440", "numbers": [36, 25, 22], "target": 12, "witness": "(36/(25-22))"}
+{"id": "validation-00441", "numbers": [4, 20, 31, 38], "target": 636, "witness": "((38*20)-(4*31))"}
+{"id": "validation-00442", "numbers": [35, 5, 3], "target": 50, "witness": "(35+(3*5))"}
+{"id": "validation-00443", "numbers": [16, 22, 21, 34], "target": 93, "witness": "((34+(16+21))+22)"}
+{"id": "validation-00444", "numbers": [15, 4, 37], "target": 18, "witness": "(37-(15+4))"}
+{"id": "validation-00445", "numbers": [20, 34, 9, 37], "target": 886, "witness": "(((37+9)*20)-34)"}
+{"id": "validation-00446", "numbers": [30, 11, 9], "target": 231, "witness": "((30-9)*11)"}
+{"id": "validation-00447", "numbers": [20, 33, 9, 21], "target": 83, "witness": "((20+33)+(21+9))"}
+{"id": "validation-00448", "numbers": [21, 37, 24], "target": 753, "witness": "((21*37)-24)"}
+{"id": "validation-00449", "numbers": [45, 19, 38, 30], "target": 94, "witness": "(38-((19-45)-30))"}
+{"id": "validation-00450", "numbers": [15, 28, 32], "target": 60, "witness": "(15*(32-28))"}
+{"id": "validation-00451", "numbers": [23, 48, 22, 12], "target": 564, "witness": "(((22-23)+48)*12)"}
+{"id": "validation-00452", "numbers": [7, 5, 24], "target": 288, "witness": "((5+7)*24)"}
+{"id": "validation-00453", "numbers": [19, 45, 50, 44], "target": 158, "witness": "((44+45)+(19+50))"}
+{"id": "validation-00454", "numbers": [24, 9, 8], "target": 23, "witness": "((24-9)+8)"}
+{"id": "validation-00455", "numbers": [31, 12, 38, 49], "target": 361, "witness": "(((31*12)+38)-49)"}
+{"id": "validation-00456", "numbers": [28, 37, 22], "target": 420, "witness": "((37-22)*28)"}
+{"id": "validation-00457", "numbers": [36, 35, 45, 9], "target": 35, "witness": "(9+(35+(36-45)))"}
+{"id": "validation-00458", "numbers": [6, 11, 48], "target": 65, "witness": "(48+(6+11))"}
+{"id": "validation-00459", "numbers": [7, 6, 50, 4], "target": 33, "witness": "(((50-7)-4)-6)"}
+{"id": "validation-00460", "numbers": [20, 20, 5], "target": 120, "witness": "((20*5)+20)"}
+{"id": "validation-00461", "numbers": [45, 49, 37, 29], "target": 569, "witness": "(29-((37-49)*45))"}
+{"id": "validation-00462", "numbers": [41, 26, 5], "target": 20, "witness": "((5-26)+41)"}
+{"id": "validation-00463", "numbers": [19, 19, 46, 5], "target": 247, "witness": "(((46+19)/5)*19)"}
+{"id": "validation-00464", "numbers": [35, 4, 10], "target": 49, "witness": "(10+(35+4))"}
+{"id": "validation-00465", "numbers": [45, 22, 33, 45], "target": 145, "witness": "(((33+22)+45)+45)"}
+{"id": "validation-00466", "numbers": [6, 31, 20], "target": 614, "witness": "((20*31)-6)"}
+{"id": "validation-00467", "numbers": [12, 20, 12, 18], "target": 246, "witness": "((18-12)+(20*12))"}
+{"id": "validation-00468", "numbers": [38, 15, 5], "target": 113, "witness": "((5*15)+38)"}
+{"id": "validation-00469", "numbers": [20, 24, 39, 41], "target": 960, "witness": "((24*(41-39))*20)"}
+{"id": "validation-00470", "numbers": [43, 24, 1], "target": 19, "witness": "((43/1)-24)"}
+{"id": "validation-00471", "numbers": [10, 1, 38, 8], "target": 286, "witness": "(((38-1)*8)-10)"}
+{"id": "validation-00472", "numbers": [10, 44, 33], "target": 374, "witness": "((33*10)+44)"}
+{"id": "validation-00473", "numbers": [45, 25, 23, 45], "target": 575, "witness": "((45-45)+(23*25))"}
+{"id": "validation-00474", "numbers": [25, 23, 33], "target": 184, "witness": "((33-25)*23)"}
+{"id": "validation-00475", "numbers": [27, 46, 15, 30], "target": 118, "witness": "(30+(46+(15+27)))"}
+{"id": "validation-00476", "numbers": [23, 4, 12], "target": 31, "witness": "((12+23)-4)"}
+{"id": "validation-00477", "numbers": [12, 25, 34, 40], "target": 902, "witness": "((40+12)+(34*25))"}
+{"id": "validation-00478", "numbers": [28, 41, 3], "target": 72, "witness": "(28+(3+41))"}
+{"id": "validation-00479", "numbers": [46, 20, 42, 46], "target": 62, "witness": "((42+46)-(46-20))"}
+{"id": "validation-00480", "numbers": [43, 31, 24], "target": 12, "witness": "(24-(43-31))"}
+{"id": "validation-00481", "numbers": [14, 6, 9, 2], "target": 14, "witness": "((9-(6+2))*14)"}
+{"id": "validation-00482", "numbers": [48, 25, 21], "target": 52, "witness": "(48-(21-25))"}
+{"id": "validation-00483", "numbers": [19, 17, 31, 21], "target": 585, "witness": "(17+((19*31)-21))"}
+{"id": "validation-00484", "numbers": [14, 10, 12], "target": 12, "witness": "(14+(10-12))"}
+{"id": "validation-00485", "numbers": [27, 2, 25, 29], "target": 60, "witness": "((2*29)-(25-27))"}
+{"id": "validation-00486", "numbers": [33, 12, 20], "target": 25, "witness": "((33-20)+12)"}
+{"id": "validation-00487", "numbers": [3, 48, 16, 34], "target": 672, "witness": "((16*(48-34))*3)"}
+{"id": "validation-00488", "numbers": [15, 47, 1], "target": 62, "witness": "(15+(47*1))"}
+{"id": "validation-00489", "numbers": [41, 4, 14, 48], "target": 99, "witness": "(14+((41-4)+48))"}
+{"id": "validation-00490", "numbers": [14, 21, 33], "target": 2, "witness": "((21-33)+14)"}
+{"id": "validation-00491", "numbers": [37, 13, 38, 31], "target": 404, "witness": "((13*31)-(37-38))"}
+{"id": "validation-00492", "numbers": [17, 8, 31], "target": 775, "witness": "(31*(8+17))"}
+{"id": "validation-00493", "numbers": [15, 20, 23, 34], "target": 357, "witness": "(((20*15)+34)+23)"}
+{"id": "validation-00494", "numbers": [13, 28, 46], "target": 31, "witness": "((13-28)+46)"}
+{"id": "validation-00495", "numbers": [33, 38, 24, 24], "target": 119, "witness": "(24+((33+24)+38))"}
+{"id": "validation-00496", "numbers": [5, 24, 45], "target": 26, "witness": "((45-24)+5)"}
+{"id": "validation-00497", "numbers": [1, 2, 30, 27], "target": 6, "witness": "((1-(27-30))+2)"}
+{"id": "validation-00498", "numbers": [16, 50, 27], "target": 93, "witness": "((50+16)+27)"}
+{"id": "validation-00499", "numbers": [40, 10, 4, 31], "target": 354, "witness": "((31*10)+(40+4))"}
+{"id": "validation-00500", "numbers": [12, 16, 15], "target": 252, "witness": "(12+(15*16))"}
+{"id": "validation-00501", "numbers": [36, 28, 40, 33], "target": 15, "witness": "((40+36)-(33+28))"}
+{"id": "validation-00502", "numbers": [43, 33, 12], "target": 2, "witness": "(33-(43-12))"}
+{"id": "validation-00503", "numbers": [9, 41, 18, 11], "target": 542, "witness": "((9*(18+41))+11)"}
+{"id": "validation-00504", "numbers": [33, 17, 13], "target": 574, "witness": "((17*33)+13)"}
+{"id": "validation-00505", "numbers": [13, 45, 22, 44], "target": 9, "witness": "((13-22)/(44-45))"}
+{"id": "validation-00506", "numbers": [45, 41, 42], "target": 44, "witness": "(41-(42-45))"}
+{"id": "validation-00507", "numbers": [21, 43, 19, 14], "target": 97, "witness": "(19+(43+(14+21)))"}
+{"id": "validation-00508", "numbers": [46, 27, 36], "target": 109, "witness": "((46+36)+27)"}
+{"id": "validation-00509", "numbers": [1, 34, 1, 34], "target": 69, "witness": "((1+(1*34))+34)"}
+{"id": "validation-00510", "numbers": [21, 49, 24], "target": 94, "witness": "((24+21)+49)"}
+{"id": "validation-00511", "numbers": [1, 14, 19, 32], "target": 874, "witness": "(19*(1*(32+14)))"}
