@@ -81,6 +81,11 @@ def summarize(directory: Path) -> dict:
         "methods": {},
         "examples": {},
         "primary": None,
+        "model_id": config["model_id"],
+        "seed": config["seed"],
+        "initializations": {
+            name: read_json(directory / name / "initialization-audit.json", {}) for name in ("main", "reward_only")
+        },
         "novelty_weight": config["novelty_weight"],
         "finding": "No completed paired primary endpoint is available.",
         "generated_at": datetime.now(timezone.utc).isoformat(),
@@ -234,6 +239,48 @@ def diagnostic_table(summary: dict) -> list[list[str]]:
     return table
 
 
+def model_description(summary: dict) -> str:
+    """Read architecture from the recorded pinned-weight audit, never guessed model labels."""
+    audit = next((item for item in summary["initializations"].values() if item), {})
+    if not audit:
+        return f"{summary['model_id']}; architecture audit not recorded."
+    architecture = audit["architecture"]
+    return (
+        f"{summary['model_id']}: {architecture['num_hidden_layers']} layers, width {architecture['hidden_size']}, "
+        f"{architecture['num_attention_heads']} query heads and {architecture['num_key_value_heads']} key/value heads; "
+        f"{audit['parameter_elements']:,} unique parameter elements in {audit['unique_tensors']} tensors. "
+        "Architecture and counts come from the pinned pretrained files and the generation-zero checkpoint audit."
+    )
+
+
+def diversity_table(summary: dict) -> list[list[str]]:
+    """Expose within-problem sampled diversity separately from single greedy successes."""
+    table = [["Condition", "Greedy correct structures", "Complete sampled problems", "Mean correct structures / sampled problem"]]
+    for name, method in summary["methods"].items():
+        value = method["sampled"].get("mean_unique_correct_structures")
+        table.append([
+            name, str(method["test"].get("correct_expression_structures", "missing")),
+            str(method["sampled"]["complete_problems"]), "missing" if value is None else f"{value:.4f}",
+        ])
+    return table
+
+
+def refresh_readme(path: Path, summary: dict, table: list[list[str]]) -> None:
+    """Replace only the explicitly marked result block from the same recorded summary."""
+    if not path.exists():
+        return
+    text = path.read_text(encoding="utf-8")
+    start, end = "<!-- BEGIN GENERATED PILOT RESULTS -->", "<!-- END GENERATED PILOT RESULTS -->"
+    if start not in text or end not in text:
+        return
+    before, after = text.split(start, 1)[0], text.split(end, 1)[1]
+    result = (
+        f"\n{summary['finding']}\n\n{markdown_table(table)}\n\n"
+        f"{summary['interval_scope']} [Full report](reports/experiment-pilot.md).\n"
+    )
+    path.write_text(before + start + result + end + after, encoding="utf-8")
+
+
 def intervention_description(summary: dict) -> str:
     """Describe whether the bonus changes update weights, without implying a trajectory replay."""
     sentences = [
@@ -367,6 +414,7 @@ def write_paper(path: Path, experiment: dict, summary: dict, figures: Path, tabl
         f"These coefficients weight noise directly, without another normalization; effective alpha is {config['alpha']}. "
         "FP32 masters reconstruct BF16 candidates afresh and tied tensors are updated once. Prefix regeneration and backpropagation are absent.",
     )
+    paragraph(html.escape(model_description(summary)))
     paragraph(
         "For candidate i, Q_i is the mean response reward: exact success receives 1, a legal expression using every supplied "
         "number but missing the target receives 0.1, and an invalid expression receives 0. "
@@ -446,6 +494,21 @@ def write_paper(path: Path, experiment: dict, summary: dict, figures: Path, tabl
         )
     )
     story.extend([diagnostics, Spacer(1, 8)])
+    paragraph("Within-problem expression diversity", "Heading2")
+    diversity = Table(
+        [[Paragraph(html.escape(cell), styles["BodyText"]) for cell in row] for row in diversity_table(summary)],
+        colWidths=[80, 110, 110, 152], repeatRows=1,
+    )
+    diversity.setStyle(TableStyle([
+        ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#dce9f5")),
+        ("VALIGN", (0, 0), (-1, -1), "TOP"), ("GRID", (0, 0), (-1, -1), 0.25, colors.lightgrey),
+    ]))
+    story.extend([diversity, Spacer(1, 8)])
+    paragraph(
+        "Greedy structure counts equal the number of successful test problems because only one answer is generated per problem. "
+        "The sampled statistic counts distinct correct canonical ASTs within each problem before averaging, including zeros. "
+        "It measures syntactic diversity, not algebraic or semantic equivalence."
+    )
     paragraph(
         "Train tokens count candidates in committed generations; evaluation tokens count persisted evaluation responses. "
         "Calibration, validation, interrupted batches and replay costs are excluded from these two table columns. "
@@ -589,6 +652,10 @@ def report(directory: Path, output_root: Path = Path(".")) -> dict:
         "Training hours include phase overhead and checkpointing. Probes are training examples, not held-out data.\n\n"
         f"## Novelty intervention diagnostic\n\n{intervention_description(summary)}\n\n"
         "See [analysis notes](analysis-notes.md) for when this descriptive check was added.\n\n"
+        f"## Within-problem expression diversity\n\n{markdown_table(diversity_table(summary))}\n\n"
+        "Greedy structure counts equal successful problems, since each problem has one response. "
+        "Sampled diversity counts distinct correct canonical ASTs within each problem, then averages over complete sampled groups, including zeros. "
+        "This is syntactic diversity; algebraically equivalent expressions may count separately.\n\n"
         "## Method and scope\n\nSee the [preregistration](preregistration.md), [configuration](../configs/pilot.json), "
         "[data hashes](../data/manifest.json), and [literature audit](../docs/literature.md). "
         "This is an adaptation of [ExTra](https://arxiv.org/abs/2606.24994) and "
@@ -598,6 +665,7 @@ def report(directory: Path, output_root: Path = Path(".")) -> dict:
         "Amendment A replaces combined-reward ranks with population-z-scored task reward plus post-normalization novelty. "
         "It was published after calibration and partial original-model evaluation, before either trained condition. "
         "Both trained arms start from original pretrained weights using the amended rule from generation one.\n\n"
+        + model_description(summary) + "\n\n"
         "## Recorded measurements\n\nAll values below come from persisted outcomes. Missing conditions remain missing. "
         "Population training accuracy is distinct from unperturbed master validation and held-out test accuracy.\n\n"
         "```json\n"
@@ -629,10 +697,18 @@ def report(directory: Path, output_root: Path = Path(".")) -> dict:
         "no general-language benchmark; descriptive secondary analyses. Bootstrap intervals omit seed variability.\n"
     )
     (reports / "experiment-pilot.md").write_text(text, encoding="utf-8")
+    refresh_readme(output_root / "README.md", summary, table)
     (reports / "all-experiments.md").write_text(
         "# All experiments\n\nThe current registered study is the paired pretrained pilot. "
         "No scratch or diagnostic run is represented as executed.\n\n"
         + markdown_table(table)
+        + "\n\n" + model_description(summary)
+        + "\n\n" + markdown_table([
+            ["Condition", "Parameter update", "Objective", "Training data / schedule"],
+            ["Original", "Frozen pretrained checkpoint", "No optimization here", "No training here"],
+            ["Main", "Full-weight Gaussian ES", f"Z(task reward) + {summary['novelty_weight']} novelty", "Registered Countdown split; rotating problems and fixed probes"],
+            ["Reward-only", "Full-weight Gaussian ES", "Z(task reward)", "Same problems, perturbation seeds and generation count"],
+        ])
         + "\n\n[Full pilot report](experiment-pilot.md). [Deferred studies](../docs/roadmap.md).\n\n"
         "ES means comparing random weight changes instead of using backpropagation. Novelty is distance from previous "
         "correct answers. Quality is verified arithmetic reward. Accuracy is exact success frequency. "
