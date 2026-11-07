@@ -18,9 +18,26 @@ def read_json(path: Path, fallback):
 def dashboard_state(directory: Path) -> dict:
     """Expose compact experiment state and curves, not large logs/checkpoints or .env."""
     experiment = read_json(directory / "experiment.json", {"phase": "not_started"})
+    evaluation_progress = {}
+    config, manifest = experiment.get("config", {}), experiment.get("dataset_manifest", {})
+    expected = {name: row["count"] for name, row in manifest.get("splits", {}).items()}
+    expected["probes"] = config.get("probe_count")
+    expected["sampled"] = config.get("sampled_problem_count", 0) * config.get("samples_per_problem", 0)
+    for condition in ("original", "main", "reward_only"):
+        evaluation = read_json(directory / condition / "evaluation.json", {})
+        evaluation_progress[condition] = {
+            name: {
+                "completed": len(rows),
+                "expected": expected.get(name),
+                "accuracy": sum(row["correct"] for row in rows) / len(rows) if rows else None,
+                "validity": sum(row["valid"] for row in rows) / len(rows) if rows else None,
+            }
+            for name, rows in evaluation.get("sets", {}).items()
+        }
     return {
         "experiment": experiment,
         "summary": read_json(directory / "summary.json", {}),
+        "evaluation_progress": evaluation_progress,
         "progress": {name: read_json(directory / name / "progress.json", {}) for name in ("main", "reward_only")},
         "curves": {name: read_json(directory / name / "metrics.json", []) for name in ("main", "reward_only")},
     }
