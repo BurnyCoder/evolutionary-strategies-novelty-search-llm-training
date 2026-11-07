@@ -111,14 +111,16 @@ def _witness(numbers: list[int], rng: random.Random) -> tuple[int, str] | None:
     return None
 
 
-def generate_dataset(seed: int, sizes: dict[str, int] | None = None) -> dict[str, list[dict]]:
+def generate_dataset(
+    seed: int, sizes: dict[str, int] | None = None, excluded_groups: set[tuple[int, ...]] | None = None
+) -> dict[str, list[dict]]:
     """Generate unique multisets globally, making leakage by permutation impossible.
 
     Numbers are uniform integers 1..50; accepted targets come from sampled trees.
     This is deliberately not uniform sampling over solvable target problems.
     """
     sizes = sizes or {"train": 8192, "validation": 512, "test": 2048, "hard": 1024}
-    rng, seen, result = random.Random(seed), set(), {}
+    rng, seen, result = random.Random(seed), set(excluded_groups or ()), {}
     for split, count in sizes.items():
         rows = []
         while len(rows) < count:
@@ -137,11 +139,14 @@ def generate_dataset(seed: int, sizes: dict[str, int] | None = None) -> dict[str
     return result
 
 
-def prepare_data(directory: Path, seed: int) -> dict:
+def prepare_data(
+    directory: Path, seed: int, sizes: dict[str, int] | None = None,
+    excluded_groups: set[tuple[int, ...]] | None = None,
+) -> dict:
     """Write deterministic JSONL and a content-hash manifest before preregistration."""
     directory.mkdir(parents=True, exist_ok=True)
     manifest = {"seed": seed, "generator": "sampled-tree-v1", "splits": {}}
-    for split, rows in generate_dataset(seed).items():
+    for split, rows in generate_dataset(seed, sizes, excluded_groups).items():
         payload = "".join(json.dumps(row, sort_keys=True) + "\n" for row in rows).encode()
         (directory / f"{split}.jsonl").write_bytes(payload)
         manifest["splits"][split] = {"count": len(rows), "sha256": hashlib.sha256(payload).hexdigest()}
