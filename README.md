@@ -5,7 +5,15 @@ This research project tests whether rewarding **correct but different answers** 
 Preregistration and the tested core pipeline are published. The first local GPU experiment compares one main-method seed, one matched reward-only ES seed, and the untrained base model within its persisted twelve-hour deadline. Later multi-seed and scratch studies are gated on its report. The generated results below and [full report](reports/experiment-pilot.md) identify observed outcomes and incomplete conditions.
 
 <!-- BEGIN GENERATED PILOT RESULTS -->
-The paired endpoint is pending. Run `uv run novelty-es report` to refresh this block from recorded artifacts.
+No completed paired primary endpoint is available.
+
+| Condition | Test accuracy | 95% interval | Hard accuracy | pass@1 | pass@8 | Status |
+| --- | --- | --- | --- | --- | --- | --- |
+| original | 0.29% | 0.10% - 0.54% | 0.10% | 0.16% | 1.16% | incomplete |
+| main | missing | missing | missing | missing | missing | incomplete |
+| reward_only | missing | missing | missing | missing | missing | incomplete |
+
+Problem uncertainty conditional on one training seed; excludes seed variability. [Full report](reports/experiment-pilot.md).
 <!-- END GENERATED PILOT RESULTS -->
 
 ![Recorded test accuracy with problem-bootstrap intervals](reports/figures/accuracy.png)
