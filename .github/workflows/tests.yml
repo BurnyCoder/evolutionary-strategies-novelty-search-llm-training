@@ -1,0 +1,16 @@
+name: Core scientific invariants
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: astral-sh/setup-uv@v10.3.3
+        with:
+          python-version: '3.12'
+      - run: uv sync --locked
+      - run: uv run pytest -q
+      - run: uv run ruff check src tests
+      - run: uv run novelty-es prepare
