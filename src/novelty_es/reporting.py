@@ -20,6 +20,7 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
+from matplotlib.ticker import MaxNLocator, PercentFormatter
 
 from .analysis import novelty_intervention, paired_bootstrap, pass_at_k
 from .dashboard import dashboard_state, read_json
@@ -72,6 +73,16 @@ def _split_summary(rows: list[dict], expected: int, replicates: int) -> dict:
     }
 
 
+def _paired_evaluations(first: dict, second: dict, replicates: int) -> dict:
+    """Align exact test-problem identities before paired resampling."""
+    a = {row["problem_id"]: row["correct"] for row in first["sets"]["test"]}
+    b = {row["problem_id"]: row["correct"] for row in second["sets"]["test"]}
+    if a.keys() != b.keys():
+        raise ValueError("Paired test problem IDs do not align")
+    ordered = sorted(a)
+    return paired_bootstrap([a[key] for key in ordered], [b[key] for key in ordered], replicates)
+
+
 def summarize(directory: Path) -> dict:
     """Build a machine-readable audit and registered comparison from raw evaluations."""
     experiment = read_json(directory / "experiment.json", {})
@@ -81,6 +92,7 @@ def summarize(directory: Path) -> dict:
         "methods": {},
         "examples": {},
         "primary": None,
+        "baseline_comparisons": {},
         "model_id": config["model_id"],
         "seed": config["seed"],
         "initializations": {
@@ -158,14 +170,7 @@ def summarize(directory: Path) -> dict:
         and summary["methods"][name]["test"]["complete"]
         for name in ("main", "reward_only")
     ):
-        main = {r["problem_id"]: r["correct"] for r in evaluations["main"]["sets"]["test"]}
-        control = {r["problem_id"]: r["correct"] for r in evaluations["reward_only"]["sets"]["test"]}
-        if main.keys() != control.keys():
-            raise ValueError("Primary problem IDs do not align")
-        ordered = sorted(main)
-        primary = paired_bootstrap(
-            [main[i] for i in ordered], [control[i] for i in ordered], config["bootstrap_replicates"]
-        )
+        primary = _paired_evaluations(evaluations["main"], evaluations["reward_only"], config["bootstrap_replicates"])
         summary["primary"] = primary
         if primary["difference"] <= 0:
             summary["finding"] = (
@@ -185,6 +190,14 @@ def summarize(directory: Path) -> dict:
                 " Adding novelty changed no main-condition update coefficients on the recorded populations; "
                 "this pilot did not exercise an active novelty intervention."
             )
+    # These comparisons were planned against the original model, but remain secondary.
+    if summary["methods"]["original"]["test"]["complete"]:
+        for condition in ("main", "reward_only"):
+            method = summary["methods"][condition]
+            if method["training_complete"] and method["test"]["complete"]:
+                summary["baseline_comparisons"][condition] = _paired_evaluations(
+                    evaluations[condition], evaluations["original"], config["bootstrap_replicates"]
+                )
     summary["failures"] = experiment.get("failures", [])
     summary["protocol_amendments"] = experiment.get("protocol_amendments", [])
     summary["execution_repairs"] = experiment.get("execution_repairs", [])
@@ -225,6 +238,20 @@ def markdown_table(table: list[list[str]]) -> str:
     lines = ["| " + " | ".join(table[0]) + " |", "| " + " | ".join(["---"] * len(table[0])) + " |"]
     lines.extend("| " + " | ".join(row) + " |" for row in table[1:])
     return "\n".join(lines)
+
+
+def comparison_table(summary: dict) -> list[list[str]]:
+    """State paired test differences in percentage points with explicit comparison roles."""
+    table = [["Comparison", "Difference (pp)", "Paired 95% interval (pp)", "Problems"]]
+    comparisons = {"Main - reward-only (primary)": summary["primary"]}
+    comparisons.update({f"{name} - original (secondary)": result for name, result in summary["baseline_comparisons"].items()})
+    for name, result in comparisons.items():
+        if result:
+            table.append([
+                name, f"{100 * result['difference']:.3f}",
+                f"[{100 * result['low']:.3f}, {100 * result['high']:.3f}]", str(result["n"]),
+            ])
+    return table
 
 
 def diagnostic_table(summary: dict) -> list[list[str]]:
@@ -324,33 +351,49 @@ def coverage_description(summary: dict) -> str:
 
 
 def plot_results(directory: Path, summary: dict, output: Path) -> None:
-    """Plot raw generation metrics and accuracy on honest, zero-based bounded axes."""
+    """Use zero-based axes with shared, data-driven limits across compared conditions.
+
+    Tick units: https://matplotlib.org/stable/api/ticker_api.html .
+    Each panel scales to its observed maximum; accuracy includes interval endpoints.
+    """
     output.mkdir(parents=True, exist_ok=True)
     fig, axes = plt.subplots(1, 3, figsize=(12, 3.7), layout="constrained")
     colors = {"main": "#157f67", "reward_only": "#bc681e"}
     plotted = False
+    keys = ("quality", "novelty", "accuracy")
+    maxima = dict.fromkeys(keys, 0.0)
+    last_generation = 1
     for name, color in colors.items():
         rows = read_json(directory / name / "metrics.json", [])
-        for axis, key in zip(axes, ("quality", "novelty", "accuracy"), strict=True):
+        for axis, key in zip(axes, keys, strict=True):
             if rows:
                 axis.plot([r["generation"] for r in rows], [r[key] for r in rows], label=name, color=color, marker="o", markersize=3)
+                maxima[key] = max(maxima[key], max(row[key] for row in rows))
+                last_generation = max(last_generation, max(row["generation"] for row in rows))
                 plotted = True
-            axis.set(xlabel="Generation", ylabel=key, ylim=(0, 2 if key == "novelty" else 1))
-            axis.grid(alpha=0.2)
+    for axis, key in zip(axes, keys, strict=True):
+        bound = 2 if key == "novelty" else 1
+        axis.set(xlabel="Generation", ylabel=key, ylim=(0, min(bound, max(0.001, 1.15 * maxima[key]))), xlim=(0.5, last_generation + 0.5))
+        axis.xaxis.set_major_locator(MaxNLocator(integer=True))
+        axis.grid(alpha=0.2)
+        if key == "accuracy":
+            axis.yaxis.set_major_formatter(PercentFormatter(1))
     if plotted:
         axes[0].legend(fontsize=8)
     else:
         axes[0].text(
             0.5, 0.5, "No committed training observations", transform=axes[0].transAxes, ha="center", fontsize=8
         )
-    fig.suptitle("Population means; perturbed candidates, not final test performance")
+    fig.suptitle("Population means; perturbed candidates, not final test performance\nZero-based axes; scale differs by metric")
     fig.savefig(output / "training.png", dpi=160)
     plt.close(fig)
     fig, axis = plt.subplots(figsize=(7, 3.5), layout="constrained")
     names = [name for name, m in summary["methods"].items() if "accuracy" in m["test"]]
+    upper = 1.0
     if names:
         means = np.array([summary["methods"][n]["test"]["accuracy"] for n in names])
         bounds = np.array([summary["methods"][n]["test"]["interval"] for n in names])
+        upper = min(1, max(0.01, 1.15 * float(bounds.max())))
         axis.bar(
             names,
             means,
@@ -361,8 +404,9 @@ def plot_results(directory: Path, summary: dict, output: Path) -> None:
     else:
         axis.text(0.5, 0.5, "No evaluation observations", transform=axis.transAxes, ha="center")
     axis.set(
-        ylabel="Greedy exact accuracy", ylim=(0, 1), title="Held-out test accuracy; problem-bootstrap 95% intervals"
+        ylabel="Greedy exact accuracy", ylim=(0, upper), title="Held-out test accuracy; problem-bootstrap 95% intervals"
     )
+    axis.yaxis.set_major_formatter(PercentFormatter(1))
     fig.savefig(output / "accuracy.png", dpi=160)
     plt.close(fig)
 
@@ -485,6 +529,18 @@ def write_paper(path: Path, experiment: dict, summary: dict, figures: Path, tabl
             f"Main minus control: {primary['difference'] * 100:.3f} percentage points; paired 95% interval "
             f"[{primary['low'] * 100:.3f}, {primary['high'] * 100:.3f}], on {primary['n']} paired problems."
         )
+    comparisons = comparison_table(summary)
+    if len(comparisons) > 1:
+        paired = Table(
+            [[Paragraph(html.escape(cell), styles["BodyText"]) for cell in row] for row in comparisons],
+            colWidths=[174, 82, 140, 56], repeatRows=1,
+        )
+        paired.setStyle(TableStyle([
+            ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#dce9f5")),
+            ("VALIGN", (0, 0), (-1, -1), "TOP"), ("GRID", (0, 0), (-1, -1), 0.25, colors.lightgrey),
+        ]))
+        story.extend([paired, Spacer(1, 8)])
+        paragraph("Comparisons with the original checkpoint are descriptive secondary estimates with unadjusted intervals.")
     story.append(Image(str(figures / "accuracy.png"), width=6.0 * inch, height=3.0 * inch))
     paragraph(html.escape(summary["interval_caveat"]))
     paragraph("Probe performance, validity and resources", "Heading2")
@@ -663,6 +719,8 @@ def report(directory: Path, output_root: Path = Path(".")) -> dict:
         f"{summary['finding']}\n\n{comparison}\n\n{summary['interval_scope']}\n\n"
         f"{summary['interval_caveat']}\n\n"
         f"{markdown_table(table)}\n\n{coverage_description(summary)}\n\n"
+        f"{markdown_table(comparison_table(summary))}\n\n"
+        "Comparisons with the original checkpoint are descriptive secondary estimates with unadjusted intervals.\n\n"
         "![Accuracy](figures/accuracy.png)\n\n![Training](figures/training.png)\n\n"
         f"## Probe performance, validity and resources\n\n{markdown_table(diagnostic_table(summary))}\n\n"
         "Train tokens count only candidates in committed generations; evaluation tokens count persisted evaluation responses. "
@@ -781,7 +839,7 @@ def report(directory: Path, output_root: Path = Path(".")) -> dict:
         "This single-seed arithmetic study provides no evidence about general language quality or seed robustness.\n",
         encoding="utf-8",
     )
-    shutil.copyfile(output_root / "LICENSE", directory / "LICENSE")
+    shutil.copyfile("LICENSE", directory / "LICENSE")
     write_paper(output_root / "output/pdf/novelty-es-pilot.pdf", experiment, summary, figures, table)
     print(json.dumps({"report": str(reports / "experiment-pilot.md"), "finding": summary["finding"]}, indent=2))
     return summary
