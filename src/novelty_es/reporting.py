@@ -173,6 +173,8 @@ def summarize(directory: Path) -> dict:
                 "The point estimate favors the main method, but the paired interval includes zero; this pilot is inconclusive."
             )
     summary["failures"] = experiment.get("failures", [])
+    summary["protocol_amendments"] = experiment.get("protocol_amendments", [])
+    summary["execution_repairs"] = experiment.get("execution_repairs", [])
     summary["logged_generation_work"] = logged_generation_work(directory / "events.jsonl")
     summary["elapsed_seconds"] = (
         experiment.get("finished_at", time.time()) - experiment["started_at"] if "started_at" in experiment else 0
@@ -321,6 +323,7 @@ def write_paper(path: Path, experiment: dict, summary: dict, figures: Path, tabl
     styles["BodyText"].fontSize = 9
     styles["BodyText"].leading = 13
     styles["BodyText"].spaceAfter = 7
+    styles["Heading2"].keepWithNext = True
     story = []
 
     def paragraph(text, style="BodyText"):
@@ -498,8 +501,10 @@ def write_paper(path: Path, experiment: dict, summary: dict, figures: Path, tabl
         + html.escape(str(environment.get("gpu", "not executed")))
         + "; Python "
         + html.escape(str(environment.get("python", "not recorded")))
-        + ". Code revision: "
+        + ". Initial execution revision: "
         + html.escape(experiment.get("code_revision", "not recorded"))
+        + ". Training implementation revision: "
+        + html.escape(experiment.get("training_code_revision", experiment.get("code_revision", "not recorded")))
         + ". "
         + f"Frozen generations per arm: {calibration.get('generations', 'not calibrated')}; "
         + f"inference batch: {calibration.get('batch_size', 'not calibrated')}. "
@@ -589,7 +594,10 @@ def report(directory: Path, output_root: Path = Path(".")) -> dict:
         "This is an adaptation of [ExTra](https://arxiv.org/abs/2606.24994) and "
         "[ES at Scale](https://arxiv.org/abs/2509.24372), not a reproduction. "
         "The archive gate uses exact correctness; positive legality reward is insufficient. "
-        "Validation does not choose the final checkpoint.\n\n"
+        "Validation does not choose the final checkpoint. "
+        "Amendment A replaces combined-reward ranks with population-z-scored task reward plus post-normalization novelty. "
+        "It was published after calibration and partial original-model evaluation, before either trained condition. "
+        "Both trained arms start from original pretrained weights using the amended rule from generation one.\n\n"
         "## Recorded measurements\n\nAll values below come from persisted outcomes. Missing conditions remain missing. "
         "Population training accuracy is distinct from unperturbed master validation and held-out test accuracy.\n\n"
         "```json\n"
@@ -603,7 +611,15 @@ def report(directory: Path, output_root: Path = Path(".")) -> dict:
             indent=2,
         )
         + "\n```\n\n"
-        "## Failures, deviations and learnings\n\n" + json.dumps(summary["failures"], indent=2) + "\n\n"
+        "## Failures, deviations and learnings\n\n```json\n" + json.dumps(
+            {
+                "failures": summary["failures"],
+                "protocol_amendments": summary["protocol_amendments"],
+                "execution_repairs": summary["execution_repairs"],
+                "initial_code_revision": experiment.get("code_revision"),
+                "training_code_revision": experiment.get("training_code_revision", experiment.get("code_revision")),
+            }, indent=2,
+        ) + "\n```\n\n"
         "The first audit reconciled ExTra's correctness-filtered paper specification with its unfiltered embedding-memory insertion. "
         "Explicit Boolean masking and separate score/append operations implement the intended experiment. "
         "FP32 master reconstruction avoids repeated BF16 perturbation subtraction. "
