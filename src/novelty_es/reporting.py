@@ -10,6 +10,7 @@ from __future__ import annotations
 import html
 import json
 import shutil
+import time
 from collections import defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
@@ -20,9 +21,32 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 
-from .analysis import paired_bootstrap, pass_at_k
+from .analysis import novelty_intervention, paired_bootstrap, pass_at_k
 from .dashboard import dashboard_state, read_json
 from .runtime import atomic_json
+
+
+def logged_generation_work(path: Path) -> list[dict]:
+    """Count final response events, including logged retries and abandoned batches.
+
+    Stream the trace to avoid loading full prompts and partial texts into RAM.
+    These are emitted-token counts, not padding or hardware-operation counts.
+    """
+    groups = defaultdict(lambda: {"responses": 0, "generated_tokens": 0})
+    if path.exists():
+        with path.open(encoding="utf-8") as handle:
+            for line in handle:
+                try:
+                    event = json.loads(line)
+                except json.JSONDecodeError:
+                    if line.endswith("\n"):
+                        raise
+                    break  # A running writer may have an unfinished final line.
+                if event.get("event") == "response":
+                    key = (event.get("condition", "calibration"), event.get("phase", "unknown"))
+                    groups[key]["responses"] += 1
+                    groups[key]["generated_tokens"] += event["generated_tokens"]
+    return [{"condition": key[0], "phase": key[1], **values} for key, values in sorted(groups.items())]
 
 
 def _split_summary(rows: list[dict], expected: int, replicates: int) -> dict:
@@ -57,9 +81,14 @@ def summarize(directory: Path) -> dict:
         "methods": {},
         "examples": {},
         "primary": None,
+        "novelty_weight": config["novelty_weight"],
         "finding": "No completed paired primary endpoint is available.",
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "interval_scope": "Problem uncertainty conditional on one training seed; excludes seed variability.",
+        "interval_caveat": (
+            "Percentile bootstrap intervals can collapse at observed boundaries or when paired outcomes are identical. "
+            "A zero-width interval does not prove zero population error or equivalence on unseen problems."
+        ),
     }
     evaluations = {}
     for condition in ("original", "main", "reward_only"):
@@ -104,6 +133,13 @@ def summarize(directory: Path) -> dict:
             and sampled["complete_problems"] == sampled["expected"]
         )
         method["training"] = experiment.get("conditions", {}).get(condition, {})
+        generations = read_json(directory / condition / "metrics.json", [])
+        method["training_observations"] = {
+            "responses": sum(row["responses"] for row in generations),
+            "generated_tokens": sum(row["generated_tokens"] for row in generations),
+            "truncated": sum(row["truncated"] for row in generations),
+            "rank_diagnostic": novelty_intervention(generations, config["novelty_weight"]),
+        }
         phase = experiment.get("phases", {}).get(condition, {})
         method["training_seconds"] = phase.get("finished_at", phase.get("started_at", 0)) - phase.get("started_at", 0)
         summary["methods"][condition] = method
@@ -137,8 +173,9 @@ def summarize(directory: Path) -> dict:
                 "The point estimate favors the main method, but the paired interval includes zero; this pilot is inconclusive."
             )
     summary["failures"] = experiment.get("failures", [])
-    summary["elapsed_seconds"] = experiment.get("finished_at", experiment.get("started_at", 0)) - experiment.get(
-        "started_at", 0
+    summary["logged_generation_work"] = logged_generation_work(directory / "events.jsonl")
+    summary["elapsed_seconds"] = (
+        experiment.get("finished_at", time.time()) - experiment["started_at"] if "started_at" in experiment else 0
     )
     return summary
 
@@ -172,6 +209,60 @@ def markdown_table(table: list[list[str]]) -> str:
     lines = ["| " + " | ".join(table[0]) + " |", "| " + " | ".join(["---"] * len(table[0])) + " |"]
     lines.extend("| " + " | ".join(row) + " |" for row in table[1:])
     return "\n".join(lines)
+
+
+def diagnostic_table(summary: dict) -> list[list[str]]:
+    """Keep probe performance and validity visible alongside the held-out endpoint."""
+    table = [
+        ["Condition", "Probe accuracy", "Test validity", "Hard validity", "Train tokens", "Eval tokens", "Train hours"]
+    ]
+    for name, method in summary["methods"].items():
+        tokens = sum(method[s].get("generated_tokens", 0) for s in ("test", "hard", "probes", "sampled"))
+        table.append(
+            [
+                name,
+                _percent(method["probes"].get("accuracy")),
+                _percent(method["test"].get("validity")),
+                _percent(method["hard"].get("validity")),
+                str(method["training_observations"]["generated_tokens"]),
+                str(tokens),
+                f"{method['training_seconds'] / 3600:.3f}",
+            ]
+        )
+    return table
+
+
+def intervention_description(summary: dict) -> str:
+    """Describe whether the bonus changes ranking, without implying a trajectory replay."""
+    sentences = [
+        f"Post-hoc descriptive diagnostic: compare ranks of Q + {summary['novelty_weight']} N with ranks of Q on each recorded population. "
+        "This local comparison does not simulate the counterfactual training trajectory."
+    ]
+    for name, method in summary["methods"].items():
+        diagnostic = method["training_observations"]["rank_diagnostic"]
+        if diagnostic["generations_observed"]:
+            sentences.append(
+                f"{name}: positive novelty in {diagnostic['candidates_positive_novelty']} of "
+                f"{diagnostic['candidates_observed']} candidates; changed rank weights in "
+                f"{diagnostic['generations_rank_changed']} of {diagnostic['generations_observed']} generations "
+                f"({diagnostic['candidates_rank_changed']} candidate weights)."
+            )
+    return " ".join(sentences)
+
+
+def coverage_description(summary: dict) -> str:
+    """Expose observed denominators so partial evaluation cannot look complete."""
+    sentences = []
+    for name, method in summary["methods"].items():
+        splits = ", ".join(
+            f"{split} {method[split]['n']}/{method[split]['expected']}" for split in ("test", "hard", "probes")
+        )
+        sampled = method["sampled"]
+        sentences.append(
+            f"{name}: greedy problems {splits}; sampled complete problems "
+            f"{sampled['complete_problems']}/{sampled['expected']}."
+        )
+    return " ".join(sentences) or "No evaluation rows have been recorded."
 
 
 def plot_results(directory: Path, summary: dict, output: Path) -> None:
@@ -273,6 +364,21 @@ def write_paper(path: Path, experiment: dict, summary: dict, figures: Path, tabl
         f"Average centered fitness ranks weight noise in the update; effective alpha is {config['alpha']}. "
         "FP32 masters reconstruct BF16 candidates afresh and tied tensors are updated once. Prefix regeneration and backpropagation are absent.",
     )
+    paragraph(
+        "For candidate i, Q_i is the mean response reward: exact success receives 1, a legal expression using every supplied "
+        "number but missing the target receives 0.1, and an invalid expression receives 0. "
+        "For probe p, n_i,p = I(correct_i,p) [1 - max cosine(e_i,p, z)]. The reference set consists of correct historical "
+        "responses and correct responses from other candidates on that same probe; self-comparisons are excluded. "
+        "An empty set has maximum zero. N_i is the probe mean. History is frozen while scoring the whole generation, "
+        "then correct embeddings are appended in seeded shuffled order and the oldest entries are removed."
+    )
+    paragraph(
+        f"Fitness is F_i = Q_i + {config['novelty_weight']} N_i for the main arm and F_i = Q_i for control. "
+        "The update is theta_next = theta + (alpha / population) sum_i centeredRank(F_i) epsilon_i. "
+        "Each epsilon_i is independent standard Gaussian noise over every unique parameter tensor. Average ranks map "
+        "to [-0.5, 0.5], and equal scores produce zero update. Alpha includes the inverse-noise factor; it is not "
+        "an additional alpha/sigma update. MiniLM is frozen, and both conditions compute the same categories of probe work."
+    )
     section(
         "Data, evaluation and preregistered analysis",
         "Synthetic problems have exact rational witnesses. Global number-multiset isolation prevents permutations or alternative targets crossing splits. "
@@ -280,6 +386,16 @@ def write_paper(path: Path, experiment: dict, summary: dict, figures: Path, tabl
         "The directional hypothesis is falsified for this pilot if main minus control accuracy is nonpositive. "
         "A paired problem bootstrap quantifies conditional uncertainty. Sampled pass@k follows the unbiased subset estimator [8]. "
         "Validation cannot select checkpoints. Exact dataset hashes, schedules, timing rules and sampling settings are recorded in reports/preregistration.md and configs/pilot.json.",
+    )
+    manifest = experiment.get("dataset_manifest", read_json(Path("data/manifest.json"), {}))
+    counts = manifest.get("splits", {})
+    paragraph(
+        "Dataset counts: " + ", ".join(f"{name} {item['count']}" for name, item in counts.items()) + ". "
+        f"Greedy responses allow at most {config['max_new_tokens']} new tokens. "
+        f"The sampled evaluation uses {config['samples_per_problem']} responses on each of "
+        f"{config['sampled_problem_count']} fixed test problems, with temperature {config['sampled_temperature']}, "
+        f"top-p {config['sampled_top_p']} and top-k disabled. pass@k = 1 - C(n-c,k)/C(n,k), where c is the number "
+        f"of correct samples. Intervals use {config['bootstrap_replicates']} paired resamples, seed {config['data_seed']}."
     )
     section("Results and claims", html.escape(summary["finding"]))
     cells = [[Paragraph(html.escape(cell), styles["BodyText"]) for cell in row] for row in table]
@@ -294,6 +410,7 @@ def write_paper(path: Path, experiment: dict, summary: dict, figures: Path, tabl
         )
     )
     story.extend([result, Spacer(1, 12)])
+    paragraph(html.escape(coverage_description(summary)))
     primary = summary.get("primary")
     if primary:
         paragraph(
@@ -301,6 +418,29 @@ def write_paper(path: Path, experiment: dict, summary: dict, figures: Path, tabl
             f"[{primary['low'] * 100:.3f}, {primary['high'] * 100:.3f}], on {primary['n']} paired problems."
         )
     story.append(Image(str(figures / "accuracy.png"), width=6.0 * inch, height=3.0 * inch))
+    paragraph(html.escape(summary["interval_caveat"]))
+    paragraph("Probe performance, validity and resources", "Heading2")
+    diagnostics = Table(
+        [[Paragraph(html.escape(cell), styles["BodyText"]) for cell in row] for row in diagnostic_table(summary)],
+        colWidths=[64, 64, 64, 64, 68, 68, 60],
+        repeatRows=1,
+    )
+    diagnostics.setStyle(
+        TableStyle(
+            [
+                ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#dce9f5")),
+                ("VALIGN", (0, 0), (-1, -1), "TOP"),
+                ("GRID", (0, 0), (-1, -1), 0.25, colors.lightgrey),
+            ]
+        )
+    )
+    story.extend([diagnostics, Spacer(1, 8)])
+    paragraph(
+        "Train tokens count candidates in committed generations; evaluation tokens count persisted evaluation responses. "
+        "Calibration, validation, interrupted batches and replay costs are excluded from these two table columns. "
+        "Training hours are wall-clock phase duration and include checkpointing. Probes are training examples, not held-out data."
+    )
+    section("Did the novelty bonus affect optimization?", html.escape(intervention_description(summary)))
     section(
         "Training dynamics and output inspection",
         "Population metrics describe perturbed candidates, not the master checkpoint. "
@@ -342,6 +482,31 @@ def write_paper(path: Path, experiment: dict, summary: dict, figures: Path, tabl
         "Atomic checkpoints contain weights, all RNG streams, archive, cursor, config and deadline. "
         f"Recorded technical failures: {len(summary['failures'])}. Experiment elapsed seconds: {summary['elapsed_seconds']:.3f}. "
         "Exact exceptions and incomplete conditions are retained in the generated Markdown report and JSON artifacts.",
+    )
+    environment = experiment.get("environment", {})
+    calibration = experiment.get("calibration", {})
+    paragraph(
+        "Execution provenance: "
+        + html.escape(str(environment.get("gpu", "not executed")))
+        + "; Python "
+        + html.escape(str(environment.get("python", "not recorded")))
+        + ". Code revision: "
+        + html.escape(experiment.get("code_revision", "not recorded"))
+        + ". "
+        + f"Frozen generations per arm: {calibration.get('generations', 'not calibrated')}; "
+        + f"inference batch: {calibration.get('batch_size', 'not calibrated')}. "
+        + "The timing rule uses the slowest calibration candidate, a complete update and checkpoint, and amortized "
+        + "validation cost. The budget reserves a fraction of each training phase and freezes the common count before training."
+    )
+    paragraph(
+        "Embedding revision: "
+        + config["embedding_revision"]
+        + ". ExTra upstream revision: "
+        + config["extra_revision"]
+        + ". Complete dependency versions, dataset hashes, absolute deadline, per-phase timings, token-work accounting, "
+        + "raw outputs and completion flags are machine-readable in the published experiment artifacts. "
+        + "Full-weight noise is regenerated by a hash of perturbation seed and tensor name using an explicit PyTorch generator. "
+        + "Bit-level replay is scoped to the recorded hardware and software environment."
     )
     references = [
         ("1. ExTra", "https://arxiv.org/abs/2606.24994"),
@@ -402,7 +567,15 @@ def report(directory: Path, output_root: Path = Path(".")) -> dict:
     text = (
         f'# Pilot experiment\n\nLibor "Burny" Burian · {datetime.now().date().isoformat()}\n\n'
         f"{summary['finding']}\n\n{comparison}\n\n{summary['interval_scope']}\n\n"
-        f"{markdown_table(table)}\n\n![Accuracy](figures/accuracy.png)\n\n![Training](figures/training.png)\n\n"
+        f"{summary['interval_caveat']}\n\n"
+        f"{markdown_table(table)}\n\n{coverage_description(summary)}\n\n"
+        "![Accuracy](figures/accuracy.png)\n\n![Training](figures/training.png)\n\n"
+        f"## Probe performance, validity and resources\n\n{markdown_table(diagnostic_table(summary))}\n\n"
+        "Train tokens count only candidates in committed generations; evaluation tokens count persisted evaluation responses. "
+        "Calibration, validation, interrupted batches and replay costs are excluded from those columns. "
+        "Training hours include phase overhead and checkpointing. Probes are training examples, not held-out data.\n\n"
+        f"## Novelty intervention diagnostic\n\n{intervention_description(summary)}\n\n"
+        "See [analysis notes](analysis-notes.md) for when this descriptive check was added.\n\n"
         "## Method and scope\n\nSee the [preregistration](preregistration.md), [configuration](../configs/pilot.json), "
         "[data hashes](../data/manifest.json), and [literature audit](../docs/literature.md). "
         "This is an adaptation of [ExTra](https://arxiv.org/abs/2606.24994) and "
@@ -417,6 +590,7 @@ def report(directory: Path, output_root: Path = Path(".")) -> dict:
                 "methods": summary["methods"],
                 "elapsed_seconds": summary["elapsed_seconds"],
                 "calibration": experiment.get("calibration", {}),
+                "logged_generation_work": summary["logged_generation_work"],
             },
             indent=2,
         )
