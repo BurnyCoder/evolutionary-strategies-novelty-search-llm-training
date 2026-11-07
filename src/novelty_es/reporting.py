@@ -333,7 +333,7 @@ def outcome_description(summary: dict) -> str:
         if all(method["hard"]["accuracy"] == 0 for method in trained):
             sentences.append("Neither trained checkpoint solves a five-number test problem in this evaluation.")
         if all(method["hard"]["validity"] < original["hard"]["validity"] for method in trained):
-            sentences.append("Both have lower expression validity on those harder problems than the original model, so the validity improvement does not transfer uniformly.")
+            sentences.append("Both have lower expression validity on the five-number test problems than the original model, so the validity improvement does not transfer uniformly.")
     return " ".join(sentences) or "The tables retain all observed outcomes; no broader performance claim follows from this single seed."
 
 
@@ -378,7 +378,7 @@ def plot_results(directory: Path, summary: dict, output: Path) -> None:
     Each panel scales to its observed maximum; accuracy includes interval endpoints.
     """
     output.mkdir(parents=True, exist_ok=True)
-    fig, axes = plt.subplots(1, 3, figsize=(12, 3.7), layout="constrained")
+    fig, axes = plt.subplots(1, 3, figsize=(12, 4.2), layout="constrained")
     colors = {"main": "#157f67", "reward_only": "#bc681e"}
     plotted = False
     keys = ("quality", "novelty", "accuracy")
@@ -396,16 +396,19 @@ def plot_results(directory: Path, summary: dict, output: Path) -> None:
         bound = 2 if key == "novelty" else 1
         axis.set(xlabel="Generation", ylabel=key, ylim=(0, min(bound, max(0.001, 1.15 * maxima[key]))), xlim=(0.5, last_generation + 0.5))
         axis.xaxis.set_major_locator(MaxNLocator(integer=True))
+        axis.set_xlabel("Generation", fontsize=13)
+        axis.set_ylabel(key, fontsize=13)
+        axis.tick_params(labelsize=12)
         axis.grid(alpha=0.2)
         if key == "accuracy":
             axis.yaxis.set_major_formatter(PercentFormatter(1))
     if plotted:
-        axes[0].legend(fontsize=8)
+        axes[0].legend(fontsize=12)
     else:
         axes[0].text(
             0.5, 0.5, "No committed training observations", transform=axes[0].transAxes, ha="center", fontsize=8
         )
-    fig.suptitle("Population means; perturbed candidates, not final test performance\nZero-based axes; scale differs by metric")
+    fig.suptitle("Population means; perturbed candidates, not final test performance\nZero-based axes; scale differs by metric", fontsize=14)
     fig.savefig(output / "training.png", dpi=160)
     plt.close(fig)
     fig, axis = plt.subplots(figsize=(7, 3.5), layout="constrained")
@@ -607,7 +610,7 @@ def write_paper(path: Path, experiment: dict, summary: dict, figures: Path, tabl
         "Reward is the optimization signal; no cross-entropy loss is optimized in this pilot. "
         "The interactive result page shows the same first test problems across methods, including failures, without choosing examples by outcome.",
     )
-    story.append(Image(str(figures / "training.png"), width=6.2 * inch, height=1.92 * inch))
+    story.append(Image(str(figures / "training.png"), width=6.2 * inch, height=2.17 * inch))
     for name, examples in summary["examples"].items():
         if examples:
             row = examples[0]
