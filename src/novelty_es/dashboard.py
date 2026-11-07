@@ -23,7 +23,10 @@ def dashboard_state(directory: Path) -> dict:
     expected = {name: row["count"] for name, row in manifest.get("splits", {}).items()}
     expected["probes"] = config.get("probe_count")
     expected["sampled"] = config.get("sampled_problem_count", 0) * config.get("samples_per_problem", 0)
-    for condition in ("original", "main", "reward_only"):
+    conditions = ["original", "main", "reward_only"]
+    if "continuation" in experiment:
+        conditions.extend(["parent_main", "parent_reward_only"])
+    for condition in conditions:
         evaluation = read_json(directory / condition / "evaluation.json", {})
         evaluation_progress[condition] = {
             name: {

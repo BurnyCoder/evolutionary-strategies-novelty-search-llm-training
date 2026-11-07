@@ -6,11 +6,11 @@
 </style></head><body>
 <span id="connection">Connecting…</span><div class="eyebrow">FULL-WEIGHT LANGUAGE MODEL EVOLUTION</div>
 <h1>Does useful novelty improve accuracy?</h1>
-<p>One paired seed · ExTra-derived novelty + ES · Original-model baseline</p>
+<p id="study">One paired seed · ExTra-derived novelty + ES · Original-model baseline</p>
 <div class="grid"><section class="card"><div class="label">Current phase</div><div id="phase" class="value">Not started</div><div id="deadline" class="label">The experiment clock starts at calibration.</div></section><section class="card"><div class="label">Main method</div><div id="main-progress" class="value">Waiting</div><div id="main-metrics" class="label">No training measurements</div></section><section class="card"><div class="label">Reward-only control</div><div id="reward_only-progress" class="value">Waiting</div><div id="reward_only-metrics" class="label">No training measurements</div></section></div>
 <section class="card"><h2>Evaluation progress</h2><div id="evaluation-progress" class="empty">Evaluation has not started.</div><p class="label">Live counts include completed batches only. Sampled accuracy averages individual responses; final pass@k uses complete problem groups. Partial evaluations are descriptive.</p></section>
 <section class="card"><h2>Training measurements</h2><label for="metric">Measure </label><select id="metric"><option value="accuracy">Candidate accuracy</option><option value="quality">Task reward</option><option value="novelty">Correct-answer novelty</option><option value="validity">Answer validity</option><option value="validation">Master validation accuracy</option><option value="throughput">Generated tokens / second</option></select> <label><input id="full-range" type="checkbox"> Show full metric range</label><div class="legend"><p class="main">● Main method</p><p class="control">● Reward-only ES</p></div><div id="chart"></div><p class="label">Axes start at zero and share a scale across conditions. The default upper limit follows the observed data; the full-range option applies to bounded metrics. Candidate metrics average perturbed models; validation evaluates the unperturbed master. Neither is held-out test accuracy.</p></section>
-<section class="card"><h2>Held-out results</h2><div id="results" class="empty">Results will appear after recorded evaluation.</div><p class="notice">Confidence intervals resample problems for this training seed. They exclude training-seed variability. Incomplete runs are not confirmatory comparisons.</p><p id="finding"></p><p id="comparison"></p></section>
+<section class="card"><h2>Held-out results</h2><div id="results" class="empty">Results will appear after recorded evaluation.</div><p class="notice">Confidence intervals resample problems for this training seed. They exclude training-seed variability. Incomplete runs are not confirmatory comparisons.</p><p id="finding"></p><p id="comparison"></p><div id="longitudinal"></div></section>
 <section class="card"><h2>Inspect the same test problem</h2><label for="example">Problem </label><select id="example"></select><div id="examples"></div></section>
 <footer><a href="https://github.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training">Source and preregistration</a> · <a href="https://arxiv.org/abs/2606.24994">ExTra</a> · <a href="https://arxiv.org/abs/2509.24372">ES at Scale</a><p>Research by Libor “Burny” Burian. An adaptation, not a reproduction of either paper.</p></footer>
 <script>
@@ -53,8 +53,52 @@ function chart(){
   el('chart').innerHTML=svg;
 }
 function examples(){const id=el('example').value,box=el('examples');box.replaceChildren();for(const [name,rows] of Object.entries(state.summary?.examples||{})){const row=rows.find(r=>r.problem_id===id);if(!row)continue;const h=document.createElement('h3');h.textContent=name+' · '+(row.correct?'correct':row.valid?'legal, wrong':'invalid');const p=document.createElement('p');p.textContent=row.prompt;const pre=document.createElement('pre');pre.textContent=row.response;box.append(h,p,pre);}}
-function primaryComparison(){const p=state.summary?.primary;el('comparison').textContent=p?`Primary difference (main minus control): ${(100*p.difference).toFixed(3)} percentage points; paired 95% interval [${(100*p.low).toFixed(3)}, ${(100*p.high).toFixed(3)}], across ${p.n} test problems.`:'';}
-function render(){const e=state.experiment||{};el('phase').textContent=(e.phase||'not_started').replaceAll('_',' ');if(e.deadline)el('deadline').textContent='Absolute deadline: '+new Date(e.deadline*1000).toLocaleString();for(const name of ['main','reward_only']){const p=state.progress?.[name]||{};if(p.generations!=null){el(name+'-progress').textContent=`${p.generation} / ${p.generations} generations`;el(name+'-metrics').textContent=`Candidate ${p.candidate}/${p.population} · accuracy ${pct(p.accuracy)} · valid ${pct(p.validity)} · checkpoint ${p.checkpoint_generation}`;}}chart();const methods=state.summary?.methods||{};if(Object.keys(methods).length){const box=el('results');box.className='table-wrap';box.replaceChildren();const t=document.createElement('table');const tr=document.createElement('tr');for(const text of ['Condition','Test accuracy','95% interval','Hard accuracy','pass@1','pass@8','Status']){const th=document.createElement('th');th.textContent=text;tr.append(th);}t.append(tr);for(const [name,m]of Object.entries(methods)){const r=document.createElement('tr');for(const text of [name,pct(m.test?.accuracy),m.test?.interval?m.test.interval.map(pct).join(' – '):'—',pct(m.hard?.accuracy),pct(m.sampled?.pass1),pct(m.sampled?.pass8),m.complete?'Complete':'Incomplete']){const td=document.createElement('td');td.textContent=text;r.append(td);}t.append(r);}box.append(t);}el('finding').textContent=state.summary?.finding||'';const opts=[...new Set(Object.values(state.summary?.examples||{}).flat().map(r=>r.problem_id))],select=el('example'),old=select.value;select.replaceChildren();for(const id of opts){const o=document.createElement('option');o.value=id;o.textContent=id;select.append(o);}if(opts.includes(old))select.value=old;examples();}
+function primaryComparison(){const p=state.summary?.primary,split=state.summary?.primary_split||'test';el('comparison').textContent=p?`Primary difference (main minus control): ${(100*p.difference).toFixed(3)} percentage points; paired 95% interval [${(100*p.low).toFixed(3)}, ${(100*p.high).toFixed(3)}], across ${p.n} ${split} problems.`:'';}
+function render(){
+  const e=state.experiment||{},summary=state.summary||{},split=summary.primary_split||e.config?.primary_split||'test';
+  el('phase').textContent=(e.phase||'not_started').replaceAll('_',' ');
+  if(e.continuation)el('study').textContent=`Matched continuation · generation ${e.continuation.parent_generation} to ${e.continuation.target_generation} · fresh primary endpoint · one training seed`;
+  if(e.deadline)el('deadline').textContent='Absolute deadline: '+new Date(e.deadline*1000).toLocaleString();
+  for(const name of ['main','reward_only']){
+    const p=state.progress?.[name]||{};
+    if(p.generations!=null){
+      el(name+'-progress').textContent=`${p.generation} / ${p.generations} generations`;
+      el(name+'-metrics').textContent=`Candidate ${p.candidate}/${p.population} · accuracy ${pct(p.accuracy)} · valid ${pct(p.validity)} · checkpoint ${p.checkpoint_generation}`;
+    }
+  }
+  chart();
+  const methods=summary.methods||{};
+  if(Object.keys(methods).length){
+    const box=el('results');box.className='table-wrap';box.replaceChildren();
+    const t=document.createElement('table'),tr=document.createElement('tr');
+    for(const text of ['Condition',split+' accuracy','95% interval','Hard accuracy','pass@1','pass@8','Status']){
+      const th=document.createElement('th');th.textContent=text;tr.append(th);
+    }
+    t.append(tr);
+    for(const [name,m]of Object.entries(methods)){
+      const r=document.createElement('tr'),primary=m[split];
+      for(const text of [name,pct(primary?.accuracy),primary?.interval?primary.interval.map(pct).join(' – '):'—',pct(m.hard?.accuracy),pct(m.sampled?.pass1),pct(m.sampled?.pass8),m.complete?'Complete':'Incomplete']){
+        const td=document.createElement('td');td.textContent=text;r.append(td);
+      }
+      t.append(r);
+    }
+    box.append(t);
+  }
+  el('finding').textContent=summary.finding||'';
+  const longitudinal=el('longitudinal');longitudinal.replaceChildren();
+  if(summary.longitudinal){
+    for(const name of ['main','reward_only']){
+      const p=document.createElement('p');
+      p.textContent=`${name}: parent fresh ${pct(summary.longitudinal.parents[name]?.accuracy)} → final fresh ${pct(methods[name]?.fresh?.accuracy)}; old-test accuracy ${pct(methods[name]?.test?.accuracy)} (secondary).`;
+      longitudinal.append(p);
+    }
+    const d=summary.longitudinal.difference_in_differences;
+    if(d){const p=document.createElement('p');p.textContent=`Difference in fresh accuracy changes: ${(100*d.difference).toFixed(3)} pp [${(100*d.low).toFixed(3)}, ${(100*d.high).toFixed(3)}]; descriptive paired 95% interval.`;longitudinal.append(p);}
+  }
+  const opts=[...new Set(Object.values(summary.examples||{}).flat().map(r=>r.problem_id))],select=el('example'),old=select.value;
+  select.replaceChildren();for(const id of opts){const o=document.createElement('option');o.value=id;o.textContent=id;select.append(o);}
+  if(opts.includes(old))select.value=old;examples();
+}
 async function update(){try{const response=await fetch(staticMode?'status.json':'api/status',{cache:'no-store'});if(!response.ok)throw Error(response.status);state=await response.json();el('connection').textContent=staticMode?'Published snapshot':'Live · '+new Date().toLocaleTimeString();render();evaluationProgress();primaryComparison();}catch(error){if(!staticMode){staticMode=true;return update();}el('connection').textContent='Waiting for recorded artifacts';}}
 el('metric').addEventListener('change',chart);el('full-range').addEventListener('change',chart);el('example').addEventListener('change',examples);update();setInterval(()=>{if(!staticMode)update();},5000);
 </script></body></html>
