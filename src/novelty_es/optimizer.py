@@ -1,6 +1,8 @@
 """Independent implementation of Gaussian ES with tie-aware rank shaping.
 
-Math reference: https://arxiv.org/abs/2509.24372 (not its restricted source code).
+Math reference: https://arxiv.org/abs/2509.24372 .
+The upstream Academic Public License permits this project's noncommercial research
+scope; source reuse must preserve its terms. This pilot uses an independent implementation.
 Rank shaping precedent: https://github.com/uber-research/deep-neuroevolution .
 PyTorch seeded generators: https://docs.pytorch.org/docs/stable/generated/torch.Generator.html .
 FP32 masters live on the CPU; layer-sized GPU temporaries bound device memory.

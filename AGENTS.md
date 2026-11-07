@@ -4,6 +4,7 @@ The user's full research specification governs this project. Preserve its scient
 
 - Work only in this repository (or explicitly authorized extra storage), using uv, Python 3.12, the local .venv and ignored .env configuration.
 - Start from the source audit in docs/literature.md. Verify important method claims against papers and code; preserve license attribution in NOTICE.
+- This project is strictly noncommercial research. Academic/noncommercial upstream code is eligible for reuse when its actual terms cover this scope. Preserve upstream licenses, notices, modification records and redistribution requirements; do not treat a commercial-use restriction as a blanket research-use prohibition.
 - Read reports/preregistration.md and configs/pilot.json before changing training or evaluation. Registration was published before model execution. Record any amendment with its timing and reason; never reset an existing experiment deadline.
 - The first pilot compares seed 0 full-weight ES plus correctness-gated novelty, matched reward-only ES, and the original model. All correctness, split, archive, rank, replay and deadline tests must pass. Keep calibration and generation budgets matched and distinguish incomplete outcomes.
 - Do not expose test prompts to training, choose checkpoints on test scores, change the primary descriptor post hoc, or infer seed robustness from problem-bootstrap intervals.
