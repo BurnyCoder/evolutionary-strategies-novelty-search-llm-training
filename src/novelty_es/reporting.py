@@ -157,7 +157,7 @@ def summarize(directory: Path) -> dict:
             "responses": sum(row["responses"] for row in generations),
             "generated_tokens": sum(row["generated_tokens"] for row in generations),
             "truncated": sum(row["truncated"] for row in generations),
-            "weight_diagnostic": novelty_intervention(generations, config["novelty_weight"]),
+            "weight_diagnostic": novelty_intervention(generations, config["novelty_weight"] if condition == "main" else 0.0),
         }
         phase = experiment.get("phases", {}).get(condition, {})
         method["training_seconds"] = phase.get("finished_at", time.time()) - phase["started_at"] if phase else 0.0
@@ -320,7 +320,8 @@ def refresh_readme(path: Path, summary: dict, table: list[list[str]]) -> None:
 def intervention_description(summary: dict) -> str:
     """Describe whether the bonus changes update weights, without implying a trajectory replay."""
     sentences = [
-        f"Descriptive diagnostic: compare Z(Q) + {summary['novelty_weight']} N with Z(Q) on each recorded population. "
+        f"Descriptive diagnostic: compare the main arm's Z(Q) + {summary['novelty_weight']} N with Z(Q) on its recorded populations. "
+        "The control computes novelty but applies coefficient zero, so its novelty-induced weight changes are zero. "
         "This local comparison does not simulate the counterfactual training trajectory."
     ]
     for name, method in summary["methods"].items():
