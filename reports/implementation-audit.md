@@ -17,3 +17,7 @@ The bounded code review checked the following failure paths:
 The initial report/PDF was generated without empirical results to verify the artifact path. The live dashboard was inspected in a browser and its measure selector was exercised. Pinned downloads finished before the clock. No GPU LLM inference or training was performed during these checks.
 
 Remaining hardware-dependent risks are resolved by the registered calibration: actual CUDA model execution, device memory sufficiency, deterministic noise behavior and measured throughput. If a material implementation error is found after model execution, preserve the failure log and publish an amendment rather than concealing it or resetting the deadline. Full-seed robustness and the deferred scratch study remain outside this first pilot.
+
+## Pre-training amendment audit
+
+The historical checks above describe the original published implementation. [Amendment A](preregistration.md#amendment-a-source-aligned-weighting-before-either-trained-condition) supersedes centered ranks with population z-scores of task reward followed by direct novelty addition. New analytic checks cover equal-quality zeroing, population rather than sample variance, common novelty offsets surviving normalization, direct Gaussian weighted sums without hidden reshaping, and zero coefficients leaving masters unchanged. The interrupted/resumed pipeline check exercises the amended rule from initialization. All trained conditions must use the amended configuration from their first candidate; no original-rule training checkpoint exists.

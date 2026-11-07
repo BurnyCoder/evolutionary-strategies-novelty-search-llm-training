@@ -10,7 +10,7 @@ import math
 import numpy as np
 import torch
 
-from .optimizer import centered_ranks
+from .optimizer import candidate_weights
 
 
 def pass_at_k(n: int, correct: int, k: int) -> float:
@@ -35,34 +35,34 @@ def paired_bootstrap(main, control, replicates: int = 10000, seed: int = 2026110
 
 
 def novelty_intervention(generations: list[dict], coefficient: float) -> dict:
-    """Check bonus activation and rank changes on each recorded candidate population.
+    """Check bonus activation and weight changes on each recorded candidate population.
 
     This is a descriptive, post-hoc local counterfactual, not a replay of a whole
-    training trajectory. Reuse the optimizer's rank function and training's FP32
-    fitness arithmetic so positive bonuses rounded away do not count as changes.
+    training trajectory. Reuse the optimizer's coefficient function so positive
+    bonuses rounded away in FP32 do not count as changes.
     """
     result = {
         "generations_observed": len(generations),
         "candidates_observed": 0,
         "candidates_positive_novelty": 0,
         "generations_positive_novelty": 0,
-        "generations_rank_changed": 0,
-        "candidates_rank_changed": 0,
-        "largest_absolute_rank_change": 0.0,
+        "generations_weight_changed": 0,
+        "candidates_weight_changed": 0,
+        "largest_absolute_weight_change": 0.0,
     }
     for row in generations:
-        quality = torch.tensor(row["candidate_quality"], dtype=torch.float32)
+        quality = torch.tensor(row["candidate_quality"], dtype=torch.float64)
         novelty = torch.tensor(row["candidate_novelty"], dtype=torch.float32)
         if quality.shape != novelty.shape or quality.ndim != 1 or not len(quality):
             raise ValueError("Aligned nonempty candidate quality and novelty vectors required")
-        difference = centered_ranks((quality + coefficient * novelty).tolist()) - centered_ranks(quality.tolist())
+        difference = candidate_weights(quality, novelty, coefficient) - candidate_weights(quality, novelty, 0.0)
         positive, changed = int((novelty > 0).sum()), int((difference != 0).sum())
         result["candidates_observed"] += len(quality)
         result["candidates_positive_novelty"] += positive
         result["generations_positive_novelty"] += bool(positive)
-        result["generations_rank_changed"] += bool(changed)
-        result["candidates_rank_changed"] += changed
-        result["largest_absolute_rank_change"] = max(
-            result["largest_absolute_rank_change"], float(difference.abs().max())
+        result["generations_weight_changed"] += bool(changed)
+        result["candidates_weight_changed"] += changed
+        result["largest_absolute_weight_change"] = max(
+            result["largest_absolute_weight_change"], float(difference.abs().max())
         )
     return result

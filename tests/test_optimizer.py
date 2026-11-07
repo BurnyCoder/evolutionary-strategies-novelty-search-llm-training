@@ -1,25 +1,43 @@
 """Analytic and replay checks for full-parameter, seed-reconstructed ES."""
 
+import math
+
+import pytest
 import torch
 from torch import nn
 
-from novelty_es.optimizer import FullWeightES, centered_ranks, perturbation_seeds
+from novelty_es.optimizer import FullWeightES, candidate_weights, perturbation_seeds, z_scores
 
 
 def test_ties_and_flat_fitness():
-    assert torch.equal(centered_ranks([3, 3, 3]), torch.zeros(3))
-    assert torch.allclose(centered_ranks([1, 1, 3]), torch.tensor([-0.25, -0.25, 0.5]))
-    assert torch.equal(centered_ranks([4]), torch.zeros(1))
+    assert torch.equal(z_scores([3, 3, 3]), torch.zeros(3))
+    assert torch.allclose(z_scores([1, 1, 3]), torch.tensor([-1 / math.sqrt(2), -1 / math.sqrt(2), math.sqrt(2)]))
+    assert torch.equal(z_scores([4]), torch.zeros(1))
+    with pytest.raises(ValueError, match="finite"):
+        z_scores([1, float("nan")])
+
+
+def test_novelty_is_added_after_quality_normalization():
+    """A shared bonus survives; it cannot change the quality normalization denominator."""
+    quality = [0.0, 0.1]
+    baseline = candidate_weights(quality, [0.5, 0.5], 0.0)
+    main = candidate_weights(quality, [0.5, 0.5], 1.0)
+    assert torch.allclose(baseline, torch.tensor([-1.0, 1.0]))
+    assert torch.allclose(main - baseline, torch.full((2,), 0.5))
+    assert torch.equal(candidate_weights([1, 1], [0.2, 0.8], 1.0), torch.tensor([0.2, 0.8]))
+    assert torch.equal(candidate_weights([1, 1], [0, 0], 1.0), torch.zeros(2))
 
 
 def test_update_matches_analytic_gaussian_sum():
     model = nn.Linear(2, 1, bias=False)
     model.weight.data.zero_()
     es = FullWeightES(model, sigma=0.01, alpha=0.2, noise_device="cpu")
-    seeds, fitness = [11, 12, 13], [1, 0, 2]
+    seeds, weights = [11, 12, 13], [1.0, 0.0, 2.0]
     noises = [es.noise("weight", model.weight.shape, seed) for seed in seeds]
-    expected = sum(w * noise for w, noise in zip(centered_ranks(fitness), noises, strict=True)) * (0.2 / 3)
-    es.update(seeds, fitness)
+    expected = (noises[0] + 2 * noises[2]) * (0.2 / 3)
+    es.update(seeds, weights)
+    assert torch.allclose(es.master["weight"], expected, atol=1e-8)
+    es.update(seeds, [0.0, 0.0, 0.0])
     assert torch.allclose(es.master["weight"], expected, atol=1e-8)
 
 

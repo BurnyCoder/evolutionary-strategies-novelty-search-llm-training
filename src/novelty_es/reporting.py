@@ -138,7 +138,7 @@ def summarize(directory: Path) -> dict:
             "responses": sum(row["responses"] for row in generations),
             "generated_tokens": sum(row["generated_tokens"] for row in generations),
             "truncated": sum(row["truncated"] for row in generations),
-            "rank_diagnostic": novelty_intervention(generations, config["novelty_weight"]),
+            "weight_diagnostic": novelty_intervention(generations, config["novelty_weight"]),
         }
         phase = experiment.get("phases", {}).get(condition, {})
         method["training_seconds"] = phase.get("finished_at", phase.get("started_at", 0)) - phase.get("started_at", 0)
@@ -233,19 +233,19 @@ def diagnostic_table(summary: dict) -> list[list[str]]:
 
 
 def intervention_description(summary: dict) -> str:
-    """Describe whether the bonus changes ranking, without implying a trajectory replay."""
+    """Describe whether the bonus changes update weights, without implying a trajectory replay."""
     sentences = [
-        f"Post-hoc descriptive diagnostic: compare ranks of Q + {summary['novelty_weight']} N with ranks of Q on each recorded population. "
+        f"Descriptive diagnostic: compare Z(Q) + {summary['novelty_weight']} N with Z(Q) on each recorded population. "
         "This local comparison does not simulate the counterfactual training trajectory."
     ]
     for name, method in summary["methods"].items():
-        diagnostic = method["training_observations"]["rank_diagnostic"]
+        diagnostic = method["training_observations"]["weight_diagnostic"]
         if diagnostic["generations_observed"]:
             sentences.append(
                 f"{name}: positive novelty in {diagnostic['candidates_positive_novelty']} of "
-                f"{diagnostic['candidates_observed']} candidates; changed rank weights in "
-                f"{diagnostic['generations_rank_changed']} of {diagnostic['generations_observed']} generations "
-                f"({diagnostic['candidates_rank_changed']} candidate weights)."
+                f"{diagnostic['candidates_observed']} candidates; changed update weights in "
+                f"{diagnostic['generations_weight_changed']} of {diagnostic['generations_observed']} generations "
+                f"({diagnostic['candidates_weight_changed']} candidate weights)."
             )
     return " ".join(sentences)
 
@@ -345,7 +345,7 @@ def write_paper(path: Path, experiment: dict, summary: dict, figures: Path, tabl
         "Context, motivation and introduction",
         "The experiment asks whether exploration among correct answer forms improves held-out task success. "
         "ExTra [1] supplies the historical semantic novelty concept; ES at Scale [2] supplies the full-weight optimization reference. "
-        "Their combination changes the optimizer, sibling population, task and normalization, so it is an adaptation rather than a reproduction. "
+        "Their combination uses population-level ES rather than GRPO, with a different sibling population and task, so it is an adaptation rather than a reproduction. "
         "A reward-only ES control is necessary because ES can itself change solution coverage [3].",
     )
     section(
@@ -359,9 +359,9 @@ def write_paper(path: Path, experiment: dict, summary: dict, figures: Path, tabl
         f"The model is {html.escape(config['model_id'])}, revision {config['model_revision']}. "
         f"Each generation evaluates {config['population']} independent Gaussian candidates (sigma {config['sigma']}) "
         f"on {config['rotating_count']} rotating training problems and {config['probe_count']} fixed training probes. "
-        f"Mean task reward is combined with {config['novelty_weight']} times correctness-gated cosine novelty for the main condition. "
+        f"Population-z-scored task reward is combined with {config['novelty_weight']} times correctness-gated cosine novelty for the main condition. "
         f"The archive retains {config['memory_size']} correct embeddings per probe after seeded insertion. "
-        f"Average centered fitness ranks weight noise in the update; effective alpha is {config['alpha']}. "
+        f"These coefficients weight noise directly, without another normalization; effective alpha is {config['alpha']}. "
         "FP32 masters reconstruct BF16 candidates afresh and tied tensors are updated once. Prefix regeneration and backpropagation are absent.",
     )
     paragraph(
@@ -373,11 +373,19 @@ def write_paper(path: Path, experiment: dict, summary: dict, figures: Path, tabl
         "then correct embeddings are appended in seeded shuffled order and the oldest entries are removed."
     )
     paragraph(
-        f"Fitness is F_i = Q_i + {config['novelty_weight']} N_i for the main arm and F_i = Q_i for control. "
-        "The update is theta_next = theta + (alpha / population) sum_i centeredRank(F_i) epsilon_i. "
-        "Each epsilon_i is independent standard Gaussian noise over every unique parameter tensor. Average ranks map "
-        "to [-0.5, 0.5], and equal scores produce zero update. Alpha includes the inverse-noise factor; it is not "
+        "Z_i = (Q_i - mean(Q)) / (std_population(Q) + 1e-8), with zero Z for constant Q. "
+        f"W_i = Z_i + {config['novelty_weight']} N_i for the main arm and W_i = Z_i for control. "
+        "The update is theta_next = theta + (alpha / population) sum_i W_i epsilon_i. "
+        "Each epsilon_i is independent standard Gaussian noise over every unique parameter tensor. "
+        "A common positive novelty bonus is retained. Alpha includes the inverse-noise factor; it is not "
         "an additional alpha/sigma update. MiniLM is frozen, and both conditions compute the same categories of probe work."
+    )
+    paragraph(
+        "Protocol amendment A replaced combined-reward ranks with source-aligned z-scored quality plus post-normalization novelty. "
+        "It was published after calibration and partial original-model evaluation were visible, but before either trained condition began. "
+        "Both arms start from the original pretrained weights using the amended rule from their first generation. "
+        "The original registration, changed configuration, code revisions and unchanged absolute deadline are retained in the run record. "
+        "This ordering follows ES at Scale Algorithm 2 and ExTra Equation 2; it is not evidence that the hybrid outperforms the abandoned rule."
     )
     section(
         "Data, evaluation and preregistered analysis",

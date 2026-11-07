@@ -1,0 +1,21 @@
+# Paper and source correspondence
+
+This is an audit of an ES–ExTra adaptation, not a claim to reproduce either paper's full algorithm or reported performance. [Amendment A](../reports/preregistration.md#amendment-a-source-aligned-weighting-before-either-trained-condition) was published after partial original-model evaluation, before either trained arm. No old-rule training checkpoint is used.
+
+| Component | Source and current implementation | Remaining difference or reason |
+|---|---|---|
+| Gaussian ES update | [ES at Scale Algorithm 2](https://arxiv.org/html/2509.24372v3#S3); `optimizer.py` uses population-z-scored quality and effective-alpha weighted noise | ExTra's bonus is added to ES coefficients. No GRPO policy gradient is used. |
+| Reward scaling | [Pinned reward-shaping code](https://github.com/VsonicV/es-at-scale/blob/574a9d134da1ffce2a8bb812019899e5c96b588a/es_at_scale/utils/reward_shaping.py); population standard deviation and denominator stabilizer | Original centered ranks were removed. No evidence established their superiority on this task. |
+| Novelty placement | [ExTra Equation 2 and Appendix D.1](https://arxiv.org/html/2606.24994v1); normalize quality first, then add novelty directly | Normalization is over candidate models' mean quality, rather than same-policy rollout rewards. No re-centering or ranking follows addition. |
+| Correct-response memory | [ExTra Appendix B.3 and memory source](https://github.com/allen4747/extra/blob/ea53e68036356f8f276e261e886fbbc102633be3/verl/recipe/extra/curiosity_memory.py); correct-only history and siblings, cosine nearest neighbor, self exclusion | The helper accepts all embeddings; our explicit Boolean gate follows the paper and excludes legal-but-wrong answers. |
+| Memory lifecycle | Same prompt identity and recent bounded history; score against history and current siblings | Separate scoring/insertion freezes history; seeded shuffle avoids fixed candidate-order retention. Explicit empty-set behavior and no warmup/group-max scaling follow the registered equation. |
+| Numerical reconstruction | Full unique parameter tensors; deterministic Gaussian seed reconstruction; effective coefficient absorbs inverse sigma | FP32 masters avoid repeated BF16 add/subtract drift. Independent per-tensor streams follow isotropic Gaussian noise; upstream resets seeds across layers and acknowledges correlated noise in Appendix A.1. These are numerical safeguards, not proven performance improvements. |
+| Scope | Original pretrained initialization for each arm, greedy Countdown evaluations, full-weight ES | Different model/task budget from ExTra; prefix regeneration is deliberately absent. Correctness-gated novelty supplies no signal when there are no correct probe responses. Neither paper guarantees benefit from this hybrid. |
+
+## Executed checks
+
+Run `uv run python scripts/audit_upstream.py` to download the reviewed, pinned source files and their licenses into ignored `tmp/source-audit/`, then compare numerical outputs on CPU. [Machine-readable results](../reports/source-conformance.json) record source hashes, seed, comparison counts and maximum errors. These are software test results, not model capability results.
+
+The differential check compares the actual upstream ExTra cosine helper on the shared domain: nonempty correct history, correct current responses, warmup disabled and group normalization disabled. It compares our quality z-scores against the actual ES at Scale reward-shaping function. It does not equate archive insertion order, empty-history handling, perturbation precision or entire trainers. [Unit tests](../tests/test_novelty.py) separately cover incorrect-response gating, empty history, duplicate siblings, negative cosine, self exclusion, archive freezing and replay.
+
+[Optimizer tests](../tests/test_optimizer.py) check analytic coefficients and Gaussian sums, common bonuses surviving post-normalization, flat quality, deterministic reconstruction and tied parameters. [Pipeline tests](../tests/test_pipeline.py) check interruption/resume equivalence and that both arms save original masters with the amended configuration before their first candidate. The GPU run record preserves the original and amended code/configuration, and its original absolute deadline.

@@ -9,7 +9,7 @@ import torch
 
 from .models import ModelRunner
 from .novelty import CorrectMemory
-from .optimizer import FullWeightES, perturbation_seeds
+from .optimizer import FullWeightES, candidate_weights, perturbation_seeds, z_scores
 from .runtime import atomic_json, check_budget, load_checkpoint, save_checkpoint
 from .schedule import PromptSchedule, freeze_generation_count
 
@@ -103,8 +103,8 @@ def calibrate(runner, data: dict, directory: Path, deadline: float) -> dict:
         timings.append(measured["seconds"])
     check_budget(deadline)
     tick = time.perf_counter()
-    # Synthetic nonflat ranks force the complete 30-stream update cost, never fit labels.
-    optimizer.update(seeds, list(range(config["population"])))
+    # Synthetic nonflat coefficients force the complete noise-update cost, never fit labels.
+    optimizer.update(seeds, z_scores(list(range(config["population"]))).tolist())
     update_seconds = time.perf_counter() - tick
     tick = time.perf_counter()
     save_checkpoint(directory / "calibration.pt", {"master": optimizer.master, "deadline": deadline})
@@ -155,6 +155,8 @@ def train(
 ) -> dict:
     """Resume the exact next candidate or generation and preserve the original deadline."""
     config = runner.config
+    if config.get("weighting") != "zscore_task_plus_novelty_v1":
+        raise ValueError("Training requires the published source-aligned weighting amendment")
     directory.mkdir(parents=True, exist_ok=True)
     checkpoint, pending_path = directory / "checkpoint.pt", directory / "pending.pt"
     optimizer = FullWeightES(runner.model, config["sigma"], config["alpha"], runner.device)
@@ -177,7 +179,7 @@ def train(
             "deadline": deadline,
             "absolute_deadline": experiment["deadline"],
             "dataset_manifest": experiment["dataset_manifest"],
-            "code_revision": experiment["code_revision"],
+            "code_revision": experiment.get("training_code_revision", experiment["code_revision"]),
             "data_cursor": 0,
             "generated_tokens": 0,
             "responses": 0,
@@ -238,17 +240,17 @@ def train(
         embeddings = torch.stack([row["embeddings"] for row in candidates])
         correct = torch.stack([row["correct"] for row in candidates])
         novelty = memory.score(embeddings, correct).mean(dim=1)
-        quality = torch.tensor([row["quality"] for row in candidates])
-        fitness = quality + (config["novelty_weight"] if condition == "main" else 0.0) * novelty
+        quality = torch.tensor([row["quality"] for row in candidates], dtype=torch.float64)
+        weights = candidate_weights(quality, novelty, config["novelty_weight"] if condition == "main" else 0.0)
         check_budget(deadline)
-        optimizer.update(seeds, fitness.tolist())
+        optimizer.update(seeds, weights.tolist())
         memory.append(embeddings, correct)
         optimizer.reconstruct(None)
         metrics = {
             "generation": generation + 1,
             "quality": float(quality.mean()),
             "novelty": float(novelty.mean()),
-            "fitness": float(fitness.mean()),
+            "update_weight": float(weights.mean()),
             "accuracy": sum(row["accuracy"] for row in candidates) / len(candidates),
             "validity": sum(row["validity"] for row in candidates) / len(candidates),
             "generated_tokens": sum(row["generated_tokens"] for row in candidates),
@@ -256,6 +258,7 @@ def train(
             "truncated": sum(row["truncated"] for row in candidates),
             "candidate_quality": quality.tolist(),
             "candidate_novelty": novelty.tolist(),
+            "candidate_weights": weights.tolist(),
         }
         if (generation + 1) % config["validation_every"] == 0 or generation + 1 == generations:
             validation = generate_rows(

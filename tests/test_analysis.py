@@ -24,7 +24,7 @@ def test_paired_bootstrap_uses_paired_rows():
 
 
 def test_novelty_activation_is_distinct_from_an_optimizer_intervention():
-    """A positive common bonus need not change ES; breaking a quality tie does."""
+    """Post-normalization addition retains both common and varying novelty bonuses."""
     rows = [
         {"candidate_quality": [0.0, 0.1], "candidate_novelty": [0.0, 0.0]},
         {"candidate_quality": [0.0, 0.1], "candidate_novelty": [0.5, 0.5]},
@@ -35,13 +35,13 @@ def test_novelty_activation_is_distinct_from_an_optimizer_intervention():
     assert result["candidates_observed"] == 6
     assert result["candidates_positive_novelty"] == 3
     assert result["generations_positive_novelty"] == 2
-    assert result["generations_rank_changed"] == 1
-    assert result["candidates_rank_changed"] == 2
-    assert result["largest_absolute_rank_change"] == 0.5
+    assert result["generations_weight_changed"] == 2
+    assert result["candidates_weight_changed"] == 3
+    assert result["largest_absolute_weight_change"] == 0.25
 
 
 def test_novelty_diagnostic_replays_float32_fitness_and_handles_missing_runs():
-    """A bonus rounded away in training must not count as an effective rank change."""
-    rows = [{"candidate_quality": [1.0, 1.0], "candidate_novelty": [0.0, 1e-12]}]
-    assert novelty_intervention(rows, 0.25)["generations_rank_changed"] == 0
+    """A bonus rounded away in FP32 must not count as an effective coefficient change."""
+    rows = [{"candidate_quality": [0.0, 1.0], "candidate_novelty": [0.0, 1e-12]}]
+    assert novelty_intervention(rows, 0.25)["generations_weight_changed"] == 0
     assert novelty_intervention([], 0.25)["generations_observed"] == 0
