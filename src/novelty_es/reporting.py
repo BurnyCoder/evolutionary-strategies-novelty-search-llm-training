@@ -311,10 +311,30 @@ def refresh_readme(path: Path, summary: dict, table: list[list[str]]) -> None:
         return
     before, after = text.split(start, 1)[0], text.split(end, 1)[1]
     result = (
-        f"\n{summary['finding']}\n\n{markdown_table(table)}\n\n"
+        f"\n{summary['finding']}\n\n{outcome_description(summary)}\n\n{markdown_table(table)}\n\n"
         f"{summary['interval_scope']} [Full report](reports/experiment-pilot.md).\n"
     )
     path.write_text(before + start + result + end + after, encoding="utf-8")
+
+
+def outcome_description(summary: dict) -> str:
+    """Explain observed benefits and failures without changing endpoints or selecting models."""
+    methods = summary["methods"]
+    if not all(methods[name]["training_complete"] and methods[name]["test"]["complete"] for name in methods):
+        return "The paired final-checkpoint test comparison is still incomplete."
+    original = methods["original"]
+    trained = [methods[name] for name in ("main", "reward_only")]
+    sentences = []
+    if all(method["test"]["accuracy"] > original["test"]["accuracy"] for method in trained):
+        sentences.append("Both trained checkpoints score higher than the original model on this test set; the main-versus-control comparison determines whether novelty adds a benefit.")
+    if all(method["test"]["validity"] > original["test"]["validity"] for method in trained):
+        sentences.append("Both also produce more legal expressions on the three/four-number test problems. Legality alone does not mean the target was reached.")
+    if all(method["hard"]["complete"] for method in methods.values()):
+        if all(method["hard"]["accuracy"] == 0 for method in trained):
+            sentences.append("Neither trained checkpoint solves a five-number test problem in this evaluation.")
+        if all(method["hard"]["validity"] < original["hard"]["validity"] for method in trained):
+            sentences.append("Both have lower expression validity on the five-number test problems than the original model, so the validity improvement does not transfer uniformly.")
+    return " ".join(sentences) or "The tables retain all observed outcomes; no broader performance claim follows from this single seed."
 
 
 def intervention_description(summary: dict) -> str:
@@ -358,7 +378,7 @@ def plot_results(directory: Path, summary: dict, output: Path) -> None:
     Each panel scales to its observed maximum; accuracy includes interval endpoints.
     """
     output.mkdir(parents=True, exist_ok=True)
-    fig, axes = plt.subplots(1, 3, figsize=(12, 3.7), layout="constrained")
+    fig, axes = plt.subplots(1, 3, figsize=(12, 4.2), layout="constrained")
     colors = {"main": "#157f67", "reward_only": "#bc681e"}
     plotted = False
     keys = ("quality", "novelty", "accuracy")
@@ -376,16 +396,19 @@ def plot_results(directory: Path, summary: dict, output: Path) -> None:
         bound = 2 if key == "novelty" else 1
         axis.set(xlabel="Generation", ylabel=key, ylim=(0, min(bound, max(0.001, 1.15 * maxima[key]))), xlim=(0.5, last_generation + 0.5))
         axis.xaxis.set_major_locator(MaxNLocator(integer=True))
+        axis.set_xlabel("Generation", fontsize=13)
+        axis.set_ylabel(key, fontsize=13)
+        axis.tick_params(labelsize=12)
         axis.grid(alpha=0.2)
         if key == "accuracy":
             axis.yaxis.set_major_formatter(PercentFormatter(1))
     if plotted:
-        axes[0].legend(fontsize=8)
+        axes[0].legend(fontsize=12)
     else:
         axes[0].text(
             0.5, 0.5, "No committed training observations", transform=axes[0].transAxes, ha="center", fontsize=8
         )
-    fig.suptitle("Population means; perturbed candidates, not final test performance\nZero-based axes; scale differs by metric")
+    fig.suptitle("Population means; perturbed candidates, not final test performance\nZero-based axes; scale differs by metric", fontsize=14)
     fig.savefig(output / "training.png", dpi=160)
     plt.close(fig)
     fig, axis = plt.subplots(figsize=(7, 3.5), layout="constrained")
@@ -587,7 +610,7 @@ def write_paper(path: Path, experiment: dict, summary: dict, figures: Path, tabl
         "Reward is the optimization signal; no cross-entropy loss is optimized in this pilot. "
         "The interactive result page shows the same first test problems across methods, including failures, without choosing examples by outcome.",
     )
-    story.append(Image(str(figures / "training.png"), width=6.2 * inch, height=1.92 * inch))
+    story.append(Image(str(figures / "training.png"), width=6.2 * inch, height=2.17 * inch))
     for name, examples in summary["examples"].items():
         if examples:
             row = examples[0]
@@ -596,6 +619,7 @@ def write_paper(path: Path, experiment: dict, summary: dict, figures: Path, tabl
             )
     section(
         "Implications and discussion",
+        html.escape(outcome_description(summary)) + " "
         "This pilot is a controlled objective intervention under one initialization/seed schedule. "
         "It can identify a conditional difference or a feasibility failure, but cannot establish a general advantage of novelty training. "
         "Any improvement must be checked across additional seeds and separated from probe memorization. "
@@ -621,7 +645,8 @@ def write_paper(path: Path, experiment: dict, summary: dict, figures: Path, tabl
         "uv run novelty-es download, and uv run novelty-es run. Repeating run resumes the same clock. "
         "uv run novelty-es report regenerates tables, figures, this paper and the static website. "
         "Atomic checkpoints contain weights, all RNG streams, archive, cursor, config and deadline. "
-        f"Recorded technical failures: {len(summary['failures'])}. Experiment elapsed seconds: {summary['elapsed_seconds']:.3f}. "
+        f"Recorded technical failures: {len(summary['failures'])}. Model-execution elapsed seconds: {summary['elapsed_seconds']:.3f}. "
+        "Final auditing, report preparation and publication follow model execution within the original allowance. "
         "Exact exceptions and incomplete conditions are retained in the generated Markdown report and JSON artifacts.",
     )
     environment = experiment.get("environment", {})
@@ -718,6 +743,7 @@ def report(directory: Path, output_root: Path = Path(".")) -> dict:
     text = (
         f'# Pilot experiment\n\nLibor "Burny" Burian · {datetime.now().date().isoformat()}\n\n'
         f"{summary['finding']}\n\n{comparison}\n\n{summary['interval_scope']}\n\n"
+        f"{outcome_description(summary)}\n\n"
         f"{summary['interval_caveat']}\n\n"
         f"{markdown_table(table)}\n\n{coverage_description(summary)}\n\n"
         f"{markdown_table(comparison_table(summary))}\n\n"
@@ -780,6 +806,7 @@ def report(directory: Path, output_root: Path = Path(".")) -> dict:
     (reports / "all-experiments.md").write_text(
         "# All experiments\n\nThe current registered study is the paired pretrained pilot. "
         "No scratch or diagnostic run is represented as executed.\n\n"
+        + summary["finding"] + "\n\n" + outcome_description(summary) + "\n\n"
         + markdown_table(table)
         + "\n\n" + model_description(summary)
         + "\n\n" + markdown_table([
@@ -809,7 +836,7 @@ def report(directory: Path, output_root: Path = Path(".")) -> dict:
                 "pipeline_tag: text-generation\ntags:\n- evolution-strategies\n- countdown\n---\n\n"
                 f"# Novelty ES pilot: {condition}\n\n"
                 + summary["finding"]
-                + "\n\n"
+                + "\n\n" + outcome_description(summary) + "\n\n"
                 + markdown_table(table)
                 + "\n\nResearch-only arithmetic adaptation, with no evidence of general language improvements. "
                 "Intervals exclude training-seed variability. See the full preregistration, source, provenance and limitations at "

@@ -21,7 +21,7 @@ def artifact_manifest(directory: Path) -> dict:
     https://docs.python.org/3.12/library/hashlib.html#hashlib.file_digest .
     """
     patterns = [
-        "README.md", "LICENSE", "experiment.json", "calibration.json", "summary.json",
+        "README.md", "LICENSE", "experiment.json", "calibration.json", "summary.json", "final-audit.json",
         "before-amendment-A.json", "config-amendment-A.json", "recovery-audit.json",
         "failure-evaluation-uncommitted.json", "events.jsonl", "*/checkpoint.pt",
         "*/evaluation.json", "*/metrics.json", "*/progress.json", "*/initialization-audit.json",
