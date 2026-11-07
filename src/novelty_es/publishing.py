@@ -54,6 +54,8 @@ def publish(directory: Path) -> dict:
             "experiment.json",
             "calibration.json",
             "summary.json",
+            "recovery-audit.json",
+            "failure-evaluation-uncommitted.json",
             "events.jsonl",
             "*/evaluation.json",
             "*/metrics.json",
