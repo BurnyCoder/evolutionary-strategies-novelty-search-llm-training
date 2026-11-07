@@ -7,6 +7,8 @@
 - [x] Calibrate, freeze the common generation count, and evaluate the original model.
 - [x] Run main seed 0 and matched reward-only seed 0 within the persisted deadline.
 - [x] Evaluate, generate all reports/figures/PDF, inspect outputs, and publish artifacts.
+- [x] Preregister the user-requested longer paired continuation and fresh endpoint after reviewing the pilot.
+- [ ] Continue both existing seed-zero trajectories to generation 100, evaluate and publish separately.
 - [ ] Review the pilot before preregistering additional pretrained seeds/diagnostics.
 - [ ] Freeze and implement the separate byte-level TinyStories study before running it.
 

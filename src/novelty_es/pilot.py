@@ -14,7 +14,7 @@ from pathlib import Path
 
 import torch
 
-from .data import load_data
+from .continuation import experiment_data, initialize_continuation, validate_parent
 from .evaluation import evaluate
 from .models import ModelRunner
 from .optimizer import FullWeightES
@@ -48,8 +48,7 @@ def run_pilot(config: dict, directory: Path, data_directory: Path = Path("data")
         raise RuntimeError("This registered pilot requires the local CUDA GPU")
     directory.mkdir(parents=True, exist_ok=True)
     configure_runtime(config["seed"])
-    data = load_data(data_directory)
-    manifest = json.loads((data_directory / "manifest.json").read_text(encoding="utf-8"))
+    data, manifest = experiment_data(config, data_directory)
     state_path = directory / "experiment.json"
     if state_path.exists():
         state = json.loads(state_path.read_text(encoding="utf-8"))
@@ -59,6 +58,7 @@ def run_pilot(config: dict, directory: Path, data_directory: Path = Path("data")
     else:
         if _git("status", "--porcelain"):
             raise RuntimeError("Publish and commit all core changes before starting the experiment")
+        parent = validate_parent(config, directory) if "continuation" in config else None
         start = time.time()
         state = {
             "started_at": start,
@@ -75,6 +75,8 @@ def run_pilot(config: dict, directory: Path, data_directory: Path = Path("data")
         }
         # The first durable state creates the clock; subsequent executions never replace it.
         state["phases"]["calibration"] = {"started_at": start, "deadline": start + config["calibration_seconds"]}
+        if parent is not None:
+            initialize_continuation(state, directory, parent)
         atomic_json(state_path, state)
     log = EventLog(directory / "events.jsonl")
     log.emit(
@@ -165,14 +167,21 @@ def run_pilot(config: dict, directory: Path, data_directory: Path = Path("data")
                 }
                 atomic_json(state_path, state)
             limit = state["phases"]["final"]["deadline"]
-            for condition in ("main", "reward_only", "original"):
+            conditions = ["main", "reward_only", "original"]
+            if "continuation" in state:
+                conditions.extend(["parent_main", "parent_reward_only"])
+            for condition in conditions:
                 runner = None
                 try:
                     check_budget(limit)
-                    complete = condition == "original" or state["conditions"][condition]["complete"]
+                    parent_condition = condition.removeprefix("parent_") if condition.startswith("parent_") else None
+                    complete = condition == "original" or bool(parent_condition) or state["conditions"][condition]["complete"]
                     runner = ModelRunner(config, "cuda", log)
                     if condition != "original":
-                        checkpoint = directory / condition / "checkpoint.pt"
+                        checkpoint = (
+                            Path(config["continuation"]["parent_directory"]) / parent_condition / "checkpoint.pt"
+                            if parent_condition else directory / condition / "checkpoint.pt"
+                        )
                         if not checkpoint.exists():
                             log.emit("evaluation_unavailable", condition=condition, reason="no complete checkpoint")
                             continue
@@ -180,9 +189,12 @@ def run_pilot(config: dict, directory: Path, data_directory: Path = Path("data")
                         optimizer = FullWeightES(runner.model, config["sigma"], config["alpha"], "cuda")
                         optimizer.load_master(saved["master"])
                         del optimizer, saved
-                    evaluate(runner, data, config, directory / condition, condition, limit, complete)
+                    evaluate(
+                        runner, data, config, directory / condition, condition, limit, complete,
+                        splits=("fresh",) if parent_condition else None,
+                    )
                     # Hugging Face-ready exports are local artifacts; network publishing is separate.
-                    if condition != "original":
+                    if condition != "original" and not parent_condition:
                         check_budget(limit)
                         runner.model.save_pretrained(directory / condition / "model", safe_serialization=True)
                         runner.tokenizer.save_pretrained(directory / condition / "model")
