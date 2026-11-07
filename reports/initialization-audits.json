@@ -1,0 +1,52 @@
+{
+  "main": {
+    "checked_at": "2026-11-07T04:57:19.449952+00:00",
+    "condition": "main",
+    "generation": 0,
+    "model_id": "Qwen/Qwen2.5-0.5B-Instruct",
+    "model_revision": "7ae557604adf67be50417f59c2c2f167def9a775",
+    "training_code_revision": "9f8d30ef0103e3532ebefeafe7f55b8f8d163a80",
+    "weighting": "zscore_task_plus_novelty_v1",
+    "novelty_weight": 1.0,
+    "unique_tensors": 290,
+    "parameter_elements": 494032768,
+    "architecture": {
+      "num_hidden_layers": 24,
+      "hidden_size": 896,
+      "intermediate_size": 4864,
+      "num_attention_heads": 14,
+      "num_key_value_heads": 2,
+      "vocab_size": 151936,
+      "max_position_embeddings": 32768,
+      "tie_word_embeddings": true
+    },
+    "all_pretrained_tensors_exactly_equal_in_fp32": true,
+    "initial_archive_empty": true,
+    "absolute_deadline": 1794067007.1504683
+  },
+  "reward_only": {
+    "checked_at": "2026-11-07T06:38:33.868772+00:00",
+    "condition": "reward_only",
+    "generation": 0,
+    "model_id": "Qwen/Qwen2.5-0.5B-Instruct",
+    "model_revision": "7ae557604adf67be50417f59c2c2f167def9a775",
+    "training_code_revision": "9f8d30ef0103e3532ebefeafe7f55b8f8d163a80",
+    "weighting": "zscore_task_plus_novelty_v1",
+    "novelty_weight": 1.0,
+    "unique_tensors": 290,
+    "parameter_elements": 494032768,
+    "architecture": {
+      "num_hidden_layers": 24,
+      "hidden_size": 896,
+      "intermediate_size": 4864,
+      "num_attention_heads": 14,
+      "num_key_value_heads": 2,
+      "vocab_size": 151936,
+      "max_position_embeddings": 32768,
+      "tie_word_embeddings": true
+    },
+    "all_pretrained_tensors_exactly_equal_in_fp32": true,
+    "initial_archive_empty": true,
+    "absolute_deadline": 1794067007.1504683
+  }
+}

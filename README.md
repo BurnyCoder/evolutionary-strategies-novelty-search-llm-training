@@ -2,16 +2,18 @@
 
 This research project tests whether rewarding **correct but different answers** helps evolution strategies fine-tune a language model. It combines an adapted [ExTra](https://arxiv.org/abs/2606.24994) response-memory mechanism with full-weight optimization inspired by [ES at Scale](https://arxiv.org/abs/2509.24372). Each candidate is a small Gaussian perturbation of every unique model parameter; exact arithmetic grades its Countdown answers, and a frozen embedding model measures novelty among correct answers. The combination is an adaptation, not a reproduction of either paper.
 
-Preregistration and the tested core pipeline are published. The first local GPU experiment compares one main-method seed, one matched reward-only ES seed, and the untrained base model within its persisted twelve-hour deadline. Later multi-seed and scratch studies are gated on its report. The generated results below and [full report](reports/experiment-pilot.md) identify observed outcomes and incomplete conditions.
+The first local GPU experiment is complete: one main-method seed, one matched reward-only ES seed, and the untrained base model, evaluated within the persisted twelve-hour deadline. Both trained arms started from the original pretrained weights with [Amendment A](reports/preregistration.md#amendment-a-source-aligned-weighting-before-either-trained-condition) active from their first generation. Later multi-seed and scratch studies remain planned. The generated results below and [full report](reports/experiment-pilot.md) retain the positive and negative findings.
 
 <!-- BEGIN GENERATED PILOT RESULTS -->
-No completed paired primary endpoint is available.
+The directional improvement hypothesis was not supported in this seed: main accuracy did not exceed reward-only ES.
+
+Both trained checkpoints score higher than the original model on this test set; the main-versus-control comparison determines whether novelty adds a benefit. Both also produce more legal expressions on the three/four-number test problems. Legality alone does not mean the target was reached. Both have lower expression validity on the five-number test problems than the original model, so the validity improvement does not transfer uniformly.
 
 | Condition | Test accuracy | 95% interval | Hard accuracy | pass@1 | pass@8 | Status |
 | --- | --- | --- | --- | --- | --- | --- |
-| original | 0.29% | 0.10% - 0.54% | 0.10% | 0.16% | 1.16% | incomplete |
-| main | missing | missing | missing | missing | missing | incomplete |
-| reward_only | missing | missing | missing | missing | missing | incomplete |
+| original | 0.29% | 0.10% - 0.54% | 0.10% | 0.12% | 0.89% | complete |
+| main | 1.12% | 0.68% - 1.61% | 0.00% | 0.27% | 2.06% | complete |
+| reward_only | 1.12% | 0.68% - 1.61% | 0.10% | 0.22% | 1.67% | complete |
 
 Problem uncertainty conditional on one training seed; excludes seed variability. [Full report](reports/experiment-pilot.md).
 <!-- END GENERATED PILOT RESULTS -->
@@ -42,9 +44,11 @@ flowchart LR
 - [Preregistration](reports/preregistration.md): hypothesis, data hashes, primary metric, falsification, timing, controls and analysis.
 - [Literature and source audit](docs/literature.md): LLM-specific alternatives, reuse, licenses and paper/code discrepancies.
 - [Source correspondence](docs/source-conformance.md): matching equations, retained differences and differential checks against pinned upstream code.
+- [Initialization audits](reports/initialization-audits.json) and [final audit](reports/final-audit.json): original pretrained equality, common recorded prompt/noise schedules, grades, coefficients and exported tensors.
+- [Hugging Face research collection](https://huggingface.co/collections/BurnyCoder/evolution-strategies-with-llm-novelty-6aeef0a424ee9d502250b8ff): model exports and the raw evidence release.
 - [Amended training configuration](configs/pilot.json), [data manifest](data/manifest.json), [roadmap](docs/roadmap.md).
 
-The main endpoint is held-out greedy accuracy of the final scheduled checkpoint. The reward-only condition isolates the added novelty objective. The original checkpoint is the untrained baseline. Paired problem-bootstrap intervals describe uncertainty **conditional on one training seed**. They cannot establish robustness across seeds. Novelty reward, expression-tree diversity and harder-problem accuracy are secondary diagnostics. Results tables and figures will be generated from recorded artifacts, including incomplete runs and negative findings.
+The main endpoint is held-out greedy accuracy of the final scheduled checkpoint. The reward-only condition isolates the added novelty objective. The original checkpoint is the untrained baseline. Paired problem-bootstrap intervals describe uncertainty **conditional on one training seed**. They cannot establish robustness across seeds. Novelty reward, expression-tree diversity and harder-problem accuracy are secondary diagnostics. Results tables and figures are generated from recorded artifacts, including failures and negative findings.
 
 ## Installation
 
@@ -69,7 +73,7 @@ uv run novelty-es run
 uv run novelty-es report
 ```
 
-Run the dashboard in a second terminal at `http://127.0.0.1:8765`. The training terminal and JSONL files retain complete prompts and outputs. `.env`, caches, private credentials, intermediate weights and raw run directories are ignored by Git. Models and compact evaluation artifacts are published separately to one Hugging Face collection. See the [operations guide](docs/operations.md) for checkpoints, recovery, and artifact paths. [Generated report](reports/experiment-pilot.md) and [interactive result snapshot](https://BurnyCoder.github.io/evolutionary-strategies-novelty-search-llm-training/) explicitly identify missing or incomplete results.
+Run the dashboard in a second terminal at `http://127.0.0.1:8765`. The training terminal and JSONL files retain complete prompts and outputs. `.env`, caches, private credentials, intermediate weights and raw run directories are ignored by Git. Models, resumable FP32 checkpoints, complete generation traces and raw evaluations are published separately to one Hugging Face collection. See the [operations guide](docs/operations.md) for checkpoints, recovery, and artifact paths. The [generated report](reports/experiment-pilot.md) and [interactive results](https://BurnyCoder.github.io/evolutionary-strategies-novelty-search-llm-training/) show all conditions and evaluation coverage.
 
 ## Method and reproducibility
 

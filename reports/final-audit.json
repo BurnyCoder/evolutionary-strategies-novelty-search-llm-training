@@ -1,0 +1,49 @@
+{
+  "checked_at": "2026-11-07T09:33:10.530968+00:00",
+  "absolute_deadline": 1794067007.1504683,
+  "conditions": {
+    "original": {
+      "regraded_responses": {
+        "test": 2048,
+        "hard": 1024,
+        "probes": 16,
+        "sampled": 4096
+      },
+      "all_grades_match": true
+    },
+    "main": {
+      "regraded_responses": {
+        "test": 2048,
+        "hard": 1024,
+        "probes": 16,
+        "sampled": 4096
+      },
+      "all_grades_match": true,
+      "generation": 19,
+      "training_code_revision": "9f8d30ef0103e3532ebefeafe7f55b8f8d163a80",
+      "unique_tensors": 290,
+      "all_exported_tensors_match_final_master": true,
+      "all_recorded_update_coefficients_match": true
+    },
+    "reward_only": {
+      "regraded_responses": {
+        "test": 2048,
+        "hard": 1024,
+        "probes": 16,
+        "sampled": 4096
+      },
+      "all_grades_match": true,
+      "generation": 19,
+      "training_code_revision": "9f8d30ef0103e3532ebefeafe7f55b8f8d163a80",
+      "unique_tensors": 290,
+      "all_exported_tensors_match_final_master": true,
+      "all_recorded_update_coefficients_match": true
+    }
+  },
+  "paired_training_schedule": {
+    "all_training_prompts_and_seeds_match": true,
+    "all_logged_training_grades_match": true,
+    "candidates_per_arm": 570,
+    "scheduled_responses_per_arm": 27360
+  }
+}

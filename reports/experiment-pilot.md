@@ -2,21 +2,31 @@
 
 Libor "Burny" Burian · 2026-11-07
 
-No completed paired primary endpoint is available.
+The directional improvement hypothesis was not supported in this seed: main accuracy did not exceed reward-only ES.
 
-The registered paired endpoint is incomplete or not yet available.
+Paired difference: 0.000 percentage points; 95% interval [-0.244, 0.244]; 2048 paired test problems.
 
 Problem uncertainty conditional on one training seed; excludes seed variability.
+
+Both trained checkpoints score higher than the original model on this test set; the main-versus-control comparison determines whether novelty adds a benefit. Both also produce more legal expressions on the three/four-number test problems. Legality alone does not mean the target was reached. Both have lower expression validity on the five-number test problems than the original model, so the validity improvement does not transfer uniformly.
 
 Percentile bootstrap intervals can collapse at observed boundaries or when paired outcomes are identical. A zero-width interval does not prove zero population error or equivalence on unseen problems.
 
 | Condition | Test accuracy | 95% interval | Hard accuracy | pass@1 | pass@8 | Status |
 | --- | --- | --- | --- | --- | --- | --- |
-| original | 0.29% | 0.10% - 0.54% | 0.10% | 0.16% | 1.16% | incomplete |
-| main | missing | missing | missing | missing | missing | incomplete |
-| reward_only | missing | missing | missing | missing | missing | incomplete |
+| original | 0.29% | 0.10% - 0.54% | 0.10% | 0.12% | 0.89% | complete |
+| main | 1.12% | 0.68% - 1.61% | 0.00% | 0.27% | 2.06% | complete |
+| reward_only | 1.12% | 0.68% - 1.61% | 0.10% | 0.22% | 1.67% | complete |
 
-original: greedy problems test 2048/2048, hard 1024/1024, probes 16/16; sampled complete problems 196/256. main: greedy problems test 0/2048, hard 0/1024, probes 0/16; sampled complete problems 0/256. reward_only: greedy problems test 0/2048, hard 0/1024, probes 0/16; sampled complete problems 0/256.
+original: greedy problems test 2048/2048, hard 1024/1024, probes 16/16; sampled complete problems 256/256. main: greedy problems test 2048/2048, hard 1024/1024, probes 16/16; sampled complete problems 256/256. reward_only: greedy problems test 2048/2048, hard 1024/1024, probes 16/16; sampled complete problems 256/256.
+
+| Comparison | Difference (pp) | Paired 95% interval (pp) | Problems |
+| --- | --- | --- | --- |
+| Main - reward-only (primary) | 0.000 | [-0.244, 0.244] | 2048 |
+| main - original (secondary) | 0.830 | [0.438, 1.270] | 2048 |
+| reward_only - original (secondary) | 0.830 | [0.391, 1.270] | 2048 |
+
+Comparisons with the original checkpoint are descriptive secondary estimates with unadjusted intervals.
 
 ![Accuracy](figures/accuracy.png)
 
@@ -26,15 +36,15 @@ original: greedy problems test 2048/2048, hard 1024/1024, probes 16/16; sampled 
 
 | Condition | Probe accuracy | Test validity | Hard validity | Train tokens | Eval tokens | Train hours |
 | --- | --- | --- | --- | --- | --- | --- |
-| original | 0.00% | 29.30% | 10.64% | 0 | 330933 | 0.000 |
-| main | missing | missing | missing | 70068 | 0 | 0.185 |
-| reward_only | missing | missing | missing | 0 | 0 | 0.000 |
+| original | 0.00% | 29.30% | 10.64% | 0 | 385121 | 0.000 |
+| main | 0.00% | 76.12% | 2.05% | 798675 | 217202 | 1.688 |
+| reward_only | 0.00% | 79.79% | 3.52% | 814802 | 229510 | 1.662 |
 
 Train tokens count only candidates in committed generations; evaluation tokens count persisted evaluation responses. Calibration, validation, interrupted batches and replay costs are excluded from those columns. Training hours include phase overhead and checkpointing. Probes are training examples, not held-out data.
 
 ## Novelty intervention diagnostic
 
-Descriptive diagnostic: compare Z(Q) + 1.0 N with Z(Q) on each recorded population. This local comparison does not simulate the counterfactual training trajectory. main: positive novelty in 0 of 30 candidates; changed update weights in 0 of 1 generations (0 candidate weights).
+Descriptive diagnostic: compare the main arm's Z(Q) + 1.0 N with Z(Q) on its recorded populations. The control computes novelty but applies coefficient zero, so its novelty-induced weight changes are zero. This local comparison does not simulate the counterfactual training trajectory. main: positive novelty in 15 of 570 candidates; changed update weights in 9 of 19 generations (14 candidate weights). reward_only: positive novelty in 13 of 570 candidates; changed update weights in 0 of 19 generations (0 candidate weights).
 
 See [analysis notes](analysis-notes.md) for when this descriptive check was added.
 
@@ -42,9 +52,9 @@ See [analysis notes](analysis-notes.md) for when this descriptive check was adde
 
 | Condition | Greedy correct structures | Complete sampled problems | Mean correct structures / sampled problem |
 | --- | --- | --- | --- |
-| original | 6 | 196 | 0.0204 |
-| main | missing | 0 | missing |
-| reward_only | missing | 0 | missing |
+| original | 6 | 256 | 0.0156 |
+| main | 23 | 256 | 0.0391 |
+| reward_only | 23 | 256 | 0.0312 |
 
 Greedy structure counts equal successful problems, since each problem has one response. Sampled diversity counts distinct correct canonical ASTs within each problem, then averages over complete sampled groups, including zeros. This is syntactic diversity; algebraically equivalent expressions may count separately.
 
@@ -63,8 +73,8 @@ All values below come from persisted outcomes. Missing conditions remain missing
   "methods": {
     "original": {
       "training_complete": true,
-      "evaluation_seconds": 2658.674874499993,
-      "complete": false,
+      "evaluation_seconds": 3060.1390517000036,
+      "complete": true,
       "test": {
         "n": 2048,
         "expected": 2048,
@@ -111,13 +121,13 @@ All values below come from persisted outcomes. Missing conditions remain missing
         "correct_expression_structures": 0
       },
       "sampled": {
-        "complete_problems": 196,
+        "complete_problems": 256,
         "expected": 256,
-        "generated_tokens": 174861,
+        "generated_tokens": 229049,
         "partial_problems": 0,
-        "pass1": 0.0015943877551020409,
-        "pass8": 0.011564625850340135,
-        "mean_unique_correct_structures": 0.02040816326530612
+        "pass1": 0.001220703125,
+        "pass8": 0.008854166666666666,
+        "mean_unique_correct_structures": 0.015625
       },
       "training": {},
       "training_observations": {
@@ -137,91 +147,169 @@ All values below come from persisted outcomes. Missing conditions remain missing
       "training_seconds": 0.0
     },
     "main": {
-      "training_complete": false,
-      "evaluation_seconds": 0.0,
-      "complete": false,
+      "training_complete": true,
+      "evaluation_seconds": 1940.7667252999672,
+      "complete": true,
       "test": {
-        "n": 0,
+        "n": 2048,
         "expected": 2048,
-        "complete": false
+        "complete": true,
+        "accuracy": 0.01123046875,
+        "interval": [
+          0.0068359375,
+          0.01611328125
+        ],
+        "validity": 0.76123046875,
+        "reward": 0.08623046875,
+        "generated_tokens": 41525,
+        "truncated": 0,
+        "correct_expression_structures": 23
       },
       "hard": {
-        "n": 0,
+        "n": 1024,
         "expected": 1024,
-        "complete": false
+        "complete": true,
+        "accuracy": 0.0,
+        "interval": [
+          0.0,
+          0.0
+        ],
+        "validity": 0.0205078125,
+        "reward": 0.00205078125,
+        "generated_tokens": 23091,
+        "truncated": 0,
+        "correct_expression_structures": 0
       },
       "probes": {
-        "n": 0,
+        "n": 16,
         "expected": 16,
-        "complete": false
+        "complete": true,
+        "accuracy": 0.0,
+        "interval": [
+          0.0,
+          0.0
+        ],
+        "validity": 0.875,
+        "reward": 0.08750000000000001,
+        "generated_tokens": 306,
+        "truncated": 0,
+        "correct_expression_structures": 0
       },
       "sampled": {
-        "complete_problems": 0,
+        "complete_problems": 256,
         "expected": 256,
-        "generated_tokens": 0,
-        "partial_problems": 0
+        "generated_tokens": 152280,
+        "partial_problems": 0,
+        "pass1": 0.002685546875,
+        "pass8": 0.020572916666666666,
+        "mean_unique_correct_structures": 0.0390625
       },
-      "training": {},
+      "training": {
+        "generation": 19,
+        "generations": 19,
+        "complete": true,
+        "generated_tokens": 798675,
+        "responses": 27360
+      },
       "training_observations": {
-        "responses": 1440,
-        "generated_tokens": 70068,
-        "truncated": 355,
+        "responses": 27360,
+        "generated_tokens": 798675,
+        "truncated": 1999,
         "weight_diagnostic": {
-          "generations_observed": 1,
-          "candidates_observed": 30,
-          "candidates_positive_novelty": 0,
-          "generations_positive_novelty": 0,
-          "generations_weight_changed": 0,
-          "candidates_weight_changed": 0,
-          "largest_absolute_weight_change": 0.0
+          "generations_observed": 19,
+          "candidates_observed": 570,
+          "candidates_positive_novelty": 15,
+          "generations_positive_novelty": 10,
+          "generations_weight_changed": 9,
+          "candidates_weight_changed": 14,
+          "largest_absolute_weight_change": 0.0625
         }
       },
-      "training_seconds": 664.4478003978729
+      "training_seconds": 6078.265563964844
     },
     "reward_only": {
-      "training_complete": false,
-      "evaluation_seconds": 0.0,
-      "complete": false,
+      "training_complete": true,
+      "evaluation_seconds": 1949.0018551001413,
+      "complete": true,
       "test": {
-        "n": 0,
+        "n": 2048,
         "expected": 2048,
-        "complete": false
+        "complete": true,
+        "accuracy": 0.01123046875,
+        "interval": [
+          0.0068359375,
+          0.01611328125
+        ],
+        "validity": 0.7978515625,
+        "reward": 0.08989257812500001,
+        "generated_tokens": 42464,
+        "truncated": 0,
+        "correct_expression_structures": 23
       },
       "hard": {
-        "n": 0,
+        "n": 1024,
         "expected": 1024,
-        "complete": false
+        "complete": true,
+        "accuracy": 0.0009765625,
+        "interval": [
+          0.0,
+          0.0029296875
+        ],
+        "validity": 0.03515625,
+        "reward": 0.00439453125,
+        "generated_tokens": 23582,
+        "truncated": 0,
+        "correct_expression_structures": 1
       },
       "probes": {
-        "n": 0,
+        "n": 16,
         "expected": 16,
-        "complete": false
+        "complete": true,
+        "accuracy": 0.0,
+        "interval": [
+          0.0,
+          0.0
+        ],
+        "validity": 0.8125,
+        "reward": 0.08125000000000002,
+        "generated_tokens": 316,
+        "truncated": 0,
+        "correct_expression_structures": 0
       },
       "sampled": {
-        "complete_problems": 0,
+        "complete_problems": 256,
         "expected": 256,
-        "generated_tokens": 0,
-        "partial_problems": 0
+        "generated_tokens": 163148,
+        "partial_problems": 0,
+        "pass1": 0.002197265625,
+        "pass8": 0.016666666666666666,
+        "mean_unique_correct_structures": 0.03125
       },
-      "training": {},
+      "training": {
+        "generation": 19,
+        "generations": 19,
+        "complete": true,
+        "generated_tokens": 814802,
+        "responses": 27360
+      },
       "training_observations": {
-        "responses": 0,
-        "generated_tokens": 0,
-        "truncated": 0,
+        "responses": 27360,
+        "generated_tokens": 814802,
+        "truncated": 2093,
         "weight_diagnostic": {
-          "generations_observed": 0,
-          "candidates_observed": 0,
-          "candidates_positive_novelty": 0,
-          "generations_positive_novelty": 0,
+          "generations_observed": 19,
+          "candidates_observed": 570,
+          "candidates_positive_novelty": 13,
+          "generations_positive_novelty": 9,
           "generations_weight_changed": 0,
           "candidates_weight_changed": 0,
           "largest_absolute_weight_change": 0.0
         }
       },
-      "training_seconds": 0.0
+      "training_seconds": 5984.517926454544
     }
   },
-  "elapsed_seconds": 4265.2370862960815,
+  "elapsed_seconds": 20151.339267730713,
   "calibration": {
     "generations": 19,
     "estimated_generation_seconds": 676.9900205400081,
@@ -257,15 +345,45 @@ All values below come from persisted outcomes. Missing conditions remain missing
     },
     {
       "condition": "main",
+      "phase": "evaluation",
+      "responses": 7184,
+      "generated_tokens": 217202
+    },
+    {
+      "condition": "main",
       "phase": "train",
-      "responses": 2144,
-      "generated_tokens": 100580
+      "responses": 27360,
+      "generated_tokens": 798675
+    },
+    {
+      "condition": "main",
+      "phase": "validation",
+      "responses": 256,
+      "generated_tokens": 5151
     },
     {
       "condition": "original",
       "phase": "evaluation",
-      "responses": 6240,
-      "generated_tokens": 331643
+      "responses": 7200,
+      "generated_tokens": 385831
+    },
+    {
+      "condition": "reward_only",
+      "phase": "evaluation",
+      "responses": 7184,
+      "generated_tokens": 229510
+    },
+    {
+      "condition": "reward_only",
+      "phase": "train",
+      "responses": 27360,
+      "generated_tokens": 814802
+    },
+    {
+      "condition": "reward_only",
+      "phase": "validation",
+      "responses": 256,
+      "generated_tokens": 5142
     }
   ]
 }
@@ -315,6 +433,20 @@ All values below come from persisted outcomes. Missing conditions remain missing
       "absolute_deadline": 1794067007.1504683
     }
   ],
+  "recovery_audit": {
+    "checked_at": "2026-11-07T05:41:15.301+00:00",
+    "condition": "original",
+    "split": "sampled",
+    "before_sha256": "10f4d15e6946fa25b09bf78a635003b3a6f4de637a26f4b05769485a20f52af2",
+    "before_rows": 2128,
+    "after_rows_at_check": 3136,
+    "replayed_batch_start": 2112,
+    "replayed_batch_rows": 16,
+    "all_prior_and_replayed_generation_fields_equal": true,
+    "excluded_field": "batch_seconds",
+    "absolute_deadline": 1794067007.1504683,
+    "scope": "Observed storage-failure recovery; not a claim about arbitrary restarts or environments"
+  },
   "initial_code_revision": "ddcd928c1392fa2eb5beaff5b7b6f192dfa04817",
   "training_code_revision": "9f8d30ef0103e3532ebefeafe7f55b8f8d163a80"
 }
@@ -324,4 +456,4 @@ The first audit reconciled ExTra's correctness-filtered paper specification with
 
 ## Limitations
 
-One seed; synthetic arithmetic; embedding-proxy and probe-overfitting risks; no general-language benchmark; descriptive secondary analyses. Bootstrap intervals omit seed variability.
+One seed; synthetic arithmetic; embedding-proxy and probe-overfitting risks; no general-language benchmark; descriptive secondary analyses. Bootstrap intervals omit seed variability. CPU tests, reporting, audits and backups overlapped training, so timing is not an isolated systems benchmark.
