@@ -2,11 +2,15 @@
 
 The current registered study is the paired pretrained pilot. No scratch or diagnostic run is represented as executed.
 
+The directional improvement hypothesis was not supported in this seed: main accuracy did not exceed reward-only ES.
+
+Both trained checkpoints score higher than the original model on this test set; the main-versus-control comparison determines whether novelty adds a benefit. Both also produce more legal expressions on the three/four-number test problems. Legality alone does not mean the target was reached. Both have lower expression validity on the five-number test problems than the original model, so the validity improvement does not transfer uniformly.
+
 | Condition | Test accuracy | 95% interval | Hard accuracy | pass@1 | pass@8 | Status |
 | --- | --- | --- | --- | --- | --- | --- |
-| original | 0.29% | 0.10% - 0.54% | 0.10% | 0.16% | 1.16% | incomplete |
-| main | missing | missing | missing | missing | missing | incomplete |
-| reward_only | missing | missing | missing | missing | missing | incomplete |
+| original | 0.29% | 0.10% - 0.54% | 0.10% | 0.12% | 0.89% | complete |
+| main | 1.12% | 0.68% - 1.61% | 0.00% | 0.27% | 2.06% | complete |
+| reward_only | 1.12% | 0.68% - 1.61% | 0.10% | 0.22% | 1.67% | complete |
 
 Qwen/Qwen2.5-0.5B-Instruct: 24 layers, width 896, 14 query heads and 2 key/value heads; 494,032,768 unique parameter elements in 290 tensors. Architecture and counts come from the pinned pretrained files and the generation-zero checkpoint audit.
 
