@@ -11,3 +11,9 @@ The resource check streams final response events to count recorded generated tok
 The report also explains a limitation of the preregistered percentile bootstrap: an empirical distribution with no observed successes, or a paired difference with no discordant outcomes, can produce a zero-width interval. Such an interval does not prove a population success probability of zero or general equivalence. The registered estimator remains unchanged.
 
 These additions are implemented in `analysis.py` and `reporting.py`; the public commit history records their timing. Numerical diagnostics are generated from artifacts by the existing report command.
+
+## 2026-11-07: Windows atomic-replacement recovery
+
+During original-model sampled evaluation, Windows denied replacement of the evaluation JSON with `WinError 5`. The exception and traceback are retained in the run's event log and experiment state. The previous complete JSON remained readable; neither trained condition had begun. A concurrent reader can prevent a Windows rename when its sharing mode omits deletion sharing; the specific holder was not identified. See the [Windows file-sharing specification](https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createfilew).
+
+The storage helper now retries transient Windows access/sharing errors for a bounded interval before surfacing persistent failure. It retains atomic replacement and the previous valid record. Regression tests cover temporary and persistent locks, and a native Windows read-handle experiment verifies recovery after the handle closes. This is a persistence repair, not an optimizer or evaluation-method amendment. Resume uses the last committed batch; the uncommitted batch may be regenerated with its original seed. Downtime, repeated work and retry time consume the original allowance. The failed temporary record is preserved separately for audit.

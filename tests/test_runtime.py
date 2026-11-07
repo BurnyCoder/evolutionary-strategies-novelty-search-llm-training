@@ -1,11 +1,13 @@
 """Atomic persistence, deadline integrity and replay equivalence without an LLM."""
 
+import json
 import random
 
 import numpy as np
 import pytest
 import torch
 
+from novelty_es import runtime
 from novelty_es.novelty import CorrectMemory
 from novelty_es.optimizer import FullWeightES, perturbation_seeds
 from novelty_es.runtime import BudgetExpired, check_budget, load_checkpoint, save_checkpoint
@@ -33,6 +35,46 @@ def test_atomic_replace_keeps_last_good_checkpoint_on_failure(tmp_path, monkeypa
     with pytest.raises(OSError):
         save_checkpoint(path, {"generation": 2})
     assert load_checkpoint(path)["generation"] == 1
+
+
+def test_atomic_json_retries_temporary_windows_reader_lock(tmp_path, monkeypatch):
+    """A reader may briefly deny replacement; retry without exposing half a JSON file."""
+    path = tmp_path / "evaluation.json"
+    runtime.atomic_json(path, {"deadline": 100, "completed": 16})
+    replace, calls = runtime.os.replace, []
+
+    def temporarily_locked(source, destination):
+        calls.append(destination)
+        if len(calls) < 3:
+            assert json.loads(path.read_text())["completed"] == 16
+            error = PermissionError("simulated Windows sharing conflict")
+            error.winerror = 5
+            raise error
+        return replace(source, destination)
+
+    monkeypatch.setattr(runtime.os, "replace", temporarily_locked)
+    monkeypatch.setattr(runtime.time, "sleep", lambda _: None)
+    runtime.atomic_json(path, {"deadline": 100, "completed": 32})
+    assert len(calls) == 3
+    assert json.loads(path.read_text()) == {"deadline": 100, "completed": 32}
+    assert not path.with_suffix(".json.tmp").exists()
+
+
+def test_atomic_json_persistent_lock_preserves_previous_record(tmp_path, monkeypatch):
+    """Bounded retries must still surface a persistent storage failure."""
+    path = tmp_path / "evaluation.json"
+    runtime.atomic_json(path, {"completed": 16})
+
+    def locked(*args):
+        error = PermissionError("persistent sharing conflict")
+        error.winerror = 32
+        raise error
+
+    monkeypatch.setattr(runtime.os, "replace", locked)
+    monkeypatch.setattr(runtime.time, "sleep", lambda _: None)
+    with pytest.raises(PermissionError):
+        runtime.atomic_json(path, {"completed": 32})
+    assert json.loads(path.read_text()) == {"completed": 16}
 
 
 def test_schedule_no_probe_leakage_and_random_access():
