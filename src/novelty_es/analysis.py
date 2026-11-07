@@ -8,6 +8,9 @@ Intervals are conditional on the realized training seed, not seed-robust inferen
 import math
 
 import numpy as np
+import torch
+
+from .optimizer import centered_ranks
 
 
 def pass_at_k(n: int, correct: int, k: int) -> float:
@@ -29,3 +32,37 @@ def paired_bootstrap(main, control, replicates: int = 10000, seed: int = 2026110
         means.extend(difference[indices].mean(axis=1).tolist())
     low, high = np.quantile(means, [0.025, 0.975])
     return {"difference": float(difference.mean()), "low": float(low), "high": float(high), "n": len(difference)}
+
+
+def novelty_intervention(generations: list[dict], coefficient: float) -> dict:
+    """Check bonus activation and rank changes on each recorded candidate population.
+
+    This is a descriptive, post-hoc local counterfactual, not a replay of a whole
+    training trajectory. Reuse the optimizer's rank function and training's FP32
+    fitness arithmetic so positive bonuses rounded away do not count as changes.
+    """
+    result = {
+        "generations_observed": len(generations),
+        "candidates_observed": 0,
+        "candidates_positive_novelty": 0,
+        "generations_positive_novelty": 0,
+        "generations_rank_changed": 0,
+        "candidates_rank_changed": 0,
+        "largest_absolute_rank_change": 0.0,
+    }
+    for row in generations:
+        quality = torch.tensor(row["candidate_quality"], dtype=torch.float32)
+        novelty = torch.tensor(row["candidate_novelty"], dtype=torch.float32)
+        if quality.shape != novelty.shape or quality.ndim != 1 or not len(quality):
+            raise ValueError("Aligned nonempty candidate quality and novelty vectors required")
+        difference = centered_ranks((quality + coefficient * novelty).tolist()) - centered_ranks(quality.tolist())
+        positive, changed = int((novelty > 0).sum()), int((difference != 0).sum())
+        result["candidates_observed"] += len(quality)
+        result["candidates_positive_novelty"] += positive
+        result["generations_positive_novelty"] += bool(positive)
+        result["generations_rank_changed"] += bool(changed)
+        result["candidates_rank_changed"] += changed
+        result["largest_absolute_rank_change"] = max(
+            result["largest_absolute_rank_change"], float(difference.abs().max())
+        )
+    return result
