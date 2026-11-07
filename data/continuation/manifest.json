@@ -1,0 +1,33 @@
+{
+  "seed": 20261108,
+  "generator": "sampled-tree-v1",
+  "splits": {
+    "fresh": {
+      "count": 2048,
+      "sha256": "9708e05330938a7213436ca37187d2200f648aba18875e7e4fa3f66be514aa6f"
+    }
+  },
+  "excluded_source_manifest": {
+    "seed": 20261107,
+    "generator": "sampled-tree-v1",
+    "splits": {
+      "train": {
+        "count": 8192,
+        "sha256": "e9da161d8527e235c492cd26c2d1d29fe5ee988ae483aa4a875ec2275dcf74d6"
+      },
+      "validation": {
+        "count": 512,
+        "sha256": "f32637cfe3d69c14e2750ab40555d2c0bf149b1a2826a35dea2ecc109b1b8b5a"
+      },
+      "test": {
+        "count": 2048,
+        "sha256": "3c633196fd0aad9530a0aa4548f94077f50c0cfe86af8f2613043f975982975e"
+      },
+      "hard": {
+        "count": 1024,
+        "sha256": "8ae74795b99bbf3ac4bc5c6e0c081cb79859cdec9c43bb3348f439a311d0dcae"
+      }
+    }
+  },
+  "excluded_multisets": 11776
+}

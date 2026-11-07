@@ -4,6 +4,8 @@ This research project tests whether rewarding **correct but different answers** 
 
 The first local GPU experiment is complete: one main-method seed, one matched reward-only ES seed, and the untrained base model, evaluated within the persisted twelve-hour deadline. Both trained arms started from the original pretrained weights with [Amendment A](reports/preregistration.md#amendment-a-source-aligned-weighting-before-either-trained-condition) active from their first generation. Later multi-seed and scratch studies remain planned. The generated results below and [full report](reports/experiment-pilot.md) retain the positive and negative findings.
 
+A [registered longer continuation](reports/preregistration-continuation.md) will extend both existing arms from generation 19 to 100 under the same training method, with a fresh disjoint primary evaluation set and a separate 30-hour cap. It retains the first result and tests whether a difference appears after more matched training. The fixed stopping rule does not depend on interim accuracy.
+
 <!-- BEGIN GENERATED PILOT RESULTS -->
 The directional improvement hypothesis was not supported in this seed: main accuracy did not exceed reward-only ES.
 
