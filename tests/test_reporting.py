@@ -61,12 +61,20 @@ def test_missing_evaluation_does_not_hide_an_incomplete_condition(tmp_path):
         "conditions": {"reward_only": {"complete": False, "generation": 2, "generations": 5}},
     }
     (tmp_path / "experiment.json").write_text(json.dumps(experiment), encoding="utf-8")
+    (tmp_path / "reward_only").mkdir()
+    (tmp_path / "reward_only/metrics.json").write_text(json.dumps([{
+        "responses": 2, "generated_tokens": 10, "truncated": 0,
+        "candidate_quality": [0.0, 1.0], "candidate_novelty": [0.0, 0.5],
+    }]))
     summary = summarize(tmp_path)
     assert set(summary["methods"]) == {"original", "main", "reward_only"}
     method = summary["methods"]["reward_only"]
     assert not method["training_complete"] and not method["complete"]
     assert method["training"]["generation"] == 2
     assert method["test"]["n"] == 0 and method["test"]["expected"] == 2
+    diagnostic = method["training_observations"]["weight_diagnostic"]
+    assert diagnostic["candidates_positive_novelty"] == 1
+    assert diagnostic["candidates_weight_changed"] == 0  # Control computes novelty but never applies it.
     assert summary["primary"] is None
 
 
