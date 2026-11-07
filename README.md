@@ -6,6 +6,10 @@ The first local GPU experiment is complete: one main-method seed, one matched re
 
 A [registered longer continuation](reports/preregistration-continuation.md) will extend both existing arms from generation 19 to 100 under the same training method, with a fresh disjoint primary evaluation set and a separate 30-hour cap. It retains the first result and tests whether a difference appears after more matched training. The fixed stopping rule does not depend on interim accuracy.
 
+<!-- BEGIN GENERATED CONTINUATION RESULTS -->
+Continuation results are pending. [Execution and resume commands](docs/continuation.md).
+<!-- END GENERATED CONTINUATION RESULTS -->
+
 <!-- BEGIN GENERATED PILOT RESULTS -->
 The directional improvement hypothesis was not supported in this seed: main accuracy did not exceed reward-only ES.
 

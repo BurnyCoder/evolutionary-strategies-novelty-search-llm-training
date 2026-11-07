@@ -9,9 +9,12 @@ import pytest
 from novelty_es.publishing import publish
 
 
-def test_publication_pins_revisions_and_includes_resumable_evidence(tmp_path, monkeypatch):
+@pytest.mark.parametrize("continuation", [False, True])
+def test_publication_pins_revisions_and_includes_resumable_evidence(tmp_path, monkeypatch, continuation):
     """A completed release includes checkpoint hashes but excludes incidental local secrets."""
     state = {"phase": "finished", "config": {"model_id": "base/model", "model_revision": "base-sha"}}
+    if continuation:
+        state["config"].update(continuation={}, publication_suffix="seed0-gen100", artifact_repo="longer-artifacts")
     (tmp_path / "experiment.json").write_text(json.dumps(state))
     (tmp_path / "summary.json").write_text("{}")
     (tmp_path / "README.md").write_text("Artifact documentation")
@@ -50,10 +53,21 @@ def test_publication_pins_revisions_and_includes_resumable_evidence(tmp_path, mo
     assert "artifact-manifest.json" in uploads[-1]["allow_patterns"]
     assert receipt["revisions"] == {"main": "commit-1", "artifacts": "commit-2"}
     assert json.loads((tmp_path / "published.json").read_text()) == receipt
+    suffix = "seed0-gen100" if continuation else "seed0"
+    assert uploads[0]["repo_id"] == f"researcher/novelty-es-qwen2.5-0.5b-main-{suffix}"
+    assert uploads[1]["repo_id"] == ("researcher/longer-artifacts" if continuation else "researcher/novelty-es-pilot-artifacts")
 
 
 def test_active_run_cannot_be_published(tmp_path):
     """Do not hash or upload files while the experiment is still replacing them."""
     (tmp_path / "experiment.json").write_text('{"phase": "main"}')
     with pytest.raises(RuntimeError, match="report before publishing"):
+        publish(tmp_path)
+
+
+def test_continuation_cannot_overwrite_original_hub_repositories(tmp_path):
+    """Reject colliding destinations before any remote API call."""
+    (tmp_path / "experiment.json").write_text(json.dumps({"phase": "finished", "config": {"continuation": {}}}))
+    (tmp_path / "summary.json").write_text("{}")
+    with pytest.raises(ValueError, match="distinct"):
         publish(tmp_path)

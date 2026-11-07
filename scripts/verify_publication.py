@@ -31,6 +31,9 @@ def main():
     parser.add_argument("--run-dir", type=Path, default=Path("artifacts/pilot"))
     args = parser.parse_args()
     directory = args.run_dir
+    experiment = json.loads((directory / "experiment.json").read_text(encoding="utf-8"))
+    continued = "continuation" in experiment
+    slug = experiment["config"]["experiment"] if continued else "pilot"
     published = json.loads((directory / "published.json").read_text(encoding="utf-8"))
     assert set(published["models"]) == {"main", "reward_only"} and published["artifacts"], "Publication is unfinished"
     manifest = json.loads((directory / "artifact-manifest.json").read_text(encoding="utf-8"))
@@ -66,10 +69,13 @@ def main():
     collection = api.get_collection(published["collection"].split("/collections/", 1)[1])
     assert expected_items <= {(item.item_id, item.item_type) for item in collection.items}
     pages = "https://burnycoder.github.io/evolutionary-strategies-novelty-search-llm-training/"
+    local_site = Path("docs/site")
+    if continued:
+        pages += slug + "/"
+        local_site /= slug
     with urlopen(pages + "status.json", timeout=30) as response:
         remote_status = json.load(response)
-    assert remote_status == json.loads(Path("docs/site/status.json").read_text(encoding="utf-8")), "Published Pages results differ"
-    experiment = json.loads((directory / "experiment.json").read_text(encoding="utf-8"))
+    assert remote_status == json.loads((local_site / "status.json").read_text(encoding="utf-8")), "Published Pages results differ"
     now = time.time()
     result = {
         "verified_at": datetime.fromtimestamp(now, timezone.utc).isoformat(),
@@ -81,11 +87,12 @@ def main():
         "final_phase_overrun_seconds": max(0.0, now - experiment["phases"]["final"]["deadline"]),
         "collection": published["collection"], "repositories": verified,
         "pages": {"url": pages, "status_matches_committed_snapshot": True},
-        "paper_sha256": digest(Path("output/pdf/novelty-es-pilot.pdf")),
+        "paper_sha256": digest(Path(f"output/pdf/novelty-es-{slug}.pdf")),
         "scope": "Large-file server SHA-256 metadata; direct downloaded-byte hashes for small files; no model inference.",
     }
-    Path("reports/publication.json").write_text(json.dumps(published, indent=2) + "\n", encoding="utf-8")
-    Path("reports/publication-audit.json").write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
+    suffix = f"-{slug}" if continued else ""
+    Path(f"reports/publication{suffix}.json").write_text(json.dumps(published, indent=2) + "\n", encoding="utf-8")
+    Path(f"reports/publication-audit{suffix}.json").write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
     print(json.dumps({key: value for key, value in result.items() if key != "repositories"}, indent=2))
 
 

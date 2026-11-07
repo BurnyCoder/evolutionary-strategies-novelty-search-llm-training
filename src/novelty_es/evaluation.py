@@ -18,6 +18,7 @@ def evaluation_sets(data: dict, config: dict) -> dict[str, list[dict]]:
         for sample in range(config["samples_per_problem"]):
             samples.append({**data["test"][index], "sample": sample})
     return {
+        **({"fresh": data["fresh"]} if "fresh" in data else {}),
         "test": data["test"],
         "hard": data["hard"],
         "probes": [data["train"][i] for i in schedule.probes],
@@ -26,7 +27,8 @@ def evaluation_sets(data: dict, config: dict) -> dict[str, list[dict]]:
 
 
 def evaluate(
-    runner, data: dict, config: dict, directory: Path, condition: str, deadline: float, training_complete: bool
+    runner, data: dict, config: dict, directory: Path, condition: str, deadline: float, training_complete: bool,
+    splits: tuple[str, ...] | None = None,
 ) -> dict:
     """Persist whole completed batches; restarting reuses outcomes, never selects answers."""
     path = directory / "evaluation.json"
@@ -45,6 +47,8 @@ def evaluate(
     if state["training_complete"] != training_complete:
         raise ValueError("Cannot mix outcomes from different checkpoints")
     for name, rows in evaluation_sets(data, config).items():
+        if splits is not None and name not in splits:
+            continue
         records = state["sets"].setdefault(name, [])
         while len(records) < len(rows):
             check_budget(deadline)

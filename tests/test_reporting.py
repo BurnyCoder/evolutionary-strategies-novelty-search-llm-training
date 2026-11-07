@@ -4,7 +4,9 @@ import json
 
 import pytest
 
-from novelty_es.reporting import diagnostic_table, summarize
+from novelty_es.continuation import experiment_data
+from novelty_es.reporting import diagnostic_table, report, summarize
+from novelty_es.runtime import atomic_json
 
 
 def _evaluation(complete: bool) -> dict:
@@ -94,3 +96,58 @@ def test_baseline_comparisons_pair_problem_ids_and_require_complete_training(tmp
     assert set(summary["baseline_comparisons"]) == {"main"}
     assert summary["baseline_comparisons"]["main"]["difference"] == 0.0
     assert summary["baseline_comparisons"]["main"]["n"] == 2
+
+
+def test_fresh_primary_and_paired_change_require_the_fresh_endpoint(tmp_path):
+    """Old-test completeness cannot satisfy the new primary; changes pair all four outcomes."""
+    config = json.loads(open("configs/pilot.json", encoding="utf-8").read())
+    config.update(primary_split="fresh", bootstrap_replicates=100)
+    experiment = {"config": config, "continuation": {"parent_generation": 19, "target_generation": 100},
+                  "dataset_manifest": {"splits": {"test": {"count": 2}, "hard": {"count": 1},
+                                                   "fresh": {"count": 2}}}}
+    atomic_json(tmp_path / "experiment.json", experiment)
+    for name in ("original", "main", "reward_only"):
+        atomic_json(tmp_path / name / "evaluation.json", _evaluation(True))
+    assert summarize(tmp_path)["primary"] is None
+    values = {"original": [False, False], "main": [True, True], "reward_only": [False, True],
+              "parent_main": [False, True], "parent_reward_only": [False, True]}
+    for name, correctness in values.items():
+        evaluation = _evaluation(True)
+        evaluation["sets"]["fresh"] = [
+            {**row, "problem_id": f"fresh-{i}", "correct": correctness[i]}
+            for i, row in enumerate(evaluation["sets"]["test"])
+        ]
+        if name.startswith("parent_"):
+            evaluation["sets"].pop("test")
+        atomic_json(tmp_path / name / "evaluation.json", evaluation)
+    summary = summarize(tmp_path)
+    assert summary["primary_split"] == "fresh"
+    assert summary["primary"]["difference"] == 0.5
+    assert summary["longitudinal"]["difference_in_differences"]["difference"] == 0.5
+    assert summary["longitudinal"]["changes"]["main"]["difference"] == 0.5
+    assert summary["longitudinal"]["old_test_difference"]["difference"] == 0
+    assert summary["discordance"] == {"both_correct": 1, "main_only": 1, "control_only": 0, "both_wrong": 0}
+
+
+def test_continuation_report_keeps_the_pilot_release_separate(tmp_path):
+    """Exercise the complete report entry point without any language-model execution."""
+    from pathlib import Path
+
+    config = json.loads(Path("configs/continuation.json").read_text())
+    config["bootstrap_replicates"] = 100
+    _, manifest = experiment_data(config, Path("data"))
+    directory, output = tmp_path / "run", tmp_path / "release"
+    atomic_json(directory / "experiment.json", {
+        "config": config, "dataset_manifest": manifest, "phase": "main",
+        "continuation": {"parent_generation": 19, "target_generation": 100},
+    })
+    preserved = output / "reports/experiment-pilot.md"
+    preserved.parent.mkdir(parents=True)
+    preserved.write_text("immutable original report", encoding="utf-8")
+    summary = report(directory, output)
+    assert summary["primary"] is None
+    assert preserved.read_text() == "immutable original report"
+    assert (output / "reports/experiment-continuation-seed0-gen100.md").is_file()
+    assert (output / "output/pdf/novelty-es-continuation-seed0-gen100.pdf").stat().st_size > 1000
+    assert (output / "docs/site/continuation-seed0-gen100/status.json").is_file()
+    assert not (output / "docs/site/status.json").exists()

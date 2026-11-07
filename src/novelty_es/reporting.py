@@ -73,10 +73,10 @@ def _split_summary(rows: list[dict], expected: int, replicates: int) -> dict:
     }
 
 
-def _paired_evaluations(first: dict, second: dict, replicates: int) -> dict:
+def _paired_evaluations(first: dict, second: dict, replicates: int, split: str = "test") -> dict:
     """Align exact test-problem identities before paired resampling."""
-    a = {row["problem_id"]: row["correct"] for row in first["sets"]["test"]}
-    b = {row["problem_id"]: row["correct"] for row in second["sets"]["test"]}
+    a = {row["problem_id"]: row["correct"] for row in first["sets"][split]}
+    b = {row["problem_id"]: row["correct"] for row in second["sets"][split]}
     if a.keys() != b.keys():
         raise ValueError("Paired test problem IDs do not align")
     ordered = sorted(a)
@@ -88,15 +88,21 @@ def summarize(directory: Path) -> dict:
     experiment = read_json(directory / "experiment.json", {})
     config = experiment.get("config", read_json(Path("configs/pilot.json"), {}))
     manifest = experiment.get("dataset_manifest", read_json(Path("data/manifest.json"), {}))
+    primary_split = config.get("primary_split", "test")
+    greedy_splits = ("fresh", "test", "hard", "probes") if primary_split == "fresh" else ("test", "hard", "probes")
     summary = {
         "methods": {},
         "examples": {},
         "primary": None,
+        "primary_split": primary_split,
+        "continuation": experiment.get("continuation"),
         "baseline_comparisons": {},
         "model_id": config["model_id"],
         "seed": config["seed"],
         "initializations": {
-            name: read_json(directory / name / "initialization-audit.json", {}) for name in ("main", "reward_only")
+            name: read_json(
+                Path(config.get("continuation", {}).get("parent_directory", directory)) / name / "initialization-audit.json", {}
+            ) for name in ("main", "reward_only")
         },
         "novelty_weight": config["novelty_weight"],
         "finding": "No completed paired primary endpoint is available.",
@@ -120,7 +126,7 @@ def summarize(directory: Path) -> dict:
             "evaluation_seconds": evaluation["seconds"],
             "complete": False,
         }
-        for split in ("test", "hard", "probes"):
+        for split in greedy_splits:
             expected = config["probe_count"] if split == "probes" else manifest["splits"][split]["count"]
             method[split] = _split_summary(evaluation["sets"].get(split, []), expected, config["bootstrap_replicates"])
         groups = defaultdict(list)
@@ -148,7 +154,7 @@ def summarize(directory: Path) -> dict:
         method["sampled"] = sampled
         method["complete"] = bool(
             method["training_complete"]
-            and all(method[s]["complete"] for s in ("test", "hard", "probes"))
+            and all(method[s]["complete"] for s in greedy_splits)
             and sampled["complete_problems"] == sampled["expected"]
         )
         method["training"] = training
@@ -159,19 +165,34 @@ def summarize(directory: Path) -> dict:
             "truncated": sum(row["truncated"] for row in generations),
             "weight_diagnostic": novelty_intervention(generations, config["novelty_weight"] if condition == "main" else 0.0),
         }
+        start_generation = experiment.get("continuation", {}).get("parent_generation", 0)
+        added = generations[start_generation:]
+        method["added_training_observations"] = {
+            "generations": len(added),
+            **{key: sum(row[key] for row in added) for key in ("responses", "generated_tokens", "truncated")},
+            "weight_diagnostic": novelty_intervention(added, config["novelty_weight"] if condition == "main" else 0.0),
+        }
         phase = experiment.get("phases", {}).get(condition, {})
         method["training_seconds"] = phase.get("finished_at", time.time()) - phase["started_at"] if phase else 0.0
         summary["methods"][condition] = method
         # Fixed first problems expose matched successes and failures without selection by outcome.
-        summary["examples"][condition] = evaluation["sets"].get("test", [])[:16]
+        summary["examples"][condition] = evaluation["sets"].get(primary_split, [])[:16]
     if all(
         name in summary["methods"]
         and summary["methods"][name]["training_complete"]
-        and summary["methods"][name]["test"]["complete"]
+        and summary["methods"][name][primary_split]["complete"]
         for name in ("main", "reward_only")
     ):
-        primary = _paired_evaluations(evaluations["main"], evaluations["reward_only"], config["bootstrap_replicates"])
+        primary = _paired_evaluations(evaluations["main"], evaluations["reward_only"], config["bootstrap_replicates"], primary_split)
         summary["primary"] = primary
+        a = {row["problem_id"]: row["correct"] for row in evaluations["main"]["sets"][primary_split]}
+        b = {row["problem_id"]: row["correct"] for row in evaluations["reward_only"]["sets"][primary_split]}
+        summary["discordance"] = {
+            "both_correct": sum(a[key] and b[key] for key in a),
+            "main_only": sum(a[key] and not b[key] for key in a),
+            "control_only": sum(not a[key] and b[key] for key in a),
+            "both_wrong": sum(not a[key] and not b[key] for key in a),
+        }
         if primary["difference"] <= 0:
             summary["finding"] = (
                 "The directional improvement hypothesis was not supported in this seed: main accuracy did not exceed reward-only ES."
@@ -191,13 +212,15 @@ def summarize(directory: Path) -> dict:
                 "this pilot did not exercise an active novelty intervention."
             )
     # These comparisons were planned against the original model, but remain secondary.
-    if summary["methods"]["original"]["test"]["complete"]:
+    if summary["methods"]["original"][primary_split]["complete"]:
         for condition in ("main", "reward_only"):
             method = summary["methods"][condition]
-            if method["training_complete"] and method["test"]["complete"]:
+            if method["training_complete"] and method[primary_split]["complete"]:
                 summary["baseline_comparisons"][condition] = _paired_evaluations(
-                    evaluations[condition], evaluations["original"], config["bootstrap_replicates"]
+                    evaluations[condition], evaluations["original"], config["bootstrap_replicates"], primary_split
                 )
+    if "continuation" in experiment:
+        summary["longitudinal"] = longitudinal_summary(directory, evaluations, summary, config)
     summary["failures"] = experiment.get("failures", [])
     summary["protocol_amendments"] = experiment.get("protocol_amendments", [])
     summary["execution_repairs"] = experiment.get("execution_repairs", [])
@@ -209,6 +232,33 @@ def summarize(directory: Path) -> dict:
     return summary
 
 
+def longitudinal_summary(directory: Path, evaluations: dict, summary: dict, config: dict) -> dict:
+    """Pair four outcomes per fresh problem for the registered change contrast."""
+    result = {"parents": {}, "changes": {}, "difference_in_differences": None, "old_test_difference": None}
+    parents, gains = {}, {}
+    for name in ("main", "reward_only"):
+        parent = read_json(directory / f"parent_{name}/evaluation.json", {"sets": {}})
+        rows = parent["sets"].get("fresh", [])
+        expected = summary["methods"][name]["fresh"]["expected"]
+        result["parents"][name] = _split_summary(rows, expected, config["bootstrap_replicates"])
+        parents[name] = parent
+        if summary["primary"] and result["parents"][name]["complete"]:
+            result["changes"][name] = _paired_evaluations(evaluations[name], parent, config["bootstrap_replicates"], "fresh")
+            before = {row["problem_id"]: int(row["correct"]) for row in rows}
+            after = {row["problem_id"]: int(row["correct"]) for row in evaluations[name]["sets"]["fresh"]}
+            gains[name] = {key: after[key] - before[key] for key in sorted(before)}
+    if len(gains) == 2:
+        if gains["main"].keys() != gains["reward_only"].keys():
+            raise ValueError("Longitudinal problem IDs do not align")
+        result["difference_in_differences"] = paired_bootstrap(
+            list(gains["main"].values()), list(gains["reward_only"].values()), config["bootstrap_replicates"]
+        )
+    if all(summary["methods"][name]["training_complete"] and summary["methods"][name]["test"]["complete"]
+           for name in ("main", "reward_only")):
+        result["old_test_difference"] = _paired_evaluations(evaluations["main"], evaluations["reward_only"], config["bootstrap_replicates"])
+    return result
+
+
 def _percent(value) -> str:
     """Render absent observations as missing, not numerical zero."""
     return "missing" if value is None else f"{100 * value:.2f}%"
@@ -216,13 +266,14 @@ def _percent(value) -> str:
 
 def result_table(summary: dict) -> list[list[str]]:
     """One canonical table feeds Markdown, PDF and model cards."""
-    table = [["Condition", "Test accuracy", "95% interval", "Hard accuracy", "pass@1", "pass@8", "Status"]]
+    split = summary.get("primary_split", "test")
+    table = [["Condition", f"{split.title()} accuracy", "95% interval", "Hard accuracy", "pass@1", "pass@8", "Status"]]
     for name, method in summary["methods"].items():
-        interval = method["test"].get("interval")
+        interval = method[split].get("interval")
         table.append(
             [
                 name,
-                _percent(method["test"].get("accuracy")),
+                _percent(method[split].get("accuracy")),
                 " - ".join(map(_percent, interval)) if interval else "missing",
                 _percent(method["hard"].get("accuracy")),
                 _percent(method["sampled"].get("pass1")),
@@ -245,6 +296,11 @@ def comparison_table(summary: dict) -> list[list[str]]:
     table = [["Comparison", "Difference (pp)", "Paired 95% interval (pp)", "Problems"]]
     comparisons = {"Main - reward-only (primary)": summary["primary"]}
     comparisons.update({f"{name} - original (secondary)": result for name, result in summary["baseline_comparisons"].items()})
+    longitudinal = summary.get("longitudinal", {})
+    comparisons.update({f"{name}: final - parent (secondary)": value for name, value in longitudinal.get("changes", {}).items()})
+    if longitudinal:
+        comparisons["Difference in changes (secondary)"] = longitudinal["difference_in_differences"]
+        comparisons["Old-test main - control (secondary)"] = longitudinal["old_test_difference"]
     for name, result in comparisons.items():
         if result:
             table.append([
@@ -256,16 +312,15 @@ def comparison_table(summary: dict) -> list[list[str]]:
 
 def diagnostic_table(summary: dict) -> list[list[str]]:
     """Keep probe performance and validity visible alongside the held-out endpoint."""
-    table = [
-        ["Condition", "Probe accuracy", "Test validity", "Hard validity", "Train tokens", "Eval tokens", "Train hours"]
-    ]
+    split = summary.get("primary_split", "test")
+    table = [["Condition", "Probe accuracy", f"{split.title()} validity", "Hard validity", "Train tokens", "Eval tokens", "Train hours"]]
     for name, method in summary["methods"].items():
-        tokens = sum(method[s].get("generated_tokens", 0) for s in ("test", "hard", "probes", "sampled"))
+        tokens = sum(method[s].get("generated_tokens", 0) for s in ("fresh", "test", "hard", "probes", "sampled") if s in method)
         table.append(
             [
                 name,
                 _percent(method["probes"].get("accuracy")),
-                _percent(method["test"].get("validity")),
+                _percent(method[split].get("validity")),
                 _percent(method["hard"].get("validity")),
                 str(method["training_observations"]["generated_tokens"]),
                 str(tokens),
@@ -295,7 +350,7 @@ def diversity_table(summary: dict) -> list[list[str]]:
     for name, method in summary["methods"].items():
         value = method["sampled"].get("mean_unique_correct_structures")
         table.append([
-            name, str(method["test"].get("correct_expression_structures", "missing")),
+            name, str(method[summary.get("primary_split", "test")].get("correct_expression_structures", "missing")),
             str(method["sampled"]["complete_problems"]), "missing" if value is None else f"{value:.4f}",
         ])
     return table
@@ -306,13 +361,15 @@ def refresh_readme(path: Path, summary: dict, table: list[list[str]]) -> None:
     if not path.exists():
         return
     text = path.read_text(encoding="utf-8")
-    start, end = "<!-- BEGIN GENERATED PILOT RESULTS -->", "<!-- END GENERATED PILOT RESULTS -->"
+    label = "CONTINUATION" if summary.get("continuation") else "PILOT"
+    slug = "continuation-seed0-gen100" if summary.get("continuation") else "pilot"
+    start, end = f"<!-- BEGIN GENERATED {label} RESULTS -->", f"<!-- END GENERATED {label} RESULTS -->"
     if start not in text or end not in text:
         return
     before, after = text.split(start, 1)[0], text.split(end, 1)[1]
     result = (
         f"\n{summary['finding']}\n\n{outcome_description(summary)}\n\n{markdown_table(table)}\n\n"
-        f"{summary['interval_scope']} [Full report](reports/experiment-pilot.md).\n"
+        f"{summary['interval_scope']} [Full report](reports/experiment-{slug}.md).\n"
     )
     path.write_text(before + start + result + end + after, encoding="utf-8")
 
@@ -320,14 +377,15 @@ def refresh_readme(path: Path, summary: dict, table: list[list[str]]) -> None:
 def outcome_description(summary: dict) -> str:
     """Explain observed benefits and failures without changing endpoints or selecting models."""
     methods = summary["methods"]
-    if not all(methods[name]["training_complete"] and methods[name]["test"]["complete"] for name in methods):
+    split = summary.get("primary_split", "test")
+    if not all(methods[name]["training_complete"] and methods[name][split]["complete"] for name in methods):
         return "The paired final-checkpoint test comparison is still incomplete."
     original = methods["original"]
     trained = [methods[name] for name in ("main", "reward_only")]
     sentences = []
-    if all(method["test"]["accuracy"] > original["test"]["accuracy"] for method in trained):
+    if all(method[split]["accuracy"] > original[split]["accuracy"] for method in trained):
         sentences.append("Both trained checkpoints score higher than the original model on this test set; the main-versus-control comparison determines whether novelty adds a benefit.")
-    if all(method["test"]["validity"] > original["test"]["validity"] for method in trained):
+    if all(method[split]["validity"] > original[split]["validity"] for method in trained):
         sentences.append("Both also produce more legal expressions on the three/four-number test problems. Legality alone does not mean the target was reached.")
     if all(method["hard"]["complete"] for method in methods.values()):
         if all(method["hard"]["accuracy"] == 0 for method in trained):
@@ -361,7 +419,7 @@ def coverage_description(summary: dict) -> str:
     sentences = []
     for name, method in summary["methods"].items():
         splits = ", ".join(
-            f"{split} {method[split]['n']}/{method[split]['expected']}" for split in ("test", "hard", "probes")
+            f"{split} {method[split]['n']}/{method[split]['expected']}" for split in ("fresh", "test", "hard", "probes") if split in method
         )
         sampled = method["sampled"]
         sentences.append(
@@ -369,6 +427,39 @@ def coverage_description(summary: dict) -> str:
             f"{sampled['complete_problems']}/{sampled['expected']}."
         )
     return " ".join(sentences) or "No evaluation rows have been recorded."
+
+
+def continuation_description(experiment: dict) -> str:
+    """Explain the distinct follow-up endpoint and clock using recorded configuration."""
+    config = experiment["config"]
+    spec = config["continuation"]
+    return (
+        f"This follow-up continues each arm's own generation-{spec['parent_generation']} FP32 checkpoint "
+        f"to a fixed target of {spec['target_generation']} generations, preserving the archive, RNGs and global schedules. "
+        "The duration is the only training change. The original pilot was already observed and published. "
+        f"The new primary endpoint is the fresh {spec['fresh_manifest']['splits']['fresh']['count']}-problem set, "
+        "excluding all earlier number multisets. The original test is secondary. Parent checkpoints receive fresh-only "
+        "evaluation after continuation training, so the change contrast pairs four outcomes per problem. "
+        f"The separate cap is {config['total_seconds'] / 3600:g} hours, with {config['train_seconds'] / 3600:g} hours "
+        f"per training arm and {config['final_seconds'] / 3600:g} hours for final work; the original five-day allocation also applies. "
+        "Parent deadlines remain immutable. No stopping or checkpoint selection depends on interim accuracy. "
+        "The untrained baseline's older outcomes are reused with their source hash; its fresh outcomes are newly evaluated. "
+        "This is a single-seed, pilot-motivated follow-up, not a test of seed robustness."
+    )
+
+
+def continuation_table(summary: dict) -> list[list[str]]:
+    """Separate fresh learning changes and newly consumed training resources from totals."""
+    table = [["Condition", "Parent fresh accuracy", "Final fresh accuracy", "Added generations", "Added train tokens", "Added train hours"]]
+    for name in ("main", "reward_only"):
+        method = summary["methods"][name]
+        added = method["added_training_observations"]
+        table.append([
+            name, _percent(summary["longitudinal"]["parents"][name].get("accuracy")),
+            _percent(method["fresh"].get("accuracy")), str(added["generations"]),
+            str(added["generated_tokens"]), f"{method['training_seconds'] / 3600:.3f}",
+        ])
+    return table
 
 
 def plot_results(directory: Path, summary: dict, output: Path) -> None:
@@ -412,11 +503,12 @@ def plot_results(directory: Path, summary: dict, output: Path) -> None:
     fig.savefig(output / "training.png", dpi=160)
     plt.close(fig)
     fig, axis = plt.subplots(figsize=(7, 3.5), layout="constrained")
-    names = [name for name, m in summary["methods"].items() if "accuracy" in m["test"]]
+    split = summary.get("primary_split", "test")
+    names = [name for name, m in summary["methods"].items() if "accuracy" in m[split]]
     upper = 1.0
     if names:
-        means = np.array([summary["methods"][n]["test"]["accuracy"] for n in names])
-        bounds = np.array([summary["methods"][n]["test"]["interval"] for n in names])
+        means = np.array([summary["methods"][n][split]["accuracy"] for n in names])
+        bounds = np.array([summary["methods"][n][split]["interval"] for n in names])
         upper = min(1, max(0.01, 1.15 * float(bounds.max())))
         axis.bar(
             names,
@@ -428,7 +520,7 @@ def plot_results(directory: Path, summary: dict, output: Path) -> None:
     else:
         axis.text(0.5, 0.5, "No evaluation observations", transform=axis.transAxes, ha="center")
     axis.set(
-        ylabel="Greedy exact accuracy", ylim=(0, upper), title="Held-out test accuracy; problem-bootstrap 95% intervals"
+        ylabel="Greedy exact accuracy", ylim=(0, upper), title=f"Held-out {split} accuracy; problem-bootstrap 95% intervals"
     )
     axis.yaxis.set_major_formatter(PercentFormatter(1))
     fig.savefig(output / "accuracy.png", dpi=160)
@@ -515,6 +607,8 @@ def write_paper(path: Path, experiment: dict, summary: dict, figures: Path, tabl
         "The original registration, changed configuration, code revisions and unchanged absolute deadline are retained in the run record. "
         "This ordering follows ES at Scale Algorithm 2 and ExTra Equation 2; it is not evidence that the hybrid outperforms the abandoned rule."
     )
+    if summary.get("continuation"):
+        section("Registered longer continuation", html.escape(continuation_description(experiment)))
     section(
         "Data, evaluation and preregistered analysis",
         "Synthetic problems have exact rational witnesses. Global number-multiset isolation prevents permutations or alternative targets crossing splits. "
@@ -547,6 +641,18 @@ def write_paper(path: Path, experiment: dict, summary: dict, figures: Path, tabl
     )
     story.extend([result, Spacer(1, 12)])
     paragraph(html.escape(coverage_description(summary)))
+    if summary.get("continuation"):
+        continued = Table(
+            [[Paragraph(html.escape(cell), styles["BodyText"]) for cell in row] for row in continuation_table(summary)],
+            colWidths=[72, 80, 80, 65, 85, 70], repeatRows=1,
+        )
+        continued.setStyle(TableStyle([
+            ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#dce9f5")),
+            ("VALIGN", (0, 0), (-1, -1), "TOP"), ("GRID", (0, 0), (-1, -1), 0.25, colors.lightgrey),
+        ]))
+        story.extend([continued, Spacer(1, 8)])
+        paragraph("Fresh accuracy is primary. The change contrasts and old-test comparison below are descriptive secondary analyses. "
+                  "Train tokens in the later diagnostic table are cumulative; training hours and this table's added tokens concern the continuation only.")
     primary = summary.get("primary")
     if primary:
         paragraph(
@@ -663,8 +769,13 @@ def write_paper(path: Path, experiment: dict, summary: dict, figures: Path, tabl
         + ". "
         + f"Frozen generations per arm: {calibration.get('generations', 'not calibrated')}; "
         + f"inference batch: {calibration.get('batch_size', 'not calibrated')}. "
-        + "The timing rule uses the slowest calibration candidate, a complete update and checkpoint, and amortized "
-        + "validation cost. The budget reserves a fraction of each training phase and freezes the common count before training."
+        + (
+            "The continuation timing rule uses the maximum parent generation duration plus measured checkpoint cost; "
+            "it freezes the common target before continuation model execution."
+            if summary.get("continuation") else
+            "The timing rule uses the slowest calibration candidate, a complete update and checkpoint, and amortized "
+            "validation cost. The budget reserves a fraction of each training phase and freezes the common count before training."
+        )
     )
     paragraph(
         "Embedding revision: "
@@ -729,8 +840,14 @@ def report(directory: Path, output_root: Path = Path(".")) -> dict:
     summary = summarize(directory)
     atomic_json(directory / "summary.json", summary)
     experiment = read_json(directory / "experiment.json", {})
+    continued = bool(summary.get("continuation"))
+    slug = experiment["config"]["experiment"] if continued else "pilot"
+    registration = "preregistration-continuation.md" if continued else "preregistration.md"
+    config_file = "continuation.json" if continued else "pilot.json"
     table = result_table(summary)
     reports, figures = output_root / "reports", output_root / "reports/figures"
+    if continued:
+        figures /= slug
     reports.mkdir(parents=True, exist_ok=True)
     plot_results(directory, summary, figures)
     primary = summary["primary"]
@@ -741,14 +858,17 @@ def report(directory: Path, output_root: Path = Path(".")) -> dict:
         else "The registered paired endpoint is incomplete or not yet available."
     )
     text = (
-        f'# Pilot experiment\n\nLibor "Burny" Burian · {datetime.now().date().isoformat()}\n\n'
+        f'# {slug} experiment\n\nLibor "Burny" Burian · {datetime.now().date().isoformat()}\n\n'
+        + (continuation_description(experiment) + "\n\n" + markdown_table(continuation_table(summary)) + "\n\n" if continued else "")
+        +
         f"{summary['finding']}\n\n{comparison}\n\n{summary['interval_scope']}\n\n"
         f"{outcome_description(summary)}\n\n"
         f"{summary['interval_caveat']}\n\n"
         f"{markdown_table(table)}\n\n{coverage_description(summary)}\n\n"
         f"{markdown_table(comparison_table(summary))}\n\n"
         "Comparisons with the original checkpoint are descriptive secondary estimates with unadjusted intervals.\n\n"
-        "![Accuracy](figures/accuracy.png)\n\n![Training](figures/training.png)\n\n"
+        f"![Accuracy]({figures.relative_to(reports).as_posix()}/accuracy.png)\n\n"
+        f"![Training]({figures.relative_to(reports).as_posix()}/training.png)\n\n"
         f"## Probe performance, validity and resources\n\n{markdown_table(diagnostic_table(summary))}\n\n"
         "Train tokens count only candidates in committed generations; evaluation tokens count persisted evaluation responses. "
         "Calibration, validation, interrupted batches and replay costs are excluded from those columns. "
@@ -759,7 +879,7 @@ def report(directory: Path, output_root: Path = Path(".")) -> dict:
         "Greedy structure counts equal successful problems, since each problem has one response. "
         "Sampled diversity counts distinct correct canonical ASTs within each problem, then averages over complete sampled groups, including zeros. "
         "This is syntactic diversity; algebraically equivalent expressions may count separately.\n\n"
-        "## Method and scope\n\nSee the [preregistration](preregistration.md), [configuration](../configs/pilot.json), "
+        f"## Method and scope\n\nSee the [preregistration]({registration}), [configuration](../configs/{config_file}), "
         "[data hashes](../data/manifest.json), and [literature audit](../docs/literature.md). "
         "This is an adaptation of [ExTra](https://arxiv.org/abs/2606.24994) and "
         "[ES at Scale](https://arxiv.org/abs/2509.24372), not a reproduction. "
@@ -801,10 +921,10 @@ def report(directory: Path, output_root: Path = Path(".")) -> dict:
         "no general-language benchmark; descriptive secondary analyses. Bootstrap intervals omit seed variability. "
         "CPU tests, reporting, audits and backups overlapped training, so timing is not an isolated systems benchmark.\n"
     )
-    (reports / "experiment-pilot.md").write_text(text, encoding="utf-8")
+    (reports / f"experiment-{slug}.md").write_text(text, encoding="utf-8")
     refresh_readme(output_root / "README.md", summary, table)
-    (reports / "all-experiments.md").write_text(
-        "# All experiments\n\nThe current registered study is the paired pretrained pilot. "
+    aggregate = (
+        "# All experiments\n\nThe registered pretrained studies use paired ES training and original-model evaluation. "
         "No scratch or diagnostic run is represented as executed.\n\n"
         + summary["finding"] + "\n\n" + outcome_description(summary) + "\n\n"
         + markdown_table(table)
@@ -819,10 +939,16 @@ def report(directory: Path, output_root: Path = Path(".")) -> dict:
         "ES means comparing random weight changes instead of using backpropagation. Novelty is distance from previous "
         "correct answers. Quality is verified arithmetic reward. Accuracy is exact success frequency. "
         "pass@k estimates the chance of at least one success among k samples. A confidence interval here describes "
-        "uncertainty from which test problems were sampled, not uncertainty over training seeds.\n",
-        encoding="utf-8",
+        "uncertainty from which test problems were sampled, not uncertainty over training seeds.\n"
     )
+    if continued:
+        original_summary = read_json(output_root / "docs/site/status.json", {}).get("summary", {})
+        aggregate += "\n\n## Original pilot (retained)\n\n" + markdown_table(result_table(original_summary)) if original_summary else ""
+        aggregate += f"\n\n## Longer continuation\n\n{markdown_table(continuation_table(summary))}\n\n[Full report](experiment-{slug}.md).\n"
+    (reports / "all-experiments.md").write_text(aggregate, encoding="utf-8")
     site = output_root / "docs/site"
+    if continued:
+        site /= slug
     site.mkdir(parents=True, exist_ok=True)
     shutil.copyfile("web/index.html", site / "index.html")
     atomic_json(site / "status.json", dashboard_state(directory))
@@ -834,7 +960,8 @@ def report(directory: Path, output_root: Path = Path(".")) -> dict:
             (model_dir / "README.md").write_text(
                 f"---\nlicense: apache-2.0\nbase_model: {config['model_id']}\nlibrary_name: transformers\n"
                 "pipeline_tag: text-generation\ntags:\n- evolution-strategies\n- countdown\n---\n\n"
-                f"# Novelty ES pilot: {condition}\n\n"
+                f"# Novelty ES {slug}: {condition}\n\n"
+                + (continuation_description(experiment) + "\n\n" if continued else "")
                 + summary["finding"]
                 + "\n\n" + outcome_description(summary) + "\n\n"
                 + markdown_table(table)
@@ -848,7 +975,8 @@ def report(directory: Path, output_root: Path = Path(".")) -> dict:
     # Hub card format: https://huggingface.co/docs/hub/datasets-cards .
     (directory / "README.md").write_text(
         "---\nlicense: apache-2.0\nlanguage:\n- en\ntags:\n- evolution-strategies\n- reproducibility\n---\n\n"
-        "# Novelty ES pilot evidence\n\n" + summary["finding"] + "\n\n" + markdown_table(table)
+        f"# Novelty ES {slug} evidence\n\n" + summary["finding"] + "\n\n" + markdown_table(table)
+        + ("\n\n" + continuation_description(experiment) if continued else "")
         + "\n\n" + summary["interval_scope"] + "\n\n"
         "This repository contains raw evaluations, timestamped generation traces, configuration and code provenance, "
         "initialization and recovery audits, and the final resumable FP32 training checkpoints. "
@@ -868,6 +996,6 @@ def report(directory: Path, output_root: Path = Path(".")) -> dict:
         encoding="utf-8",
     )
     shutil.copyfile("LICENSE", directory / "LICENSE")
-    write_paper(output_root / "output/pdf/novelty-es-pilot.pdf", experiment, summary, figures, table)
-    print(json.dumps({"report": str(reports / "experiment-pilot.md"), "finding": summary["finding"]}, indent=2))
+    write_paper(output_root / f"output/pdf/novelty-es-{slug}.pdf", experiment, summary, figures, table)
+    print(json.dumps({"report": str(reports / f"experiment-{slug}.md"), "finding": summary["finding"]}, indent=2))
     return summary

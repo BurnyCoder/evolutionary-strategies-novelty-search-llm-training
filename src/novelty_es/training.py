@@ -162,12 +162,19 @@ def train(
     optimizer = FullWeightES(runner.model, config["sigma"], config["alpha"], runner.device)
     memory = CorrectMemory(config["memory_size"], config["seed"])
     schedule = PromptSchedule(len(data["train"]), config["seed"], config["probe_count"], config["rotating_count"])
+    if "continuation" in experiment and (not checkpoint.exists() or not (directory / "fork-audit.json").exists()):
+        from .continuation import fork_checkpoint
+
+        audit = fork_checkpoint(directory, condition, deadline, experiment)
+        runner.log.emit("continuation_forked", condition=condition, **audit)
     if checkpoint.exists():
         state = load_checkpoint(checkpoint, restore_rng=True)
         if state["config"] != config or state["deadline"] != deadline or state["generations"] != generations:
             raise ValueError("Cannot change registered configuration or allowance on resume")
         if state["dataset_manifest"] != experiment["dataset_manifest"]:
             raise ValueError("Checkpoint dataset differs")
+        if state["absolute_deadline"] != experiment["deadline"] or state["condition"] != condition:
+            raise ValueError("Checkpoint condition or absolute deadline differs")
         optimizer.load_master(state["master"])
         memory.load_state_dict(state["memory"])
     else:

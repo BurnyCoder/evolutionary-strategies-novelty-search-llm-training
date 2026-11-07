@@ -15,19 +15,20 @@ from pathlib import Path
 import torch
 from safetensors import safe_open
 
-from novelty_es.data import grade, load_data, make_prompt
+from novelty_es.continuation import experiment_data, validate_parent
+from novelty_es.data import grade, make_prompt
 from novelty_es.evaluation import evaluation_sets
 from novelty_es.optimizer import candidate_weights, perturbation_seeds
 from novelty_es.runtime import atomic_json, load_checkpoint
 from novelty_es.schedule import PromptSchedule
 
 
-def audit_training_trace(directory, data, config, generations):
+def audit_training_trace(directory, data, config, generations, start_generation=0):
     """Check actual logged prompts and noise seeds against the common frozen schedule."""
     schedule = PromptSchedule(len(data["train"]), config["seed"], config["probe_count"], config["rotating_count"])
     expected = {
         (generation, candidate): ([data["train"][i]["id"] for i in schedule.indices(generation)], seed)
-        for generation in range(generations)
+        for generation in range(start_generation, generations)
         for candidate, seed in enumerate(perturbation_seeds(config["seed"], generation, config["population"]))
     }
     problems = {row["id"]: row for row in data["train"]}
@@ -66,18 +67,26 @@ def main():
     assert experiment["phase"] == "finished", "Wait for all model execution to finish"
     assert experiment["finished_at"] <= experiment["deadline"], "Model execution exceeded the absolute deadline"
     config = experiment["config"]
-    data = load_data(Path("data"))
-    assert json.loads(Path("data/manifest.json").read_text(encoding="utf-8")) == experiment["dataset_manifest"]
+    data, manifest = experiment_data(config, Path("data"))
+    assert manifest == experiment["dataset_manifest"]
+    if "continuation" in experiment:
+        validate_parent(config, directory)
     problems = {row["id"]: row for rows in data.values() for row in rows}
     result = {"checked_at": datetime.now(timezone.utc).isoformat(), "absolute_deadline": experiment["deadline"], "conditions": {}}
     expected_sets = evaluation_sets(data, config)
-    result["paired_training_schedule"] = audit_training_trace(directory, data, config, experiment["calibration"]["generations"])
+    result["paired_training_schedule"] = audit_training_trace(
+        directory, data, config, experiment["calibration"]["generations"],
+        experiment.get("continuation", {}).get("parent_generation", 0),
+    )
     torch.set_num_threads(1)
-    for condition in ("original", "main", "reward_only"):
+    conditions = ["original", "main", "reward_only"]
+    if "continuation" in experiment:
+        conditions.extend(["parent_main", "parent_reward_only"])
+    for condition in conditions:
         folder = directory / condition
         evaluation = json.loads((folder / "evaluation.json").read_text(encoding="utf-8"))
         assert evaluation["complete"], f"Incomplete evaluation: {condition}"
-        assert set(evaluation["sets"]) == set(expected_sets)
+        assert set(evaluation["sets"]) == ({"fresh"} if condition.startswith("parent_") else set(expected_sets))
         checked = {}
         for split, rows in evaluation["sets"].items():
             for row, scheduled in zip(rows, expected_sets[split], strict=True):
@@ -89,12 +98,20 @@ def main():
                 assert all(row[key] == value for key, value in expected.items()), f"Grade mismatch: {condition}/{row['problem_id']}"
             checked[split] = len(rows)
         item = {"regraded_responses": checked, "all_grades_match": True}
-        if condition != "original":
+        if condition in ("main", "reward_only"):
             state = load_checkpoint(folder / "checkpoint.pt")
-            initial = json.loads((folder / "initialization-audit.json").read_text(encoding="utf-8"))
-            assert initial["all_pretrained_tensors_exactly_equal_in_fp32"] and initial["initial_archive_empty"]
-            assert initial["generation"] == 0 and initial["training_code_revision"] == state["code_revision"]
-            assert initial["weighting"] == config["weighting"] and initial["novelty_weight"] == config["novelty_weight"]
+            if "continuation" in experiment:
+                initial = json.loads((folder / "fork-audit.json").read_text(encoding="utf-8"))
+                assert all(initial["preserved_exactly"].values())
+                assert state["continuation_parent"] == initial["parent"]
+                assert initial["parent"]["sha256"] == config["continuation"]["parent_files"][f"{condition}/checkpoint.pt"]["sha256"]
+                parent_metrics = json.loads((Path(config["continuation"]["parent_directory"]) / condition / "metrics.json").read_text(encoding="utf-8"))
+                assert state["metrics"][:len(parent_metrics)] == parent_metrics
+            else:
+                initial = json.loads((folder / "initialization-audit.json").read_text(encoding="utf-8"))
+                assert initial["all_pretrained_tensors_exactly_equal_in_fp32"] and initial["initial_archive_empty"]
+                assert initial["generation"] == 0 and initial["training_code_revision"] == state["code_revision"]
+                assert initial["weighting"] == config["weighting"] and initial["novelty_weight"] == config["novelty_weight"]
             assert state["code_revision"] == experiment.get("training_code_revision", experiment["code_revision"])
             assert state["generation"] == state["generations"] == experiment["calibration"]["generations"]
             assert state["config"] == config and state["absolute_deadline"] == experiment["deadline"]
