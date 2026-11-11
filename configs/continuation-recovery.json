@@ -1,0 +1,180 @@
+{
+  "experiment": "continuation-seed0-gen100",
+  "seed": 0,
+  "data_seed": 20261107,
+  "model_id": "Qwen/Qwen2.5-0.5B-Instruct",
+  "model_revision": "7ae557604adf67be50417f59c2c2f167def9a775",
+  "embedding_id": "sentence-transformers/all-MiniLM-L6-v2",
+  "embedding_revision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+  "extra_revision": "ea53e68036356f8f276e261e886fbbc102633be3",
+  "population": 30,
+  "sigma": 0.001,
+  "alpha": 0.0005,
+  "novelty_weight": 1.0,
+  "memory_size": 6,
+  "rotating_count": 32,
+  "probe_count": 16,
+  "max_new_tokens": 128,
+  "batch_size": 16,
+  "embedding_batch_size": 64,
+  "validation_count": 64,
+  "validation_every": 5,
+  "calibration_candidates": 3,
+  "max_generations": 500,
+  "train_seconds": 25200,
+  "calibration_seconds": 3600,
+  "final_seconds": 10800,
+  "total_seconds": 36000,
+  "timing_fraction": 0.8,
+  "sampled_problem_count": 256,
+  "samples_per_problem": 16,
+  "sampled_temperature": 1.0,
+  "sampled_top_p": 1.0,
+  "bootstrap_replicates": 10000,
+  "weighting": "zscore_task_plus_novelty_v1",
+  "primary_split": "fresh",
+  "publication_suffix": "seed0-gen100",
+  "artifact_repo": "novelty-es-continuation-seed0-gen100-artifacts",
+  "continuation": {
+    "parent_directory": "artifacts/pilot",
+    "parent_generation": 19,
+    "target_generation": 100,
+    "fresh_directory": "data/continuation",
+    "fresh_manifest": {
+      "seed": 20261108,
+      "generator": "sampled-tree-v1",
+      "splits": {
+        "fresh": {
+          "count": 2048,
+          "sha256": "9708e05330938a7213436ca37187d2200f648aba18875e7e4fa3f66be514aa6f"
+        }
+      },
+      "excluded_source_manifest": {
+        "seed": 20261107,
+        "generator": "sampled-tree-v1",
+        "splits": {
+          "train": {
+            "count": 8192,
+            "sha256": "e9da161d8527e235c492cd26c2d1d29fe5ee988ae483aa4a875ec2275dcf74d6"
+          },
+          "validation": {
+            "count": 512,
+            "sha256": "f32637cfe3d69c14e2750ab40555d2c0bf149b1a2826a35dea2ecc109b1b8b5a"
+          },
+          "test": {
+            "count": 2048,
+            "sha256": "3c633196fd0aad9530a0aa4548f94077f50c0cfe86af8f2613043f975982975e"
+          },
+          "hard": {
+            "count": 1024,
+            "sha256": "8ae74795b99bbf3ac4bc5c6e0c081cb79859cdec9c43bb3348f439a311d0dcae"
+          }
+        }
+      },
+      "excluded_multisets": 11776
+    },
+    "parent_files": {
+      "experiment.json": {
+        "sha256": "acd8122d7cfe211334d273370fe2a7c4115a30dd648c641a89319f55bfcd6c31",
+        "bytes": 7448
+      },
+      "main/checkpoint.pt": {
+        "sha256": "786ac734ea7760f2448d4e5307177cfdd0e30ad8767489e342673c9e867836b0",
+        "bytes": 1976288749
+      },
+      "reward_only/checkpoint.pt": {
+        "sha256": "3b367b67a077447ad641da45162fdbd9d804660d54e83d6aadea67218cc426be",
+        "bytes": 1976285423
+      },
+      "original/evaluation.json": {
+        "sha256": "ce25ab9f5f4e64da463f08bcd0effc3eda4b0ec9a4227557b01c44b872276a86",
+        "bytes": 11765382
+      },
+      "main/metrics.json": {
+        "sha256": "289f3bfdb6ea4397ae679605a1ef9ad67fe47da5e20c265b9bbf1104b72a12c0",
+        "bytes": 45035
+      },
+      "reward_only/metrics.json": {
+        "sha256": "1999d24b9445d3684435bf0ebecef24078174308d698cbffbad0ca32a5f03c18",
+        "bytes": 45101
+      }
+    },
+    "pretrained_allocation_deadline": 1794455807.1504683,
+    "timing_rule": {
+      "observed_max_generation_seconds": 443.61523640000087,
+      "checkpoint_seconds": 5.704658999999083,
+      "estimated_generation_seconds": 449.31989539999995,
+      "added_generations": 81,
+      "predicted_training_seconds_per_arm": 36394.91152739999,
+      "fraction_of_training_cap": 0.7776690497307691,
+      "rule": "Fixed target 100; 81 added updates fit 80% of each 13-hour cap using the parent maximum plus checkpoint cost."
+    }
+  },
+  "recovery": {
+    "source_directory": "D:/AI/evolutionary-strategies-novelty-search-llm-training/continuation-seed0-gen100",
+    "files": {
+      "events.jsonl": {
+        "sha256": "34a4983448642b699a3061632571aef400162e5f353cba18aa3c989f2ec94d4b",
+        "bytes": 222122027
+      },
+      "experiment.json": {
+        "sha256": "403d07a4e9bfd781eb307b3d9e09b1b06d73701f556f8842287eb8a82489b4d1",
+        "bytes": 12798
+      },
+      "main/checkpoint.pt": {
+        "sha256": "c982a2498d0829f0eb60fefc8793a31063604ed1e9f77cc42a799158296e0c3c",
+        "bytes": 1976405285
+      },
+      "main/fork-audit.json": {
+        "sha256": "aa2416040db42ab035e953d44e28780f6c410c01c86f99a3df07d9f2a3863447",
+        "bytes": 689
+      },
+      "main/metrics.json": {
+        "sha256": "56811e39d8b1632f7e8b4e6139496f4ec114f8124cf14d348bfa7d9a2e7d418c",
+        "bytes": 240655
+      },
+      "main/pending.pt": {
+        "sha256": "1b159106b689d11b7f6f01b27745fc70083e56d3348c4363749c1f9115b7d6f3",
+        "bytes": 1356329
+      },
+      "main/progress.json": {
+        "sha256": "84d74602ee961088bd538a2c9508631efa0ae777bed2c732db7b8903ac45a74f",
+        "bytes": 2367
+      },
+      "original/evaluation.json": {
+        "sha256": "dc58ae62c1ad682e3d1c2510560a056decb202b808d4fb9acb469232da7b0d09",
+        "bytes": 11765564
+      },
+      "reward_only/checkpoint.pt": {
+        "sha256": "9100aed6d5adbb1d06a74be1823ec2ed506ec3c4647919b22c1cff6195e933a1",
+        "bytes": 1976312617
+      },
+      "reward_only/fork-audit.json": {
+        "sha256": "192e6438942bde93a4c668bc1fa992e08cda7ab12bf36a8192c9c79f8c935574",
+        "bytes": 697
+      },
+      "reward_only/metrics.json": {
+        "sha256": "f3bafd0629f311f0b132945c21c655f7caf64c90d97df73c75a29c8cd7731b6c",
+        "bytes": 73729
+      },
+      "reward_only/pending.pt": {
+        "sha256": "167fd54be9ac5d67f984de193b487d033c700da13bf9501afa221207ff3964ef",
+        "bytes": 865963
+      },
+      "reward_only/progress.json": {
+        "sha256": "65a579c25d105fd91e18c6f6405b7628a4e465a9f29ac0d00a68008dba9c2e43",
+        "bytes": 310
+      }
+    },
+    "week_deadline": 1794628607.1504683,
+    "source_deadline": 1794163855.8075037,
+    "source_generations": {
+      "main": 100,
+      "reward_only": 31
+    },
+    "pending_generation": 31,
+    "saved_candidates": 19,
+    "last_recorded_event": "2026-11-07T19:02:22.260+00:00",
+    "reason": "User requested continuation after an OS restart; original allowance expired during the outage."
+  }
+}

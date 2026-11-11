@@ -2,6 +2,14 @@
 
 The [follow-up registration](../reports/preregistration-continuation.md) extends the two published seed-zero checkpoints, preserving their FP32 weights, archives, RNGs and global generation indices. It does not restart the original pilot or change its deadline. [Configuration and parent hashes](../configs/continuation.json) fix the source files, target and fresh endpoint before execution.
 
+The OS interruption outlasted that allowance. The separately [registered recovery](../reports/preregistration-recovery.md) preserves the expired attempt and resumes only unfinished work in another directory:
+
+```powershell
+uv run novelty-es recover --config configs/continuation-recovery.json --run-dir D:/AI/evolutionary-strategies-novelty-search-llm-training/continuation-seed0-gen100-recovery
+```
+
+Repeat this exact command after another restart; the recovery's stored clock is never reset. `restart-parent/` contains the immutable interrupted source evidence, and `restart-audit.json` verifies numerical state preservation. The final report must disclose the missed earlier deadline. Use this recovery directory for dashboard, report, audit and publication commands below. The historical first-launch commands are retained for provenance, not as a way to reset an expired run.
+
 From the repository root, restore the immutable parent evidence release if `artifacts/pilot` is not already present:
 
 ```powershell
