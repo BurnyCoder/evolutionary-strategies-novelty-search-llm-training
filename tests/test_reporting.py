@@ -151,3 +151,24 @@ def test_continuation_report_keeps_the_pilot_release_separate(tmp_path):
     assert (output / "output/pdf/novelty-es-continuation-seed0-gen100.pdf").stat().st_size > 1000
     assert (output / "docs/site/continuation-seed0-gen100/status.json").is_file()
     assert not (output / "docs/site/status.json").exists()
+
+
+def test_recovery_report_discloses_expired_attempt(tmp_path):
+    """The new result cannot present the missed original deadline as fulfilled."""
+    from pathlib import Path
+
+    config = json.loads(Path("configs/continuation-recovery.json").read_text())
+    config["bootstrap_replicates"] = 100
+    _, manifest = experiment_data(config, Path("data"))
+    directory, output = tmp_path / "run", tmp_path / "release"
+    recovery = {**config["recovery"], "source_phases": {"reward_only": {"started_at": 1794074074.0}}}
+    atomic_json(directory / "experiment.json", {
+        "config": config, "dataset_manifest": manifest, "phase": "reward_only", "recovery": recovery,
+        "continuation": {"parent_generation": 19, "target_generation": 100},
+    })
+    summary = report(directory, output)
+    assert summary["primary"] is None
+    report_text = (output / "reports/experiment-continuation-seed0-gen100.md").read_text(encoding="utf-8")
+    assert "that attempt remains incomplete" in report_text
+    assert "preregistration-recovery.md" in report_text
+    assert (output / "reports/experiment-continuation-interrupted.md").exists()

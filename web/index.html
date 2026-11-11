@@ -7,6 +7,7 @@
 <span id="connection">Connecting…</span><div class="eyebrow">FULL-WEIGHT LANGUAGE MODEL EVOLUTION</div>
 <h1>Does useful novelty improve accuracy?</h1>
 <p id="study">One paired seed · ExTra-derived novelty + ES · Original-model baseline</p>
+<p id="recovery-note" class="notice" hidden></p>
 <div class="grid"><section class="card"><div class="label">Current phase</div><div id="phase" class="value">Not started</div><div id="deadline" class="label">The experiment clock starts at calibration.</div></section><section class="card"><div class="label">Main method</div><div id="main-progress" class="value">Waiting</div><div id="main-metrics" class="label">No training measurements</div></section><section class="card"><div class="label">Reward-only control</div><div id="reward_only-progress" class="value">Waiting</div><div id="reward_only-metrics" class="label">No training measurements</div></section></div>
 <section class="card"><h2>Evaluation progress</h2><div id="evaluation-progress" class="empty">Evaluation has not started.</div><p class="label">Live counts include completed batches only. Sampled accuracy averages individual responses; final pass@k uses complete problem groups. Partial evaluations are descriptive.</p></section>
 <section class="card"><h2>Training measurements</h2><label for="metric">Measure </label><select id="metric"><option value="accuracy">Candidate accuracy</option><option value="quality">Task reward</option><option value="novelty">Correct-answer novelty</option><option value="validity">Answer validity</option><option value="validation">Master validation accuracy</option><option value="throughput">Generated tokens / second</option></select> <label><input id="full-range" type="checkbox"> Show full metric range</label><div class="legend"><p class="main">● Main method</p><p class="control">● Reward-only ES</p></div><div id="chart"></div><p class="label">Axes start at zero and share a scale across conditions. The default upper limit follows the observed data; the full-range option applies to bounded metrics. Candidate metrics average perturbed models; validation evaluates the unperturbed master. Neither is held-out test accuracy.</p></section>
@@ -58,6 +59,9 @@ function render(){
   const e=state.experiment||{},summary=state.summary||{},split=summary.primary_split||e.config?.primary_split||'test';
   el('phase').textContent=(e.phase||'not_started').replaceAll('_',' ');
   if(e.continuation)el('study').textContent=`Matched continuation · generation ${e.continuation.parent_generation} to ${e.continuation.target_generation} · fresh primary endpoint · one training seed`;
+  const recovery=e.recovery, recoveryNote=el('recovery-note');
+  recoveryNote.hidden=!recovery;
+  if(recovery)recoveryNote.textContent=`Recovery after an OS interruption. The earlier attempt missed its deadline with main at generation ${recovery.source_generations.main} and control at ${recovery.source_generations.reward_only}. Saved training state is preserved under a separately registered allowance; the completed main model receives no further updates. The recovered result does not satisfy the earlier execution deadline.`;
   if(e.deadline)el('deadline').textContent='Absolute deadline: '+new Date(e.deadline*1000).toLocaleString();
   for(const name of ['main','reward_only']){
     const p=state.progress?.[name]||{};

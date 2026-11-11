@@ -231,6 +231,7 @@ def summarize(directory: Path) -> dict:
     summary["protocol_amendments"] = experiment.get("protocol_amendments", [])
     summary["execution_repairs"] = experiment.get("execution_repairs", [])
     summary["recovery_audit"] = read_json(directory / "recovery-audit.json", {})
+    summary["restart_replay_audit"] = read_json(directory / "restart-replay-audit.json", {})
     summary["logged_generation_work"] = logged_generation_work(directory / "events.jsonl")
     summary["elapsed_seconds"] = (
         experiment.get("finished_at", time.time()) - experiment["started_at"] if "started_at" in experiment else 0
@@ -493,6 +494,19 @@ def continuation_table(summary: dict) -> list[list[str]]:
     return table
 
 
+def restart_replay_description(summary: dict) -> str:
+    """Keep the actual observed replay claim narrower than full-trajectory equivalence."""
+    audit = summary.get("restart_replay_audit", {})
+    if not audit:
+        return ""
+    return (
+        f"A post-restart numerical diagnostic compared {audit['replayed_rows']} naturally replayed GPU responses "
+        f"from the unfinished candidate. Exact response, token and verifier matches: {audit['all_exact']}; "
+        f"mismatched rows: {len(audit['mismatches'])}. Only timestamps and batch duration were excluded. "
+        "This checks the observed candidate replay, not arbitrary hardware changes or a complete optimization trajectory."
+    )
+
+
 def plot_results(directory: Path, summary: dict, output: Path) -> None:
     """Use zero-based axes with shared, data-driven limits across compared conditions.
 
@@ -640,6 +654,8 @@ def write_paper(path: Path, experiment: dict, summary: dict, figures: Path, tabl
     )
     if summary.get("continuation"):
         section("Registered longer continuation", html.escape(continuation_description(experiment)))
+        if summary.get("restart_replay_audit"):
+            paragraph(html.escape(restart_replay_description(summary)))
     section(
         "Data, evaluation and preregistered analysis",
         "Synthetic problems have exact rational witnesses. Global number-multiset isolation prevents permutations or alternative targets crossing splits. "
@@ -912,6 +928,7 @@ def report(directory: Path, output_root: Path = Path(".")) -> dict:
     text = (
         f'# {slug} experiment\n\nLibor "Burny" Burian · {datetime.now().date().isoformat()}\n\n'
         + (continuation_description(experiment) + "\n\n" + markdown_table(continuation_table(summary)) + "\n\n" if continued else "")
+        + (restart_replay_description(summary) + "\n\n" if summary.get("restart_replay_audit") else "")
         +
         f"{summary['finding']}\n\n{comparison}\n\n{summary['interval_scope']}\n\n"
         f"{outcome_description(summary)}\n\n"
