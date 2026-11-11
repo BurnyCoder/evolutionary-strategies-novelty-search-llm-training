@@ -12,7 +12,7 @@ def main() -> None:
     """Dispatch explicit phases; only run creates the experiment's immutable clock."""
     load_dotenv()
     parser = argparse.ArgumentParser(description="Reproducible full-weight novelty ES pilot")
-    parser.add_argument("command", choices=["prepare", "download", "run", "report", "dashboard", "publish"])
+    parser.add_argument("command", choices=["prepare", "download", "run", "recover", "report", "dashboard", "publish"])
     parser.add_argument("--config", type=Path, default=Path("configs/pilot.json"))
     parser.add_argument("--run-dir", type=Path, default=Path(os.environ.get("NOVELTY_RUN_DIR", "artifacts/pilot")))
     args = parser.parse_args()
@@ -35,7 +35,7 @@ def main() -> None:
                 allow_patterns=["*.json", "*.safetensors", "*.txt", "*.model", "LICENSE*", "NOTICE*"],
             )
             print(f"Pinned {prefix} downloaded to {path}")
-    elif args.command == "run":
+    elif args.command in ("run", "recover"):
         from filelock import FileLock
 
         from .pilot import run_pilot
@@ -43,6 +43,13 @@ def main() -> None:
 
         args.run_dir.mkdir(parents=True, exist_ok=True)
         with FileLock(str(args.run_dir / "writer.lock"), timeout=0):
+            if args.command == "recover":
+                from .pilot import _git
+                from .restart import initialize_recovery
+
+                if not (args.run_dir / "experiment.json").exists() and _git("status", "--porcelain"):
+                    raise RuntimeError("Publish and commit recovery changes before model execution")
+                initialize_recovery(config, args.run_dir, _git("rev-parse", "HEAD"))
             run_pilot(config, args.run_dir)
             report(args.run_dir)
     elif args.command == "report":

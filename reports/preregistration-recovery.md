@@ -1,0 +1,21 @@
+# Recovery of the interrupted longer seed-zero comparison
+
+Libor "Burny" Burian · 2026-11-11. Registered after the user reported an OS restart and requested continuation, before any recovery model execution. This amendment changes execution allowances only. It does not turn the interrupted attempt into an on-time result.
+
+The [earlier continuation registration](preregistration-continuation.md) remains intact. Its absolute deadline expired while the job was offline. The [recovery configuration](../configs/continuation-recovery.json) records the saved generations, pending candidate count, last logged event, original deadline and SHA-256/size of each source artifact. The original directory is immutable; a separate recovery directory retains a verbatim `restart-parent` copy and exact-state audit. Neither the original pilot nor the interrupted attempt receives a reset clock.
+
+## Frozen recovery and analysis
+
+Continue only the unfinished reward-only arm to the already registered generation-100 target. Reuse the completed main checkpoint without further updates. Preserve every FP32 tensor, archive entry, RNG state, global generation index, data cursor, cumulative counter, previous metric and completed pending candidate. Re-evaluate only any candidate not durably saved. Keep the original matched prompt/noise schedules, seed, hyperparameters, model revisions, verifier, normalization order and numerical kernels. This remains the [source-audited](../docs/source-conformance.md) ES/ExTra adaptation; an OS restart is not a new optimization method.
+
+The recovery clock starts during durable recovery preparation after the registration and tested implementation are published. Freeze **ten hours total**, with at most **seven hours for the remaining control training** and **three hours for final evaluation, auditing and publication**. Cap the absolute deadline at the original seven-day study boundary. All subsequent restarts retain these new stored deadlines and include downtime. Do not add generations, select an intermediate checkpoint, stop on significance, or grant another allowance implicitly. If either training or evaluation is incomplete at this deadline, label it incomplete.
+
+This explicitly replaces the earlier five-day pretrained-stage cap for this recovery only, while retaining the original whole-week boundary. Recovery may consume time originally reserved for later seeds or the scratch study; those stages are not represented as complete or guaranteed to fit. The outage has already prevented the earlier uninterrupted schedule. Report that scheduling deviation even if the recovered models finish.
+
+The fresh endpoint has not been evaluated. Retain the registered hypothesis, fresh-set hash, original-model baseline, generation-19 parent comparisons, paired bootstrap, secondary evaluations and falsification criteria from the earlier registration. No new test set, outcome-dependent decision, coefficient tuning or seed selection is introduced. Results are a recovered, pilot-motivated single-seed comparison, not fulfillment of the earlier thirty-hour execution schedule or evidence across seeds. The copied old original-model outcomes remain explicitly reused.
+
+## Checks and provenance
+
+Before launching, test real training entry points with a synthetic partial population: recovery must preserve pending responses and RNGs and produce the same weights, memory, cursor and counts as uninterrupted execution. Test that a repeated recovery retains the same clock, that changed numerical settings are rejected, and that parent files remain unchanged. On the actual files, check all hashes, compare all non-metadata checkpoint fields exactly, and record both the old numerical implementation revision and the recovery implementation revision. The full source evidence, audit, raw responses, final exports and report will be published together.
+
+Recovery serialization follows [PyTorch's checkpoint documentation](https://docs.pytorch.org/docs/stable/notes/serialization.html) and the project's flushed, atomic file protocol based on [Python `os.replace`](https://docs.python.org/3.12/library/os.html#os.replace). These support persistence mechanics; they do not prove bit-identical GPU inference across arbitrary driver or hardware changes. Record the actual environment after restart and disclose any difference.

@@ -78,6 +78,9 @@ def run_pilot(config: dict, directory: Path, data_directory: Path = Path("data")
         if parent is not None:
             initialize_continuation(state, directory, parent)
         atomic_json(state_path, state)
+    if "recovery" in state:
+        state["recovery"].setdefault("resume_environments", []).append({"time": time.time(), **_environment()})
+        atomic_json(state_path, state)
     log = EventLog(directory / "events.jsonl")
     log.emit(
         "pilot_entered",

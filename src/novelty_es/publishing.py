@@ -25,6 +25,9 @@ def artifact_manifest(directory: Path) -> dict:
         "before-amendment-A.json", "config-amendment-A.json", "recovery-audit.json",
         "failure-evaluation-uncommitted.json", "events.jsonl", "*/checkpoint.pt",
         "*/evaluation.json", "*/metrics.json", "*/progress.json", "*/initialization-audit.json", "*/fork-audit.json",
+        "restart-audit.json", "restart-preparation.json", "restart-parent/experiment.json", "restart-parent/events.jsonl",
+        "restart-parent/*/checkpoint.pt", "restart-parent/*/pending.pt", "restart-parent/*/metrics.json",
+        "restart-parent/*/progress.json", "restart-parent/*/fork-audit.json", "restart-parent/original/evaluation.json",
     ]
     files = {}
     for path in sorted({path for pattern in patterns for path in directory.glob(pattern) if path.is_file()}):

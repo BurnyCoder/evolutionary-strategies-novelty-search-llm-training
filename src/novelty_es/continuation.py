@@ -28,7 +28,7 @@ def training_config(config: dict) -> dict:
     """Exclude only explicitly permitted follow-up bookkeeping, never training settings."""
     metadata = {
         "experiment", "train_seconds", "final_seconds", "total_seconds", "primary_split",
-        "publication_suffix", "artifact_repo", "continuation",
+        "publication_suffix", "artifact_repo", "continuation", "recovery",
     }
     return {key: value for key, value in config.items() if key not in metadata}
 
