@@ -71,6 +71,14 @@ def main():
     assert manifest == experiment["dataset_manifest"]
     if "continuation" in experiment:
         validate_parent(config, directory)
+    if "recovery" in experiment:
+        from novelty_es.restart import recovery_files
+
+        assert recovery_files(directory / "restart-parent") == config["recovery"]["files"]
+        audit = json.loads((directory / "restart-audit.json").read_text(encoding="utf-8"))
+        assert all(all(fields.values()) for fields in audit["preserved_exactly"].values())
+        assert audit["new_deadline"] == experiment["deadline"]
+        assert audit["source_deadline"] < audit["new_started_at"]
     problems = {row["id"]: row for rows in data.values() for row in rows}
     result = {"checked_at": datetime.now(timezone.utc).isoformat(), "absolute_deadline": experiment["deadline"], "conditions": {}}
     expected_sets = evaluation_sets(data, config)

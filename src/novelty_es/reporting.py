@@ -96,6 +96,7 @@ def summarize(directory: Path) -> dict:
         "primary": None,
         "primary_split": primary_split,
         "continuation": experiment.get("continuation"),
+        "recovery": experiment.get("recovery"),
         "baseline_comparisons": {},
         "model_id": config["model_id"],
         "seed": config["seed"],
@@ -174,6 +175,11 @@ def summarize(directory: Path) -> dict:
         }
         phase = experiment.get("phases", {}).get(condition, {})
         method["training_seconds"] = phase.get("finished_at", time.time()) - phase["started_at"] if phase else 0.0
+        if condition == "reward_only" and experiment.get("recovery"):
+            recovery = experiment["recovery"]
+            last = datetime.fromisoformat(recovery["last_recorded_event"]).timestamp()
+            method["training_seconds_before_restart"] = last - recovery["source_phases"][condition]["started_at"]
+            method["training_seconds"] += method["training_seconds_before_restart"]
         summary["methods"][condition] = method
         # Fixed first problems expose matched successes and failures without selection by outcome.
         summary["examples"][condition] = evaluation["sets"].get(primary_split, [])[:16]
@@ -433,6 +439,12 @@ def continuation_description(experiment: dict) -> str:
     """Explain the distinct follow-up endpoint and clock using recorded configuration."""
     config = experiment["config"]
     spec = config["continuation"]
+    budget = (
+        f"The separate cap is {config['total_seconds'] / 3600:g} hours, with {config['train_seconds'] / 3600:g} hours "
+        f"per training arm and {config['final_seconds'] / 3600:g} hours for final work; the original five-day allocation also applies. "
+    )
+    if experiment.get("recovery"):
+        budget = recovery_description(experiment) + " "
     return (
         f"This follow-up continues each arm's own generation-{spec['parent_generation']} FP32 checkpoint "
         f"to a fixed target of {spec['target_generation']} generations, preserving the archive, RNGs and global schedules. "
@@ -440,11 +452,30 @@ def continuation_description(experiment: dict) -> str:
         f"The new primary endpoint is the fresh {spec['fresh_manifest']['splits']['fresh']['count']}-problem set, "
         "excluding all earlier number multisets. The original test is secondary. Parent checkpoints receive fresh-only "
         "evaluation after continuation training, so the change contrast pairs four outcomes per problem. "
-        f"The separate cap is {config['total_seconds'] / 3600:g} hours, with {config['train_seconds'] / 3600:g} hours "
-        f"per training arm and {config['final_seconds'] / 3600:g} hours for final work; the original five-day allocation also applies. "
-        "Parent deadlines remain immutable. No stopping or checkpoint selection depends on interim accuracy. "
+        + budget
+        + "Parent deadlines remain immutable. No stopping or checkpoint selection depends on interim accuracy. "
         "The untrained baseline's older outcomes are reused with their source hash; its fresh outcomes are newly evaluated. "
         "This is a single-seed, pilot-motivated follow-up, not a test of seed robustness."
+    )
+
+
+def recovery_description(experiment: dict) -> str:
+    """Disclose the expired attempt and new registered allowance, without hiding downtime."""
+    recovery, config = experiment["recovery"], experiment["config"]
+    deadline = datetime.fromtimestamp(recovery["source_deadline"], timezone.utc).isoformat()
+    generations = recovery["source_generations"]
+    return (
+        f"The earlier execution was interrupted after main generation {generations['main']} and control generation "
+        f"{generations['reward_only']}, with {recovery['saved_candidates']} candidates saved in the next control population. "
+        f"Its deadline ({deadline}) expired during the outage; that attempt remains incomplete. "
+        f"The separately registered recovery grants at most {config['total_seconds'] / 3600:g} hours, "
+        f"including {config['train_seconds'] / 3600:g} for unfinished control training and "
+        f"{config['final_seconds'] / 3600:g} for final work, capped by the original whole-week deadline. "
+        "This amends the pretrained-stage allocation and may displace later studies. The main checkpoint is reused unchanged. "
+        "Every non-metadata checkpoint field and saved pending candidate is preserved exactly. "
+        "Training hours add the recorded active intervals before and after restart; the offline gap is excluded from compute time, "
+        "but remains part of the expired attempt's wall-clock history. Model-execution elapsed time refers to the recovery clock. "
+        "The earlier execution allowance was not met, regardless of recovery completion."
     )
 
 
@@ -616,7 +647,8 @@ def write_paper(path: Path, experiment: dict, summary: dict, figures: Path, tabl
         "The directional hypothesis is falsified for this pilot if main minus control accuracy is nonpositive. "
         "A paired problem bootstrap quantifies conditional uncertainty. Sampled pass@k follows the unbiased subset estimator [8]. "
         "Validation cannot select checkpoints. Exact dataset hashes, schedules, timing rules and sampling settings are recorded in "
-        + ("reports/preregistration-continuation.md and configs/continuation.json."
+        + ("reports/preregistration-recovery.md and configs/continuation-recovery.json."
+           if summary.get("recovery") else "reports/preregistration-continuation.md and configs/continuation.json."
            if summary.get("continuation") else "reports/preregistration.md and configs/pilot.json."),
     )
     manifest = experiment.get("dataset_manifest", read_json(Path("data/manifest.json"), {}))
@@ -749,7 +781,11 @@ def write_paper(path: Path, experiment: dict, summary: dict, figures: Path, tabl
     )
     section(
         "Appendix: reproducibility and failures",
-        ("Restore the pinned parent release as described in docs/continuation.md, then run uv sync --locked, "
+        ("Restore the pinned interrupted evidence as described in docs/continuation.md, then run uv sync --locked, "
+         "uv run pytest, uv run novelty-es download, and uv run novelty-es recover --config configs/continuation-recovery.json --run-dir PATH. "
+         "uv run novelty-es report --run-dir PATH regenerates tables, figures, this paper and the static website. "
+         if summary.get("recovery") else
+         "Restore the pinned parent release as described in docs/continuation.md, then run uv sync --locked, "
          "uv run pytest, uv run novelty-es download, and uv run novelty-es run --config configs/continuation.json --run-dir PATH. "
          "uv run novelty-es report --run-dir PATH regenerates tables, figures, this paper and the static website. "
          if summary.get("continuation") else
@@ -759,7 +795,7 @@ def write_paper(path: Path, experiment: dict, summary: dict, figures: Path, tabl
         + "Repeating run resumes the same clock. "
         "Atomic checkpoints contain weights, all RNG streams, archive, cursor, config and deadline. "
         f"Recorded technical failures: {len(summary['failures'])}. Model-execution elapsed seconds: {summary['elapsed_seconds']:.3f}. "
-        "Final auditing, report preparation and publication follow model execution within the original allowance. "
+        "Final auditing, report preparation and publication follow model execution under the recorded allowance; expired attempts are disclosed separately. "
         "Exact exceptions and incomplete conditions are retained in the generated Markdown report and JSON artifacts.",
     )
     environment = experiment.get("environment", {})
@@ -849,13 +885,22 @@ def report(directory: Path, output_root: Path = Path(".")) -> dict:
     experiment = read_json(directory / "experiment.json", {})
     continued = bool(summary.get("continuation"))
     slug = experiment["config"]["experiment"] if continued else "pilot"
-    registration = "preregistration-continuation.md" if continued else "preregistration.md"
-    config_file = "continuation.json" if continued else "pilot.json"
+    registration = "preregistration-recovery.md" if summary.get("recovery") else "preregistration-continuation.md" if continued else "preregistration.md"
+    config_file = "continuation-recovery.json" if summary.get("recovery") else "continuation.json" if continued else "pilot.json"
     table = result_table(summary)
     reports, figures = output_root / "reports", output_root / "reports/figures"
     if continued:
         figures /= slug
     reports.mkdir(parents=True, exist_ok=True)
+    if summary.get("recovery"):
+        (reports / "experiment-continuation-interrupted.md").write_text(
+            "# Interrupted continuation: incomplete\n\n" + recovery_description(experiment)
+            + "\n\nNo paired generation-100 endpoint was available under the expired allowance. "
+            "The recovery registration was published before any fresh held-out evaluation. "
+            "The source files and original deadlines remain immutable in restart-parent/.\n\n"
+            "[Recovery registration](preregistration-recovery.md). [Pinned source evidence](../configs/continuation-recovery.json).\n",
+            encoding="utf-8",
+        )
     plot_results(directory, summary, figures)
     primary = summary["primary"]
     comparison = (
