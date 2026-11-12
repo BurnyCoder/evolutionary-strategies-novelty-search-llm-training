@@ -1,68 +1,45 @@
-# Running the longer paired continuation
+# Restore and inspect the completed studies
 
-The [follow-up registration](../reports/preregistration-continuation.md) extends the two published seed-zero checkpoints, preserving their FP32 weights, archives, RNGs and global generation indices. It does not restart the original pilot or change its deadline. [Configuration and parent hashes](../configs/continuation.json) fix the source files, target and fresh endpoint before execution.
+These commands use existing evidence only. They perform no training, resumed training or new model evaluation. Both historical allowances have expired. The [continuation registration](../reports/preregistration-continuation.md), [recovery registration](../reports/preregistration-recovery.md) and original configuration/deadlines remain unchanged.
 
-The OS interruption outlasted that allowance. The separately [registered recovery](../reports/preregistration-recovery.md) preserves the expired attempt and resumes only unfinished work in another directory:
+The original attempt stopped during control training. Recovery retained the completed main model and continued the unfinished control under a separately registered allowance. The old attempt remains incomplete under its own deadline. See the [generated report](../reports/experiment-continuation-seed0-gen100.md) and [dated corrections](../reports/independent-corrections-2026-11-12.md) for the evidence and its limits.
 
-```powershell
-uv run novelty-es recover --config configs/continuation-recovery.json --run-dir D:/AI/evolutionary-strategies-novelty-search-llm-training/continuation-seed0-gen100-recovery
-```
+## Restore immutable releases
 
-Repeat this exact command after another restart; the recovery's stored clock is never reset. `restart-parent/` contains the immutable interrupted source evidence, and `restart-audit.json` verifies numerical state preservation. The final report must disclose the missed earlier deadline. Use this recovery directory for dashboard, report, audit and publication commands below. The historical first-launch commands are retained for provenance, not as a way to reset an expired run.
-
-From the repository root, restore the immutable parent evidence release if `artifacts/pilot` is not already present:
+Run from the repository root. [snapshot_download](https://huggingface.co/docs/huggingface_hub/guides/download) restores the evidence datasets **and the separate model repositories**. The BF16 exports are needed to compare tensors with saved FP32 masters; downloading only an evidence dataset is insufficient.
 
 ```powershell
 uv sync --locked
-uv run hf download BurnyCoder/novelty-es-pilot-artifacts --repo-type dataset --revision 949e2dcb385bc2b7088c40444ef879b76596317d --local-dir artifacts/pilot
-uv run novelty-es download
+uv run python scripts/restore_evidence.py --output-root artifacts/restored --cache-dir D:/AI/novelty-hub-cache
 ```
 
-The [published parent audit](../reports/publication-audit.json) records this revision and the file hashes checked before each fork. Then run:
+The script reads pinned revisions from the original [pilot receipt](../reports/publication.json) and [continuation receipt](../reports/publication-continuation-seed0-gen100.json). It does not follow mutable model branches. Use `--dry-run` to inspect the exact downloads. Choose another short writable cache path on other machines. The model downloads preserve their upstream licenses. Corrections are new documentation revisions linked to these predecessors.
+
+## Verify without modifying evidence
 
 ```powershell
-uv sync --locked
-uv run pytest
-uv run novelty-es run --config configs/continuation.json --run-dir D:/AI/evolutionary-strategies-novelty-search-llm-training/continuation-seed0-gen100
+uv run novelty-es verify --pilot-dir artifacts/restored/pilot --continuation-dir artifacts/restored/continuation --data-dir data --fresh-dir data/continuation --output-root output/verification
 ```
 
-The same command resumes after a process or OS restart. The file lock prevents duplicate writers. The new experiment records its own absolute deadline, capped by the original five-day pretrained allocation; downtime counts. The checked-in configuration retains that dated cap. A later independent replication needs a separately registered configuration and output directory with its own allowance; never reset an existing run's deadline. Each condition is forked only when its phase begins. The fork audit compares every weight, archive entry, RNG state, cursor and counter exactly with its parent before any new candidate runs. Numerical candidate generation, scoring and optimization are shared with the pilot implementation.
+All input and output paths are explicit. The verifier rejects overlapping output/input trees, hashes the inputs before and after, regrades saved responses using an independent exact arithmetic parser, verifies evaluation coverage and dataset separation, reconciles training records and coefficients, recomputes the primary intervals, and compares exported tensors with the saved masters. It constructs no model. Historical audit success flags are not its inputs. Missing generation-zero tensors and missing intermediate embeddings are reported as evidence gaps.
 
-For a live read-only dashboard in another terminal:
+## Regenerate both releases together
+
+```powershell
+uv run novelty-es report-all --pilot-dir artifacts/restored/pilot --continuation-dir artifacts/restored/continuation --output-root output/regenerated
+```
+
+This stages both reports, their aggregate, figures, papers, model/evidence cards and website snapshots under `output/regenerated`. It does not overwrite the restored runs. Generated cards and summaries are under `releases/`; the two papers are under `output/pdf/` within that output tree. A per-study summary registry keeps the aggregate independent of regeneration order. To regenerate a single study in the same staged tree, use `report --run-dir PATH --output-root output/regenerated`.
+
+## Read-only dashboard
+
+For the completed local recovery already on this machine:
 
 ```powershell
 $env:NOVELTY_DASHBOARD_PORT = '8766'
-uv run novelty-es dashboard --config configs/continuation.json --run-dir D:/AI/evolutionary-strategies-novelty-search-llm-training/continuation-seed0-gen100
+uv run novelty-es dashboard --run-dir D:/AI/evolutionary-strategies-novelty-search-llm-training/continuation-seed0-gen100-recovery
 ```
 
-Open `http://127.0.0.1:8766`. Full prompts and outputs stream to the training terminal and the run's `events.jsonl`. Training progress reports cumulative generations; the first added update is generation 20. No fresh held-out outcomes appear until both training phases have ended. Final evaluation includes the new primary, the old secondary test, hard problems, probes and sampling; the two parent checkpoints receive fresh-only evaluation afterward. The untrained baseline reuses its pinned older evaluations and receives new fresh evaluation.
+For a restored copy, replace `--run-dir` with `artifacts/restored/continuation`. Open `http://127.0.0.1:8766`. The dashboard reads saved progress and response records. Fresh greedy accuracy is the continuation primary endpoint; old-test sampled pass@k is secondary. Original-model old-test, hard, probe and sampled results are reused from the pilot. Parent models have fresh-only evaluations. These are not additional training seeds.
 
-One command regenerates the continuation Markdown report, plots, paper, model cards and separate Pages snapshot:
-
-```powershell
-uv run novelty-es report --run-dir D:/AI/evolutionary-strategies-novelty-search-llm-training/continuation-seed0-gen100
-uv run python scripts/verify_results.py --run-dir D:/AI/evolutionary-strategies-novelty-search-llm-training/continuation-seed0-gen100
-uv run novelty-es publish --run-dir D:/AI/evolutionary-strategies-novelty-search-llm-training/continuation-seed0-gen100
-```
-
-Outputs use `continuation-seed0-gen100` in their names. Model repositories use `seed0-gen100` and share the existing research collection. The original report, paper, checkpoints, models and Pages snapshot remain available. Publication is separate from training and must be verified before expanding the study. Problem-bootstrap intervals omit training-seed variability; a longer single-seed trajectory is not a multi-seed result.
-
-After publication, the audited release can be downloaded and its tables, figures, paper and website regenerated without model execution:
-
-```powershell
-$releaseRevision = (Get-Content reports/publication-continuation-seed0-gen100.json -Raw | ConvertFrom-Json).revisions.artifacts
-uv run hf download BurnyCoder/novelty-es-continuation-seed0-gen100-artifacts --repo-type dataset --revision $releaseRevision --local-dir artifacts/continuation-release
-uv run novelty-es report --run-dir artifacts/continuation-release
-uv run python scripts/verify_results.py --run-dir artifacts/continuation-release
-```
-
-Restore the original pilot release as above for its pinned lineage checks. The newer release includes the interrupted source under `restart-parent/`, both final FP32 checkpoints, inference exports in the linked model repositories, raw evaluations and replay audits. Configuration paths and the dated allowances describe the recorded machine; an independent future training replication requires a separately registered configuration, not an edited deadline in these artifacts.
-
-Verify the immutable remote files and deployed results against the local release:
-
-```powershell
-$env:HF_HUB_CACHE = 'D:/AI/novelty-hub-cache'
-uv run python scripts/verify_publication.py --run-dir D:/AI/evolutionary-strategies-novelty-search-llm-training/continuation-seed0-gen100-recovery
-```
-
-The first verification attempt could not copy a downloaded file into the deeply nested repository-local Windows cache. Using the shorter cache path above resolved it without changing training, uploaded artifacts or Windows settings. Choose another short writable directory on other machines. [`HF_HUB_CACHE`](https://huggingface.co/docs/huggingface_hub/en/package_reference/environment_variables#hfhubcache) is Hugging Face's supported cache-location setting and must be set before the library is imported. The verifier hashes downloaded small files directly and checks large files against server SHA-256 metadata; it does not download and rerun either model.
+Historical launch and recovery commands remain in the frozen registrations and Git history. They document what ran; they are not restoration instructions. An independent future training replication would need its own preregistration and allowance.

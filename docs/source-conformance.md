@@ -14,6 +14,10 @@ This is an audit of an ES–ExTra adaptation, not a claim to reproduce either pa
 
 ## Executed checks
 
+The machine-readable results linked below are historical records. The independent 2026-11-12 review checks sources and raw artifacts separately; see the [claim ledger](../reports/claim-ledger.json). Generation-zero snapshots are no longer retained, so initialization equality cannot be independently repeated today. Final export configuration and tensor counts now come directly from the restored exports, rather than an old initialization flag.
+
+The [pinned MiniLM configuration](https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/blob/1110a243fdf4706b3f48f1d95db1a4f5529b4d41/sentence_bert_config.json) limits response embeddings to 256 WordPiece tokens including special tokens. Passing a full response string to `encode` does not bypass that truncation. The [verifier](../src/novelty_es/data.py) accepts restricted Python expression syntax, not every mathematically readable arithmetic layout. Both behaviors are preserved in this correction.
+
 Run `uv run python scripts/audit_upstream.py` to download the reviewed, pinned source files and their licenses into ignored `tmp/source-audit/`, then compare numerical outputs on CPU. [Machine-readable results](../reports/source-conformance.json) record source hashes, seed, comparison counts and maximum errors. These are software test results, not model capability results.
 
 The differential check compares the actual upstream ExTra cosine helper on the shared domain: nonempty correct history, correct current responses, warmup disabled and group normalization disabled. It compares our quality z-scores against the actual ES at Scale reward-shaping function. It does not equate archive insertion order, empty-history handling, perturbation precision or entire trainers. [Unit tests](../tests/test_novelty.py) separately cover incorrect-response gating, empty history, duplicate siblings, negative cosine, self exclusion, archive freezing and replay.

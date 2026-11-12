@@ -2,14 +2,18 @@
 
 Libor "Burny" Burian · 2026-11-12
 
-This follow-up continues each arm's own generation-19 FP32 checkpoint to a fixed target of 100 generations, preserving the archive, RNGs and global schedules. The duration is the only training change. The original pilot was already observed and published. The new primary endpoint is the fresh 2048-problem set, excluding all earlier number multisets. The original test is secondary. Parent checkpoints receive fresh-only evaluation after continuation training, so the change contrast pairs four outcomes per problem. The earlier execution was interrupted after main generation 100 and control generation 31, with 19 candidates saved in the next control population. Its deadline (2026-11-08T18:50:55.807504+00:00) expired during the outage; that attempt remains incomplete. The separately registered recovery grants at most 10 hours, including 7 for unfinished control training and 3 for final work, capped by the original whole-week deadline. This amends the pretrained-stage allocation and may displace later studies. The main checkpoint is reused unchanged. Every non-metadata checkpoint field and saved pending candidate is preserved exactly. Training hours add the recorded active intervals before and after restart; the offline gap is excluded from compute time, but remains part of the expired attempt's wall-clock history. Model-execution elapsed time refers to the recovery clock. The earlier execution allowance was not met, regardless of recovery completion. Parent deadlines remain immutable. No stopping or checkpoint selection depends on interim accuracy. The untrained baseline's older outcomes are reused with their source hash; its fresh outcomes are newly evaluated. This is a single-seed, pilot-motivated follow-up, not a test of seed robustness.
+This follow-up continues each arm's own generation-19 FP32 checkpoint to a fixed target of 100 generations, preserving the archive, RNGs and global schedules. The duration is the only training change. The original pilot was already observed and published. The new primary endpoint is the fresh 2048-problem set, excluding all earlier number multisets. The original test is secondary. Parent checkpoints receive fresh-only evaluation after continuation training, so the change contrast pairs four outcomes per problem. The earlier execution was interrupted after main generation 100 and control generation 31, with 19 candidates saved in the next control population. Its deadline (2026-11-08T18:50:55.807504+00:00) expired during the outage; that attempt remains incomplete. The separately registered recovery grants at most 10 hours, including 7 for unfinished control training and 3 for final work, capped by the original whole-week deadline. This amends the pretrained-stage allocation and may displace later studies. The main checkpoint is reused unchanged. The historical recovery audit reports exact preservation of non-metadata checkpoint fields and pending candidates; the initial recovery checkpoint was subsequently overwritten, so that initialization claim cannot now be fully rechecked. Training hours add the recorded phase intervals before and after restart; the offline gap is excluded from these intervals, but remains part of the expired attempt's wall-clock history. Model-execution elapsed time refers to the recovery clock. The earlier execution allowance was not met, regardless of recovery completion. Parent deadlines remain immutable. No stopping or checkpoint selection depends on interim accuracy. The original pretrained baseline's older outcomes are reused with their source hash; its fresh outcomes were evaluated in the continuation. This is a single-seed, pilot-motivated follow-up, not a test of seed robustness.
 
 | Condition | Parent fresh accuracy | Final fresh accuracy | Added generations | Added train tokens | Added train hours |
 | --- | --- | --- | --- | --- | --- |
 | main | 1.17% | 7.37% | 81 | 2322597 | 5.060 |
 | reward_only | 1.27% | 7.71% | 81 | 2434805 | 5.138 |
 
-A post-restart numerical diagnostic compared 16 naturally replayed GPU responses from the unfinished candidate. Exact response, token and verifier matches: True; mismatched rows: 0. Only timestamps and batch duration were excluded. This checks the observed candidate replay, not arbitrary hardware changes or a complete optimization trajectory.
+The historical replay-audit file reports comparison of 16 naturally replayed GPU responses from the unfinished candidate. Exact response, token and verifier matches: True; mismatched rows: 0. These are historical audit assertions; the independent trace check regrades and compares repeated training responses directly. Only timestamps and batch duration were excluded. This checks the observed candidate replay, not arbitrary hardware changes or a complete optimization trajectory.
+
+Documentation correction dated 2026-11-12; raw evidence and weights are unchanged. [Immutable raw measurements](https://huggingface.co/datasets/BurnyCoder/novelty-es-continuation-seed0-gen100-artifacts/tree/64ca85166e198f2e064f51b70f2228228d65e814). [Predecessor revisions](https://github.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/blob/cf0a402/reports/publication-continuation-seed0-gen100.json). [Independent corrections and evidence gaps](https://github.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/blob/main/reports/independent-corrections-2026-11-12.md). Old audit verdicts are retained as historical records, not independent proof. Generation-zero tensors and a complete historical embedding/archive trajectory are unavailable.
+
+Accuracy columns use one greedy response per problem. Hard is the five-number split. pass@1, pass@8 and sampled diversity always use the fixed original-test subset, including in the continuation. Probes are training examples. Stored evaluation tokens include reused original-model outcomes; parent fresh evaluations are separate from the three-condition diagnostic table. Training tokens are cumulative committed-candidate tokens. Phase wall hours include overhead; for the continuation they cover added work only, and control time excludes offline downtime and the unknown unlogged outage tail. These are not GPU compute-hour measurements. MiniLM receives complete response strings but truncates at its [pinned 256 WordPiece-token limit](https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/blob/1110a243fdf4706b3f48f1d95db1a4f5529b4d41/sentence_bert_config.json). The verifier accepts restricted [Python expression syntax](https://docs.python.org/3.12/reference/expressions.html), either bare or inside one answer tag; surrounding prose is ignored when one tag is present. Problem uncertainty conditional on one training seed; excludes seed variability.
 
 The directional improvement hypothesis was not supported in this seed: main accuracy did not exceed reward-only ES. The paired interval includes zero, so this does not establish a performance difference.
 
@@ -21,7 +25,7 @@ Both arms improved over their earlier checkpoints when evaluated on the same fre
 
 Percentile bootstrap intervals can collapse at observed boundaries or when paired outcomes are identical. A zero-width interval does not prove zero population error or equivalence on unseen problems.
 
-| Condition | Fresh accuracy | 95% interval | Hard accuracy | pass@1 | pass@8 | Status |
+| Condition | Fresh greedy accuracy | 95% interval | Hard greedy accuracy | Original-test pass@1 | Original-test pass@8 | Status |
 | --- | --- | --- | --- | --- | --- | --- |
 | original | 0.24% | 0.05% - 0.49% | 0.10% | 0.12% | 0.89% | complete |
 | main | 7.37% | 6.25% - 8.50% | 0.39% | 2.27% | 10.66% | complete |
@@ -47,7 +51,7 @@ All comparisons other than the final main-minus-control primary endpoint are des
 
 ## Probe performance, validity and resources
 
-| Condition | Probe accuracy | Fresh validity | Hard validity | Train tokens | Eval tokens | Train hours |
+| Condition | Training-probe accuracy | Fresh validity | Hard validity | Cumulative train tokens | Stored eval tokens | Phase wall hours |
 | --- | --- | --- | --- | --- | --- | --- |
 | original | 0.00% | 29.74% | 10.64% | 0 | 481714 | 0.000 |
 | main | 18.75% | 95.75% | 72.56% | 3121272 | 202961 | 5.060 |
@@ -63,7 +67,7 @@ See [analysis notes](analysis-notes.md) for when this descriptive check was adde
 
 ## Within-problem expression diversity
 
-| Condition | Greedy correct structures | Complete sampled problems | Mean correct structures / sampled problem |
+| Condition | Fresh greedy correct structures | Original-test sampled problems | Mean correct structures / original-test sampled problem |
 | --- | --- | --- | --- |
 | original | 5 | 256 | 0.0156 |
 | main | 151 | 256 | 0.1992 |
@@ -73,9 +77,9 @@ Greedy structure counts equal successful problems, since each problem has one re
 
 ## Method and scope
 
-See the [preregistration](preregistration-recovery.md), [configuration](../configs/continuation-recovery.json), [data hashes](../data/manifest.json), and [literature audit](../docs/literature.md). This is an adaptation of [ExTra](https://arxiv.org/abs/2606.24994) and [ES at Scale](https://arxiv.org/abs/2509.24372), not a reproduction. The archive gate uses exact correctness; positive legality reward is insufficient. Validation does not choose the final checkpoint. Amendment A replaces combined-reward ranks with population-z-scored task reward plus post-normalization novelty. It was published after calibration and partial original-model evaluation, before either trained condition. Both pilot arms started from original pretrained weights using the amended rule from generation one.
+See the [preregistration](preregistration-recovery.md), [configuration](../configs/continuation-recovery.json), [data hashes](../data/manifest.json), and [literature audit](../docs/literature.md). This is an adaptation of [ExTra](https://arxiv.org/abs/2606.24994) and [ES at Scale](https://arxiv.org/abs/2509.24372), not a reproduction. The archive gate uses exact correctness; positive legality reward is insufficient. Validation does not choose the final checkpoint. Amendment A replaces combined-reward ranks with population-z-scored task reward plus post-normalization novelty. It was published after calibration and partial original-model evaluation, before either trained condition. The run records describe both pilot arms as starting from original pretrained weights with the amended rule from generation one; generation-zero tensors are no longer available for an independent equality check.
 
-Qwen/Qwen2.5-0.5B-Instruct: 24 layers, width 896, 14 query heads and 2 key/value heads; 494,032,768 unique parameter elements in 290 tensors. Architecture and counts come from the pinned pretrained files and the generation-zero checkpoint audit.
+Qwen/Qwen2.5-0.5B-Instruct: 24 layers, width 896, 14 query heads and 2 key/value heads; 494,032,768 unique parameter elements in 290 tensors. Architecture comes from the exported config; counts come from its safetensors headers. This does not establish historical generation-zero tensor equality.
 
 ## Recorded measurements
 
@@ -498,7 +502,7 @@ All values below come from persisted outcomes. Missing conditions remain missing
 }
 ```
 
-The first audit reconciled ExTra's correctness-filtered paper specification with its unfiltered embedding-memory insertion. Explicit Boolean masking and separate score/append operations implement the intended experiment. FP32 master reconstruction avoids repeated BF16 perturbation subtraction. Tests exercise interrupted candidate replay, archive RNG restoration, deadline preservation and exact arithmetic. Hyperparameters are preregistered choices, not claimed optima. Further training requires reviewing this pilot.
+ExTra's pinned memory helper does not itself filter embedding insertion by correctness (see the linked source correspondence). Explicit Boolean masking and separate score/append operations implement the intended experiment. FP32 master reconstruction avoids repeated BF16 perturbation subtraction. Tests exercise interrupted candidate replay, archive RNG restoration, deadline preservation and exact arithmetic. Hyperparameters are preregistered choices, not claimed optima. Further training requires reviewing this pilot.
 
 ## Limitations
 

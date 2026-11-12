@@ -1,5 +1,7 @@
 # Implementation audit before model execution
 
+2026-11-12 annotation: this is the historical audit account. Its checkmarks and prose are not evidence that the current independent audit reran those historical operations. The [correction report and claim ledger](independent-corrections-2026-11-12.md) give fresh checks and explicit evidence gaps. The old centered-rank description below was superseded before training, as recorded in the amendment at the end.
+
 2026-11-07. This is a software/protocol audit, not an LLM experiment result.
 
 The source-backed preregistration and exact dataset manifest were published in commit `81fcbb9` before model execution. Unit and end-to-end tests use symbolic arithmetic, direct vector calculations and a deliberately tiny deterministic stand-in; those test outputs are not capability evidence and are not included in pilot result tables.

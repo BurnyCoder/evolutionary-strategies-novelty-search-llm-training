@@ -1,0 +1,25 @@
+{
+  "date": "2026-11-12T12:28:31.098462+00:00",
+  "restore_command": "uv run --frozen --no-sync python scripts/restore_evidence.py --output-root D:/AI/evolutionary-strategies-novelty-search-llm-training/independent-restored --cache-dir D:/AI/evolutionary-strategies-novelty-search-llm-training/restoration-cache",
+  "download_exit_code": 0,
+  "report_command": "uv run --frozen --no-sync novelty-es report-all --pilot-dir D:/AI/evolutionary-strategies-novelty-search-llm-training/independent-restored/pilot --continuation-dir D:/AI/evolutionary-strategies-novelty-search-llm-training/independent-restored/continuation --output-root .cache/restored-report",
+  "report_exit_code": 0,
+  "summary_comparison": {
+    "pilot": {
+      "publication_sha256": "7f2086436397fca17fd30850cef5411de99728de1d0c4e386e0622c75ab8898e",
+      "restored_sha256": "51b8d4bce5b9cf2a69ec04018fa58fc134cf8c8e0a7f49f879b93259cb99bbbd",
+      "only_difference": [
+        "generated_at"
+      ],
+      "all_findings_and_measurements_match": true
+    },
+    "continuation-seed0-gen100": {
+      "publication_sha256": "b416099d80dbba2b0013cada7089d03ea978cac772361adcc322f86183e34e3c",
+      "restored_sha256": "e1ca6aaccc47a09ef001a064f41be1068b9950edc4998977e894062c406e550b",
+      "only_difference": [
+        "generated_at"
+      ],
+      "all_findings_and_measurements_match": true
+    }
+  }
+}

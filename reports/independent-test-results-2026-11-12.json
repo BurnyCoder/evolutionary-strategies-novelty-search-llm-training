@@ -1,0 +1,409 @@
+{
+  "date": "2026-11-12T12:20:21.132117+00:00",
+  "scope": "Locked environment software tests, synthetic fixtures and analytic checks; no research-model execution.",
+  "suites": [
+    {
+      "source_sha256": "a8ee7db9a81b483bcd14010bc0702b24e54882a873cb8036b016a46543bd6ec6",
+      "name": "pytest",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "0",
+      "tests": "73",
+      "time": "50.503",
+      "timestamp": "2026-11-12T13:13:40.875083+01:00",
+      "hostname": "burny",
+      "cases": [
+        {
+          "classname": "tests.test_analysis",
+          "name": "test_pass_estimator_edge_cases_and_reference",
+          "time": "0.001"
+        },
+        {
+          "classname": "tests.test_analysis",
+          "name": "test_paired_bootstrap_uses_paired_rows",
+          "time": "0.022"
+        },
+        {
+          "classname": "tests.test_analysis",
+          "name": "test_novelty_activation_is_distinct_from_an_optimizer_intervention",
+          "time": "0.008"
+        },
+        {
+          "classname": "tests.test_analysis",
+          "name": "test_novelty_diagnostic_replays_float32_fitness_and_handles_missing_runs",
+          "time": "0.002"
+        },
+        {
+          "classname": "tests.test_continuation",
+          "name": "test_fresh_data_excludes_every_parent_multiset",
+          "time": "0.037"
+        },
+        {
+          "classname": "tests.test_continuation",
+          "name": "test_registered_fresh_dataset_and_original_hashes",
+          "time": "0.090"
+        },
+        {
+          "classname": "tests.test_continuation",
+          "name": "test_fork_then_interruption_matches_continuous_training",
+          "time": "0.621"
+        },
+        {
+          "classname": "tests.test_continuation",
+          "name": "test_parent_guard_rejects_mutation_and_overwrite",
+          "time": "0.023"
+        },
+        {
+          "classname": "tests.test_data",
+          "name": "test_exact_reward[<answer>(3+4)*2</answer>-numbers0-14-1.0]",
+          "time": "0.001"
+        },
+        {
+          "classname": "tests.test_data",
+          "name": "test_exact_reward[(3+4)*2-numbers1-15-0.1]",
+          "time": "0.002"
+        },
+        {
+          "classname": "tests.test_data",
+          "name": "test_exact_reward[(1/3)*3-numbers2-1-1.0]",
+          "time": "0.001"
+        },
+        {
+          "classname": "tests.test_data",
+          "name": "test_exact_reward[2+3-numbers3-5-0.0]",
+          "time": "0.001"
+        },
+        {
+          "classname": "tests.test_data",
+          "name": "test_exact_reward[2+2-numbers4-4-0.0]",
+          "time": "0.002"
+        },
+        {
+          "classname": "tests.test_data",
+          "name": "test_exact_reward[2**3-numbers5-8-0.0]",
+          "time": "0.002"
+        },
+        {
+          "classname": "tests.test_data",
+          "name": "test_exact_reward[__import__('os').system('echo unsafe')-numbers6-5-0.0]",
+          "time": "0.001"
+        },
+        {
+          "classname": "tests.test_data",
+          "name": "test_exact_reward[True+2-numbers7-3-0.0]",
+          "time": "0.001"
+        },
+        {
+          "classname": "tests.test_data",
+          "name": "test_exact_reward[1/(2-2)-numbers8-1-0.0]",
+          "time": "0.001"
+        },
+        {
+          "classname": "tests.test_data",
+          "name": "test_exact_reward[2.0+3-numbers9-5-0.0]",
+          "time": "0.001"
+        },
+        {
+          "classname": "tests.test_data",
+          "name": "test_exact_reward[<answer>2+3</answer><answer>3+2</answer>-numbers10-5-0.0]",
+          "time": "0.001"
+        },
+        {
+          "classname": "tests.test_data",
+          "name": "test_structure_canonicalizes_commutative_order",
+          "time": "0.001"
+        },
+        {
+          "classname": "tests.test_data",
+          "name": "test_dataset_is_reproducible_solvable_and_group_disjoint",
+          "time": "0.034"
+        },
+        {
+          "classname": "tests.test_novelty",
+          "name": "test_empty_memory_and_wrong_answer_gate",
+          "time": "0.002"
+        },
+        {
+          "classname": "tests.test_novelty",
+          "name": "test_siblings_and_cosine_are_not_euclidean_distance",
+          "time": "0.011"
+        },
+        {
+          "classname": "tests.test_novelty",
+          "name": "test_duplicate_sibling_zero_and_negative_cosine",
+          "time": "0.003"
+        },
+        {
+          "classname": "tests.test_novelty",
+          "name": "test_memory_bound_shuffle_and_resume",
+          "time": "0.003"
+        },
+        {
+          "classname": "tests.test_novelty",
+          "name": "test_gate_must_be_boolean_not_reward",
+          "time": "0.002"
+        },
+        {
+          "classname": "tests.test_optimizer",
+          "name": "test_ties_and_flat_fitness",
+          "time": "0.003"
+        },
+        {
+          "classname": "tests.test_optimizer",
+          "name": "test_novelty_is_added_after_quality_normalization",
+          "time": "0.003"
+        },
+        {
+          "classname": "tests.test_optimizer",
+          "name": "test_update_matches_analytic_gaussian_sum",
+          "time": "0.002"
+        },
+        {
+          "classname": "tests.test_optimizer",
+          "name": "test_reconstruction_does_not_drift_and_ties_update_once",
+          "time": "0.001"
+        },
+        {
+          "classname": "tests.test_optimizer",
+          "name": "test_noise_schedule_is_independent_of_condition",
+          "time": "0.001"
+        },
+        {
+          "classname": "tests.test_pipeline",
+          "name": "test_population_interruption_replay_and_evaluation",
+          "time": "0.520"
+        },
+        {
+          "classname": "tests.test_pipeline",
+          "name": "test_both_arms_initialize_before_any_candidate_with_amended_config",
+          "time": "0.054"
+        },
+        {
+          "classname": "tests.test_publishing",
+          "name": "test_publication_pins_revisions_and_includes_resumable_evidence[False]",
+          "time": "0.049"
+        },
+        {
+          "classname": "tests.test_publishing",
+          "name": "test_publication_pins_revisions_and_includes_resumable_evidence[True]",
+          "time": "0.064"
+        },
+        {
+          "classname": "tests.test_publishing",
+          "name": "test_active_run_cannot_be_published",
+          "time": "0.018"
+        },
+        {
+          "classname": "tests.test_publishing",
+          "name": "test_continuation_cannot_overwrite_original_hub_repositories",
+          "time": "0.006"
+        },
+        {
+          "classname": "tests.test_reporting",
+          "name": "test_primary_requires_completed_training_and_aligned_test_problems",
+          "time": "0.038"
+        },
+        {
+          "classname": "tests.test_reporting",
+          "name": "test_missing_evaluation_does_not_hide_an_incomplete_condition",
+          "time": "0.025"
+        },
+        {
+          "classname": "tests.test_reporting",
+          "name": "test_baseline_comparisons_pair_problem_ids_and_require_complete_training",
+          "time": "0.029"
+        },
+        {
+          "classname": "tests.test_reporting",
+          "name": "test_fresh_primary_and_paired_change_require_the_fresh_endpoint",
+          "time": "0.074"
+        },
+        {
+          "classname": "tests.test_reporting",
+          "name": "test_continuation_report_keeps_the_pilot_release_separate",
+          "time": "2.253"
+        },
+        {
+          "classname": "tests.test_reporting",
+          "name": "test_sampled_indices_are_checked_even_in_incomplete_groups",
+          "time": "0.030"
+        },
+        {
+          "classname": "tests.test_reporting",
+          "name": "test_result_headers_separate_greedy_and_sampled_splits",
+          "time": "0.001"
+        },
+        {
+          "classname": "tests.test_reporting",
+          "name": "test_recovery_report_discloses_expired_attempt",
+          "time": "1.253"
+        },
+        {
+          "classname": "tests.test_restart",
+          "name": "test_recovery_preserves_pending_candidates_and_matches_uninterrupted",
+          "time": "0.833"
+        },
+        {
+          "classname": "tests.test_restore_evidence",
+          "name": "test_restoration_includes_both_evidence_sets_and_four_model_exports",
+          "time": "0.024"
+        },
+        {
+          "classname": "tests.test_restore_evidence",
+          "name": "test_live_service_bookkeeping_does_not_hide_evidence_changes",
+          "time": "0.036"
+        },
+        {
+          "classname": "tests.test_runtime",
+          "name": "test_deadline_does_not_reset",
+          "time": "0.027"
+        },
+        {
+          "classname": "tests.test_runtime",
+          "name": "test_atomic_replace_keeps_last_good_checkpoint_on_failure",
+          "time": "0.027"
+        },
+        {
+          "classname": "tests.test_runtime",
+          "name": "test_atomic_json_retries_temporary_windows_reader_lock",
+          "time": "0.011"
+        },
+        {
+          "classname": "tests.test_runtime",
+          "name": "test_atomic_json_persistent_lock_preserves_previous_record",
+          "time": "0.019"
+        },
+        {
+          "classname": "tests.test_runtime",
+          "name": "test_schedule_no_probe_leakage_and_random_access",
+          "time": "0.002"
+        },
+        {
+          "classname": "tests.test_runtime",
+          "name": "test_freeze_uses_slowest_candidate_and_overheads",
+          "time": "0.001"
+        },
+        {
+          "classname": "tests.test_runtime",
+          "name": "test_interrupted_and_continuous_es_equivalent",
+          "time": "0.114"
+        },
+        {
+          "classname": "tests.test_verification",
+          "name": "test_independent_parser_preserves_historical_python_syntax[<answer>(2+3)*4</answer>]",
+          "time": "0.002"
+        },
+        {
+          "classname": "tests.test_verification",
+          "name": "test_independent_parser_preserves_historical_python_syntax[<answer>2+3+4</answer>]",
+          "time": "0.001"
+        },
+        {
+          "classname": "tests.test_verification",
+          "name": "test_independent_parser_preserves_historical_python_syntax[(2+3)\\n*4]",
+          "time": "0.001"
+        },
+        {
+          "classname": "tests.test_verification",
+          "name": "test_independent_parser_preserves_historical_python_syntax[(2+\\n3)*4]",
+          "time": "0.001"
+        },
+        {
+          "classname": "tests.test_verification",
+          "name": "test_independent_parser_preserves_historical_python_syntax[2**3+4]",
+          "time": "0.002"
+        },
+        {
+          "classname": "tests.test_verification",
+          "name": "test_independent_parser_preserves_historical_python_syntax[2//3+4]",
+          "time": "0.001"
+        },
+        {
+          "classname": "tests.test_verification",
+          "name": "test_independent_parser_preserves_historical_python_syntax[-2+3+4]",
+          "time": "0.001"
+        },
+        {
+          "classname": "tests.test_verification",
+          "name": "test_independent_parser_preserves_historical_python_syntax[2+3+4+0]",
+          "time": "0.001"
+        },
+        {
+          "classname": "tests.test_verification",
+          "name": "test_independent_parser_preserves_historical_python_syntax[<answer>2+3+4</answer><answer>2+3+4</answer>]",
+          "time": "0.001"
+        },
+        {
+          "classname": "tests.test_verification",
+          "name": "test_independent_parser_preserves_historical_python_syntax[prose <answer>(2+3)*4</answer> prose]",
+          "time": "0.001"
+        },
+        {
+          "classname": "tests.test_verification",
+          "name": "test_independent_parser_preserves_historical_python_syntax[02+3+4]",
+          "time": "0.003"
+        },
+        {
+          "classname": "tests.test_verification",
+          "name": "test_independent_parser_preserves_historical_python_syntax[2/(3-4)]",
+          "time": "0.001"
+        },
+        {
+          "classname": "tests.test_verification",
+          "name": "test_independent_parser_preserves_historical_python_syntax[2/(3-3)]",
+          "time": "0.001"
+        },
+        {
+          "classname": "tests.test_verification",
+          "name": "test_independent_parser_preserves_historical_python_syntax[]",
+          "time": "0.001"
+        },
+        {
+          "classname": "tests.test_verification",
+          "name": "test_output_must_be_outside_sources",
+          "time": "0.009"
+        },
+        {
+          "classname": "tests.test_verification",
+          "name": "test_incomplete_duplicate_and_unknown_evaluation_records_fail[rows0]",
+          "time": "0.001"
+        },
+        {
+          "classname": "tests.test_verification",
+          "name": "test_incomplete_duplicate_and_unknown_evaluation_records_fail[rows1]",
+          "time": "0.001"
+        },
+        {
+          "classname": "tests.test_verification",
+          "name": "test_incomplete_duplicate_and_unknown_evaluation_records_fail[rows2]",
+          "time": "0.001"
+        }
+      ]
+    },
+    {
+      "source_sha256": "b9999f9febe4fa3cd18a15b3231fa01e5636c25d799c39bdc320484d3fcbf70c",
+      "name": "pytest",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "0",
+      "tests": "1",
+      "time": "0.059",
+      "timestamp": "2026-11-12T13:19:45.778044+01:00",
+      "hostname": "burny",
+      "cases": [
+        {
+          "classname": "tests.test_publish_corrections",
+          "name": "test_hub_report_resolves_relative_links_and_preserves_external_links",
+          "time": "0.016"
+        }
+      ]
+    }
+  ],
+  "totals": {
+    "tests": 74,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "ruff": "All checks passed: uv run --frozen --no-sync ruff check src tests scripts"
+}
