@@ -1,138 +1,6 @@
 {
   "local": [
     {
-      "location": "reports/independent-corrections-2026-11-12.md",
-      "label": "claim ledger",
-      "target": "claim-ledger.json",
-      "exists": true
-    },
-    {
-      "location": "reports/independent-corrections-2026-11-12.md",
-      "label": "file inventory",
-      "target": "claim-inventory.json",
-      "exists": true
-    },
-    {
-      "location": "reports/independent-corrections-2026-11-12.md",
-      "label": "pilot receipt",
-      "target": "publication.json",
-      "exists": true
-    },
-    {
-      "location": "reports/independent-corrections-2026-11-12.md",
-      "label": "continuation receipt",
-      "target": "publication-continuation-seed0-gen100.json",
-      "exists": true
-    },
-    {
-      "location": "reports/independent-corrections-2026-11-12.md",
-      "label": "correction publication receipt",
-      "target": "publication-corrections-2026-11-12.json",
-      "exists": false
-    },
-    {
-      "location": "reports/independent-corrections-2026-11-12.md",
-      "label": "ExTra paper and pinned caller/advantage code",
-      "target": "../docs/literature.md#extra-implementation-reconciliation",
-      "exists": true
-    },
-    {
-      "location": "reports/independent-corrections-2026-11-12.md",
-      "label": "ES at Scale numerical path and license",
-      "target": "../docs/literature.md#es-at-scale-source-reuse-scope",
-      "exists": true
-    },
-    {
-      "location": "reports/independent-corrections-2026-11-12.md",
-      "label": "independent raw-record checks",
-      "target": "independent-verification-2026-11-12.json",
-      "exists": true
-    },
-    {
-      "location": "reports/independent-corrections-2026-11-12.md",
-      "label": "pinned-tokenizer measurements",
-      "target": "embedding-inputs-2026-11-12.json",
-      "exists": true
-    },
-    {
-      "location": "reports/independent-corrections-2026-11-12.md",
-      "label": "pilot",
-      "target": "experiment-pilot.md",
-      "exists": true
-    },
-    {
-      "location": "reports/independent-corrections-2026-11-12.md",
-      "label": "continuation",
-      "target": "experiment-continuation-seed0-gen100.md",
-      "exists": true
-    },
-    {
-      "location": "reports/independent-corrections-2026-11-12.md",
-      "label": "independent verifier",
-      "target": "../src/novelty_es/verification.py",
-      "exists": true
-    },
-    {
-      "location": "reports/independent-corrections-2026-11-12.md",
-      "label": "saved results",
-      "target": "independent-verification-2026-11-12.json",
-      "exists": true
-    },
-    {
-      "location": "reports/independent-corrections-2026-11-12.md",
-      "label": "presentation checker",
-      "target": "../scripts/verify_presentations.py",
-      "exists": true
-    },
-    {
-      "location": "reports/independent-corrections-2026-11-12.md",
-      "label": "result",
-      "target": "independent-presentations-2026-11-12.json",
-      "exists": true
-    },
-    {
-      "location": "reports/independent-corrections-2026-11-12.md",
-      "label": "Tokenization-only checks",
-      "target": "../scripts/check_embedding_inputs.py",
-      "exists": true
-    },
-    {
-      "location": "reports/independent-corrections-2026-11-12.md",
-      "label": "test record",
-      "target": "independent-test-results-2026-11-12.json",
-      "exists": true
-    },
-    {
-      "location": "reports/independent-corrections-2026-11-12.md",
-      "label": "Citation checks",
-      "target": "independent-citations-2026-11-12.json",
-      "exists": false
-    },
-    {
-      "location": "reports/independent-corrections-2026-11-12.md",
-      "label": "PDF inspection record",
-      "target": "independent-pdf-review-2026-11-12.json",
-      "exists": true
-    },
-    {
-      "location": "reports/independent-corrections-2026-11-12.md",
-      "label": "UI inspection record",
-      "target": "independent-ui-2026-11-12.json",
-      "exists": true
-    },
-    {
-      "location": "reports/independent-corrections-2026-11-12.md",
-      "label": "restoration record",
-      "target": "independent-restoration-2026-11-12.json",
-      "exists": false
-    },
-    {
-      "location": "reports/independent-corrections-2026-11-12.md",
-      "label": "restoration workflow",
-      "target": "../docs/continuation.md",
-      "exists": true
-    },
-    {
       "location": "AGENTS.md",
       "label": "restoration instructions",
       "target": "docs/continuation.md",
@@ -170,7 +38,7 @@
     },
     {
       "location": "README.md",
-      "label": "recovery commands",
+      "label": "restoration and inspection commands",
       "target": "docs/continuation.md",
       "exists": true
     },
@@ -370,6 +238,12 @@
       "location": "docs/continuation.md",
       "label": "continuation receipt",
       "target": "../reports/publication-continuation-seed0-gen100.json",
+      "exists": true
+    },
+    {
+      "location": "docs/continuation.md",
+      "label": "restoration check",
+      "target": "../reports/independent-restoration-2026-11-12.json",
       "exists": true
     },
     {
@@ -652,6 +526,150 @@
       "location": "reports/implementation-audit.md",
       "label": "Amendment A",
       "target": "preregistration.md#amendment-a-source-aligned-weighting-before-either-trained-condition",
+      "exists": true
+    },
+    {
+      "location": "reports/independent-corrections-2026-11-12.md",
+      "label": "claim ledger",
+      "target": "claim-ledger.json",
+      "exists": true
+    },
+    {
+      "location": "reports/independent-corrections-2026-11-12.md",
+      "label": "file inventory",
+      "target": "claim-inventory.json",
+      "exists": true
+    },
+    {
+      "location": "reports/independent-corrections-2026-11-12.md",
+      "label": "pilot receipt",
+      "target": "publication.json",
+      "exists": true
+    },
+    {
+      "location": "reports/independent-corrections-2026-11-12.md",
+      "label": "continuation receipt",
+      "target": "publication-continuation-seed0-gen100.json",
+      "exists": true
+    },
+    {
+      "location": "reports/independent-corrections-2026-11-12.md",
+      "label": "correction publication receipt",
+      "target": "publication-corrections-2026-11-12.json",
+      "exists": true
+    },
+    {
+      "location": "reports/independent-corrections-2026-11-12.md",
+      "label": "ExTra paper and pinned caller/advantage code",
+      "target": "../docs/literature.md#extra-implementation-reconciliation",
+      "exists": true
+    },
+    {
+      "location": "reports/independent-corrections-2026-11-12.md",
+      "label": "ES at Scale numerical path and license",
+      "target": "../docs/literature.md#es-at-scale-source-reuse-scope",
+      "exists": true
+    },
+    {
+      "location": "reports/independent-corrections-2026-11-12.md",
+      "label": "independent raw-record checks",
+      "target": "independent-verification-2026-11-12.json",
+      "exists": true
+    },
+    {
+      "location": "reports/independent-corrections-2026-11-12.md",
+      "label": "pinned-tokenizer measurements",
+      "target": "embedding-inputs-2026-11-12.json",
+      "exists": true
+    },
+    {
+      "location": "reports/independent-corrections-2026-11-12.md",
+      "label": "pilot",
+      "target": "experiment-pilot.md",
+      "exists": true
+    },
+    {
+      "location": "reports/independent-corrections-2026-11-12.md",
+      "label": "continuation",
+      "target": "experiment-continuation-seed0-gen100.md",
+      "exists": true
+    },
+    {
+      "location": "reports/independent-corrections-2026-11-12.md",
+      "label": "independent verifier",
+      "target": "../src/novelty_es/verification.py",
+      "exists": true
+    },
+    {
+      "location": "reports/independent-corrections-2026-11-12.md",
+      "label": "saved results",
+      "target": "independent-verification-2026-11-12.json",
+      "exists": true
+    },
+    {
+      "location": "reports/independent-corrections-2026-11-12.md",
+      "label": "presentation checker",
+      "target": "../scripts/verify_presentations.py",
+      "exists": true
+    },
+    {
+      "location": "reports/independent-corrections-2026-11-12.md",
+      "label": "result",
+      "target": "independent-presentations-2026-11-12.json",
+      "exists": true
+    },
+    {
+      "location": "reports/independent-corrections-2026-11-12.md",
+      "label": "Tokenization-only checks",
+      "target": "../scripts/check_embedding_inputs.py",
+      "exists": true
+    },
+    {
+      "location": "reports/independent-corrections-2026-11-12.md",
+      "label": "Original Hub commit timestamps and timing calculations",
+      "target": "independent-presentations-2026-11-12.json",
+      "exists": true
+    },
+    {
+      "location": "reports/independent-corrections-2026-11-12.md",
+      "label": "The frozen timing protocol",
+      "target": "preregistration.md#twelve-hour-timing-rule",
+      "exists": true
+    },
+    {
+      "location": "reports/independent-corrections-2026-11-12.md",
+      "label": "test record",
+      "target": "independent-test-results-2026-11-12.json",
+      "exists": true
+    },
+    {
+      "location": "reports/independent-corrections-2026-11-12.md",
+      "label": "Citation checks",
+      "target": "independent-citations-2026-11-12.json",
+      "exists": true
+    },
+    {
+      "location": "reports/independent-corrections-2026-11-12.md",
+      "label": "PDF inspection record",
+      "target": "independent-pdf-review-2026-11-12.json",
+      "exists": true
+    },
+    {
+      "location": "reports/independent-corrections-2026-11-12.md",
+      "label": "UI inspection record",
+      "target": "independent-ui-2026-11-12.json",
+      "exists": true
+    },
+    {
+      "location": "reports/independent-corrections-2026-11-12.md",
+      "label": "restoration record",
+      "target": "independent-restoration-2026-11-12.json",
+      "exists": true
+    },
+    {
+      "location": "reports/independent-corrections-2026-11-12.md",
+      "label": "restoration workflow",
+      "target": "../docs/continuation.md",
       "exists": true
     },
     {
@@ -1123,8 +1141,8 @@
         "src/novelty_es/reporting.py",
         "web/index.html"
       ],
-      "status": 404,
-      "error": "HTTP Error 404: Not Found"
+      "status": 200,
+      "destination": "https://github.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/blob/main/reports/independent-corrections-2026-11-12.md"
     },
     "https://github.com/CarperAI/OpenELM": {
       "locations": [
@@ -1326,7 +1344,8 @@
     },
     "https://huggingface.co/docs/huggingface_hub/package_reference/hf_api": {
       "locations": [
-        "scripts/publish_corrections.py"
+        "scripts/publish_corrections.py",
+        "scripts/verify_presentations.py"
       ],
       "status": 200,
       "destination": "https://huggingface.co/docs/huggingface_hub/package_reference/hf_api"

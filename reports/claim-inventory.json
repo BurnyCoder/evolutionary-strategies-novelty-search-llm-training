@@ -324,7 +324,7 @@
       ]
     },
     "docs/site/continuation-seed0-gen100/index.html": {
-      "sha256": "5769b72f532f7c55f178a232dfd34fca62eb517942d8b753a1bed96bb01638b9",
+      "sha256": "59646e1e62371cf877b7d418436938510d7af3fde128f904285ea132cda8ef1c",
       "disposition": "snapshot numbers checked; visual/browser disposition in ledger",
       "claim_ids": [
         "C13",
@@ -350,7 +350,7 @@
       ]
     },
     "docs/site/index.html": {
-      "sha256": "5769b72f532f7c55f178a232dfd34fca62eb517942d8b753a1bed96bb01638b9",
+      "sha256": "59646e1e62371cf877b7d418436938510d7af3fde128f904285ea132cda8ef1c",
       "disposition": "snapshot numbers checked; visual/browser disposition in ledger",
       "claim_ids": [
         "C13",
@@ -681,7 +681,7 @@
       ]
     },
     "reports/independent-citations-2026-11-12.json": {
-      "sha256": "b48b75e6717d54d9ceaa6754d10dcafbb9f5af99a1c23d1f2b3a860061162d08",
+      "sha256": "c8242759e33d01ad95ef38d3adf96b50abe512ef9f67ec1c8e4e433b0a110fc8",
       "disposition": "new bounded evidence/check record; inspect explicit gaps",
       "claim_ids": [
         "C26",
@@ -1839,7 +1839,7 @@
       ]
     },
     "web/index.html": {
-      "sha256": "5769b72f532f7c55f178a232dfd34fca62eb517942d8b753a1bed96bb01638b9",
+      "sha256": "59646e1e62371cf877b7d418436938510d7af3fde128f904285ea132cda8ef1c",
       "disposition": "snapshot numbers checked; visual/browser disposition in ledger",
       "claim_ids": [
         "C13",
