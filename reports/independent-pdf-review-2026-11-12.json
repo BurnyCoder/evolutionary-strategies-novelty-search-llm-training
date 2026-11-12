@@ -4,7 +4,7 @@
   "papers": {
     "pilot": {
       "path": "output/pdf/novelty-es-pilot.pdf",
-      "sha256": "f9c84f96f1c851974c6ac9d1b8f49ce5d7bb05ed165858440d4dace77eec003a",
+      "sha256": "635144c6bc109459c406e0a0f0e95410f8d145277c0227ac6849bf5cd302362c",
       "pages": 5,
       "visually_inspected_pages": [
         1,
@@ -29,11 +29,12 @@
         "https://github.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/blob/main/reports/independent-corrections-2026-11-12.md",
         "https://huggingface.co/datasets/BurnyCoder/novelty-es-pilot-artifacts/tree/949e2dcb385bc2b7088c40444ef879b76596317d",
         "https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/blob/1110a243fdf4706b3f48f1d95db1a4f5529b4d41/sentence_bert_config.json"
-      ]
+      ],
+      "final_wording_revision": "Publication transfer timing clarified; re-rendering changed only page 5, which was visually re-inspected. All other rendered page hashes were unchanged."
     },
     "continuation-seed0-gen100": {
       "path": "output/pdf/novelty-es-continuation-seed0-gen100.pdf",
-      "sha256": "af87976b6417e66221dcaa2360bf027d4c2eac801f0486814dd9febf7d71ed4c",
+      "sha256": "0f3fd968821e9d2b0674c06b5966a226c69fdb059b8364f1d278819b89e33aa5",
       "pages": 6,
       "visually_inspected_pages": [
         1,
@@ -59,7 +60,8 @@
         "https://github.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/blob/main/reports/independent-corrections-2026-11-12.md",
         "https://huggingface.co/datasets/BurnyCoder/novelty-es-continuation-seed0-gen100-artifacts/tree/64ca85166e198f2e064f51b70f2228228d65e814",
         "https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/blob/1110a243fdf4706b3f48f1d95db1a4f5529b4d41/sentence_bert_config.json"
-      ]
+      ],
+      "final_wording_revision": "Publication transfer timing clarified; re-rendering changed only page 5, which was visually re-inspected. All other rendered page hashes were unchanged."
     }
   }
 }

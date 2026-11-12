@@ -85,7 +85,7 @@
       ]
     },
     "README.md": {
-      "sha256": "209eb6842ef7ff75fee2d20e93cc2d7bd780b4711bb30e33631402f5638ec11e",
+      "sha256": "e627576dab46c7c0721638d5426fc15c25eb9afeab4c31005970c33876168b28",
       "disposition": "overview or governing protocol; empirical claims qualified by ledger",
       "claim_ids": [
         "C01",
@@ -190,7 +190,7 @@
       ]
     },
     "docs/continuation.md": {
-      "sha256": "e4bca25ef0cb74bd2bf40f39e84d378b1e1af7c6c8cd6c14b9c059b9bcc10935",
+      "sha256": "3df29d0cb8e11e006dd9c81abbea6ceff933c618ad18915666d997769dab5a0d",
       "disposition": "method/source/operations review with explicit historical limits",
       "claim_ids": [
         "C01",
@@ -403,7 +403,7 @@
       ]
     },
     "output/pdf/novelty-es-continuation-seed0-gen100.pdf": {
-      "sha256": "af87976b6417e66221dcaa2360bf027d4c2eac801f0486814dd9febf7d71ed4c",
+      "sha256": "0f3fd968821e9d2b0674c06b5966a226c69fdb059b8364f1d278819b89e33aa5",
       "disposition": "derived figures/papers checked against source summaries and rendered pages",
       "claim_ids": [
         "C13",
@@ -413,11 +413,12 @@
         "C21",
         "C22",
         "C23",
-        "C51"
+        "C51",
+        "C53"
       ]
     },
     "output/pdf/novelty-es-pilot.pdf": {
-      "sha256": "f9c84f96f1c851974c6ac9d1b8f49ce5d7bb05ed165858440d4dace77eec003a",
+      "sha256": "635144c6bc109459c406e0a0f0e95410f8d145277c0227ac6849bf5cd302362c",
       "disposition": "derived figures/papers checked against source summaries and rendered pages",
       "claim_ids": [
         "C13",
@@ -427,7 +428,8 @@
         "C21",
         "C22",
         "C23",
-        "C51"
+        "C51",
+        "C53"
       ]
     },
     "pyproject.toml": {
@@ -439,7 +441,7 @@
       ]
     },
     "reports/all-experiments.md": {
-      "sha256": "b8abbb5ab53c979f60f0dbb2839e70a98a89b0484460904dcc17f95985dfbdfe",
+      "sha256": "b448fd4d0f6bf4fd1d847d922ce7f40a02c4413b274adbe706e799a05a50c653",
       "disposition": "experiment record or generated summary; repeated claims linked to primary evidence",
       "claim_ids": [
         "C06",
@@ -502,29 +504,31 @@
       ]
     },
     "reports/claim-ledger.json": {
-      "sha256": "8141b3c0f7faae1652a98c1d51e03451eaedd35d9bc9b2018107fcfca5baa472",
+      "sha256": "d979fe1a6080fe8887db07af136598ba37d44d4ce9e7494198ab8ba8d2cc5a77",
       "disposition": "new bounded evidence/check record; inspect explicit gaps",
       "claim_ids": [
         "C26",
         "C27",
         "C30",
         "C48",
-        "C52"
+        "C52",
+        "C53"
       ]
     },
     "reports/embedding-inputs-2026-11-12.json": {
-      "sha256": "e458058da2ce8da91fcf4626b5e0af4da25c2de724b585774edb6b3d093e6eed",
+      "sha256": "17e2a98e456d8cd2dcb6cd5cbe63e4b72ab6f7b60d86335cfff0929062d5101d",
       "disposition": "new bounded evidence/check record; inspect explicit gaps",
       "claim_ids": [
         "C26",
         "C27",
         "C30",
         "C48",
-        "C52"
+        "C52",
+        "C53"
       ]
     },
     "reports/experiment-continuation-interrupted.md": {
-      "sha256": "111305d3d7cb14512e9327f814a0f50f94e8cedac5b9dbdcfebfd1ec701ecc21",
+      "sha256": "f66e0f09f7f521ac5a15744d53a0d5d20c8156700194466da3a3db1e60518e87",
       "disposition": "experiment record or generated summary; repeated claims linked to primary evidence",
       "claim_ids": [
         "C06",
@@ -545,7 +549,7 @@
       ]
     },
     "reports/experiment-continuation-seed0-gen100.md": {
-      "sha256": "312587c475966182dd3e2381e29864852e2ec7b879d75a180e7d7b9e14a4e4c6",
+      "sha256": "c6921e4eb9976a51c1681ee447cb0e6954f26abf7c7fda599d8530a45ac9676e",
       "disposition": "experiment record or generated summary; repeated claims linked to primary evidence",
       "claim_ids": [
         "C06",
@@ -566,7 +570,7 @@
       ]
     },
     "reports/experiment-pilot.md": {
-      "sha256": "c24ca985865025c1b0e0c5f2e17be5ac47421a54bab063ea31d81dfc33ff6b36",
+      "sha256": "1bb9f760967c39a00e30b9640aadb06fea97a44e69fa6a5b686430d9ca828744",
       "disposition": "experiment record or generated summary; repeated claims linked to primary evidence",
       "claim_ids": [
         "C06",
@@ -597,7 +601,8 @@
         "C21",
         "C22",
         "C23",
-        "C51"
+        "C51",
+        "C53"
       ]
     },
     "reports/figures/continuation-seed0-gen100/accuracy.png": {
@@ -611,7 +616,8 @@
         "C21",
         "C22",
         "C23",
-        "C51"
+        "C51",
+        "C53"
       ]
     },
     "reports/figures/continuation-seed0-gen100/training.png": {
@@ -625,7 +631,8 @@
         "C21",
         "C22",
         "C23",
-        "C51"
+        "C51",
+        "C53"
       ]
     },
     "reports/figures/training.png": {
@@ -639,7 +646,8 @@
         "C21",
         "C22",
         "C23",
-        "C51"
+        "C51",
+        "C53"
       ]
     },
     "reports/final-audit-continuation-seed0-gen100.json": {
@@ -672,15 +680,28 @@
         "C49"
       ]
     },
-    "reports/independent-corrections-2026-11-12.md": {
-      "sha256": "ed81c8f28d63fefc0335fd616a2d601b02ac1976e5fc851abf2d53141507ca08",
+    "reports/independent-citations-2026-11-12.json": {
+      "sha256": "b48b75e6717d54d9ceaa6754d10dcafbb9f5af99a1c23d1f2b3a860061162d08",
       "disposition": "new bounded evidence/check record; inspect explicit gaps",
       "claim_ids": [
         "C26",
         "C27",
         "C30",
         "C48",
-        "C52"
+        "C52",
+        "C53"
+      ]
+    },
+    "reports/independent-corrections-2026-11-12.md": {
+      "sha256": "848e7f7b33e6af18cf8780ad46ccf428cd9781094751c1c32ce3746f51093117",
+      "disposition": "new bounded evidence/check record; inspect explicit gaps",
+      "claim_ids": [
+        "C26",
+        "C27",
+        "C30",
+        "C48",
+        "C52",
+        "C53"
       ]
     },
     "reports/independent-github-chronology.json": {
@@ -691,62 +712,80 @@
         "C27",
         "C30",
         "C48",
-        "C52"
+        "C52",
+        "C53"
       ]
     },
     "reports/independent-pdf-review-2026-11-12.json": {
-      "sha256": "f97a406492c7c6b15699359aaf3e40eeafaf2b257ba79ac6bebe397ace32b044",
+      "sha256": "c7783d12ef04432c15ba6986d909b3695b3ac2ac8d12d1e83927e42499074aab",
       "disposition": "new bounded evidence/check record; inspect explicit gaps",
       "claim_ids": [
         "C26",
         "C27",
         "C30",
         "C48",
-        "C52"
+        "C52",
+        "C53"
       ]
     },
     "reports/independent-presentations-2026-11-12.json": {
-      "sha256": "0b71182be2a6b80ae099fb5749f91473af8fe81a1bd38ea646100d4c26b3f21f",
+      "sha256": "a5e1fe1af08836ea3ebe58adab4648aef73d54fc2542db697f2ed2fa629f8634",
       "disposition": "new bounded evidence/check record; inspect explicit gaps",
       "claim_ids": [
         "C26",
         "C27",
         "C30",
         "C48",
-        "C52"
+        "C52",
+        "C53"
+      ]
+    },
+    "reports/independent-restoration-2026-11-12.json": {
+      "sha256": "e606c80fdf203b1ed078b47fc6739d5b96839d84ab3ff79ca57d0803ca241f9d",
+      "disposition": "new bounded evidence/check record; inspect explicit gaps",
+      "claim_ids": [
+        "C26",
+        "C27",
+        "C30",
+        "C48",
+        "C52",
+        "C53"
       ]
     },
     "reports/independent-test-results-2026-11-12.json": {
-      "sha256": "1bd855432a433783ab16ee72984324ea8d24eef57dc86e53fa6cbca11c7b5fe1",
+      "sha256": "259086f7a670eab164069ddaf4ca0e25f386e246c9bbab966ee562cdb9f19d61",
       "disposition": "new bounded evidence/check record; inspect explicit gaps",
       "claim_ids": [
         "C26",
         "C27",
         "C30",
         "C48",
-        "C52"
+        "C52",
+        "C53"
       ]
     },
     "reports/independent-ui-2026-11-12.json": {
-      "sha256": "ef01e1092aa9de9e0c5d2e6984e00de65376feafd7519444c5734e165b80a545",
+      "sha256": "b86901155e5dc1bb370c39d9b633feca27595ee7f64d82495a273749f2d95204",
       "disposition": "new bounded evidence/check record; inspect explicit gaps",
       "claim_ids": [
         "C26",
         "C27",
         "C30",
         "C48",
-        "C52"
+        "C52",
+        "C53"
       ]
     },
     "reports/independent-verification-2026-11-12.json": {
-      "sha256": "cf0af73895a32967ed28f4641faad99f16f4986b1c50eb05661b70327a8db35b",
+      "sha256": "d595d74f99ca6c33cff78dc856319f43ad50fd8e050a5e01ec162f841aa4c2f4",
       "disposition": "new bounded evidence/check record; inspect explicit gaps",
       "claim_ids": [
         "C26",
         "C27",
         "C30",
         "C48",
-        "C52"
+        "C52",
+        "C53"
       ]
     },
     "reports/initialization-audits.json": {
@@ -812,6 +851,15 @@
     },
     "reports/publication-continuation-seed0-gen100.json": {
       "sha256": "ef66da751875d36738e0548ee24a7661aca63690e41b819509517e126e58ab7b",
+      "disposition": "immutable original receipt or separately dated correction receipt",
+      "claim_ids": [
+        "C27",
+        "C49",
+        "C50"
+      ]
+    },
+    "reports/publication-corrections-2026-11-12.json": {
+      "sha256": "0570bef1e89d780f2230bd9f5ad271fc633a78d5ae123ec79286c8ecca7f094f",
       "disposition": "immutable original receipt or separately dated correction receipt",
       "claim_ids": [
         "C27",
@@ -960,7 +1008,7 @@
       ]
     },
     "scripts/inventory_claims.py": {
-      "sha256": "1886eaa7f9d121a710d552a223dec87440d9d26bc86bf4043392caee31596151",
+      "sha256": "8eca4a8e88d1551ca4366ca6c6fce6c5dc13dba2fdbaf4b43f27dcd25cdcd0a9",
       "disposition": "implementation reviewed; test and historical-helper limits apply",
       "claim_ids": [
         "C01",
@@ -983,7 +1031,7 @@
       ]
     },
     "scripts/publish_corrections.py": {
-      "sha256": "0081f40058ca3ac6b6907dbcb58d1d9a63664679f5870acd35b557db20947383",
+      "sha256": "e1c752ff47801516911213272b11518663269295750280b22c584e9ae66ce774",
       "disposition": "implementation reviewed; test and historical-helper limits apply",
       "claim_ids": [
         "C01",
@@ -1098,7 +1146,7 @@
       ]
     },
     "scripts/verify_presentations.py": {
-      "sha256": "ff802a532d58b48a949829c3d11d7a45c79b1cee8d3fa0c5be91cf46f8b94c22",
+      "sha256": "be91940c48893b0ef4ec3e9c18d5e0070d22d3335a61f307ff11b7b546865603",
       "disposition": "implementation reviewed; test and historical-helper limits apply",
       "claim_ids": [
         "C01",
@@ -1489,7 +1537,7 @@
       ]
     },
     "src/novelty_es/reporting.py": {
-      "sha256": "a868f41e59cb32a2bb797d3bdcbd5a02497e0cff36d575958e26764128204415",
+      "sha256": "b550e4b1fbc4c346680512000bf4e8be3ce8af0d83bdcde8feb1212dd698f287",
       "disposition": "implementation reviewed; test and historical-helper limits apply",
       "claim_ids": [
         "C01",
@@ -1699,7 +1747,7 @@
       ]
     },
     "tests/test_publish_corrections.py": {
-      "sha256": "d2fbd17e253fc6b6a19e755b92fbc4be7e4c1dd9789cd7c56f33e7315366025e",
+      "sha256": "ca68d2adecaea08966439dbcfa2730f435145d4a10e53c76809b386dbf3dd3f3",
       "disposition": "synthetic software assertions; not research-model results",
       "claim_ids": [
         "C16",

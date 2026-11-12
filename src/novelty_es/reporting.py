@@ -904,7 +904,7 @@ def write_paper(path: Path, experiment: dict, summary: dict, figures: Path, tabl
         "Both require explicit input paths. Existing training allowances have expired; these corrections execute no training or new model evaluation. "
         "Atomic checkpoints contain weights, all RNG streams, archive, cursor, config and deadline. "
         f"Recorded technical failures: {len(summary['failures'])}. Model-execution elapsed seconds: {summary['elapsed_seconds']:.3f}. "
-        "Final auditing, report preparation and publication follow model execution under the recorded allowance; expired attempts are disclosed separately. "
+        "Model-execution timing is separate from later auditing and publication; the registration permits publication transfers to finish later. "
         "Exact exceptions and incomplete conditions are retained in the generated Markdown report and JSON artifacts.",
     )
     environment = experiment.get("environment", {})

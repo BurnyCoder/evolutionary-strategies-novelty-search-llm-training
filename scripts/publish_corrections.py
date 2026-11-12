@@ -1,4 +1,4 @@
-"""Publish dated documentation only; compare every pre-existing non-card file.
+"""Publish dated documentation only; verify evidence and narrow Hub storage metadata.
 
 No training/checkpoint/export writer is imported. Hub commit API and optimistic
 parent guard: https://huggingface.co/docs/huggingface_hub/package_reference/hf_api#huggingface_hub.HfApi.create_commit .
@@ -40,15 +40,26 @@ def portable_report(text):
     return re.sub(r'\]\(([^)]+)\)', replace, text)
 
 
+def check_storage_rule(before, after):
+    """Accept only the Hub's observed LFS rule for this newly uploaded paper."""
+    rule = 'corrections/2026-11-12/paper.pdf filter=lfs diff=lfs merge=lfs -text\n'
+    if after != before + ('' if before.endswith('\n') else '\n') + rule:
+        raise ValueError('Unexpected change to Hub storage rules')
+    return rule.strip()
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--release-dir', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--cache-dir', type=Path, help='Use a short writable path on Windows for revision verification downloads.')
     parser.add_argument('--publish', action='store_true')
     args = parser.parse_args()
     load_dotenv()
     from huggingface_hub import CommitOperationAdd, HfApi, hf_hub_download
+    from huggingface_hub.utils import disable_progress_bars
 
+    disable_progress_bars()
     api = HfApi()
     hub_report = args.release_dir / 'huggingface/correction-report.md'
     hub_report.parent.mkdir(parents=True, exist_ok=True)
@@ -65,8 +76,6 @@ def main():
             predecessor = original['revisions'][role]
             info = api.repo_info(repo_id, repo_type=kind, revision=predecessor, files_metadata=True)
             current = api.repo_info(repo_id, repo_type=kind, files_metadata=True)
-            if current.sha != predecessor:
-                raise RuntimeError(f'Remote head changed; inspect before publishing: {repo_id} {current.sha}')
             before = file_signature(info)
             card = release / ('README.md' if kind == 'dataset' else f'{role}/model/README.md')
             files = {
@@ -82,19 +91,36 @@ def main():
                          files={name: dict(bytes=path.stat().st_size, sha256=hashlib.sha256(path.read_bytes()).hexdigest())
                                 for name, path in files.items()})
             if args.publish:
-                committed = api.create_commit(repo_id, repo_type=kind, parent_commit=current.sha,
-                    operations=[CommitOperationAdd(name, path) for name, path in files.items()],
-                    commit_message='Correct split labels, provenance and evidence limits in dated documentation revision')
-                after_info = api.repo_info(repo_id, repo_type=kind, revision=committed.oid, files_metadata=True)
+                # A retry may find the exact documentation commit already present.
+                # Never overwrite a changed head: all expected bytes and unchanged
+                # evidence below must match before adopting an existing revision.
+                if current.sha == predecessor:
+                    committed = api.create_commit(repo_id, repo_type=kind, parent_commit=current.sha,
+                        operations=[CommitOperationAdd(name, path) for name, path in files.items()],
+                        commit_message='Correct split labels, provenance and evidence limits in dated documentation revision')
+                    revision, commit_url = committed.oid, committed.commit_url
+                else:
+                    revision = current.sha
+                    prefix = 'datasets/' if kind == 'dataset' else ''
+                    commit_url = f'https://huggingface.co/{prefix}{repo_id}/commit/{revision}'
+                after_info = api.repo_info(repo_id, repo_type=kind, revision=revision, files_metadata=True)
                 after = file_signature(after_info)
                 assert set(after) == set(before) | set(files)
-                unchanged = {name: signature for name, signature in before.items() if name != 'README.md'}
+                metadata = {}
+                if after.get('.gitattributes') != before.get('.gitattributes'):
+                    old = Path(hf_hub_download(repo_id, '.gitattributes', repo_type=kind, revision=predecessor, cache_dir=args.cache_dir)).read_text()
+                    new = Path(hf_hub_download(repo_id, '.gitattributes', repo_type=kind, revision=revision, cache_dir=args.cache_dir)).read_text()
+                    metadata['.gitattributes'] = dict(added_rule=check_storage_rule(old, new), before=before['.gitattributes'], after=after['.gitattributes'])
+                unchanged = {name: signature for name, signature in before.items() if name != 'README.md' and name not in metadata}
                 assert all(after[name] == signature for name, signature in unchanged.items())
                 for name, expected in entry['files'].items():
-                    downloaded = Path(hf_hub_download(repo_id, name, repo_type=kind, revision=committed.oid))
+                    downloaded = Path(hf_hub_download(repo_id, name, repo_type=kind, revision=revision, cache_dir=args.cache_dir))
                     assert hashlib.sha256(downloaded.read_bytes()).hexdigest() == expected['sha256']
-                entry.update(revision=committed.oid, commit_url=committed.commit_url,
-                             unchanged_predecessor_files=unchanged, remote_hashes_match=True)
+                entry.update(revision=revision, commit_url=commit_url,
+                             unchanged_predecessor_files=unchanged, storage_metadata=metadata, remote_hashes_match=True)
+            elif current.sha != predecessor:
+                entry['current_head'] = current.sha
+                entry['note'] = 'Head differs from predecessor; publication will adopt it only if every planned byte and evidence invariant matches.'
             receipt['repositories'].append(entry)
             args.output.parent.mkdir(parents=True, exist_ok=True)
             args.output.write_text(json.dumps(receipt, indent=2) + '\n', encoding='utf-8')

@@ -30,14 +30,14 @@ def groups(name: str) -> tuple[str, list[str]]:
     if name.startswith('docs/'):
         return 'method/source/operations review with explicit historical limits', ['C01', 'C04', 'C05', 'C06', 'C08', 'C09', 'C25', 'C33', 'C34', 'C35', 'C36', 'C37', 'C38', 'C39', 'C40', 'C41', 'C42', 'C43', 'C44', 'C45', 'C49']
     if name.startswith('reports/figures/') or name.startswith('output/pdf/'):
-        return 'derived figures/papers checked against source summaries and rendered pages', ['C13', 'C14', 'C17', 'C20', 'C21', 'C22', 'C23', 'C51']
+        return 'derived figures/papers checked against source summaries and rendered pages', ['C13', 'C14', 'C17', 'C20', 'C21', 'C22', 'C23', 'C51', 'C53']
     if name.startswith('reports/'):
         if 'publication' in name:
             return 'immutable original receipt or separately dated correction receipt', ['C27', 'C49', 'C50']
         if 'audit' in name or name.endswith('source-conformance.json'):
             return 'historical assertions retained, not premises of independent checks', ['C06', 'C29', 'C30', 'C49']
         if 'independent' in name or 'embedding-inputs' in name or 'claim-' in name:
-            return 'new bounded evidence/check record; inspect explicit gaps', ['C26', 'C27', 'C30', 'C48', 'C52']
+            return 'new bounded evidence/check record; inspect explicit gaps', ['C26', 'C27', 'C30', 'C48', 'C52', 'C53']
         return 'experiment record or generated summary; repeated claims linked to primary evidence', ['C06', 'C13', 'C14', 'C17', 'C18', 'C19', 'C20', 'C21', 'C22', 'C24', 'C28', 'C29', 'C31', 'C32', 'C49']
     if name.startswith('.github/') or name in ('.env.example', '.gitattributes', '.gitignore', '.python-version', 'pyproject.toml', 'uv.lock'):
         return 'configuration/build metadata; no capability claim', ['C45', 'C50']

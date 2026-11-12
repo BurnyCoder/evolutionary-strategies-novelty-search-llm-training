@@ -86,6 +86,62 @@
     "failed_write_replay_matches": true,
     "gaps": [
       "Initial recovery control tensors were overwritten; exact initial preservation remains unverified."
-    ]
+    ],
+    "publication_timing": {
+      "pilot": {
+        "final_phase_deadline": "2026-11-07T10:17:50.441597+00:00",
+        "overall_deadline": "2026-11-07T15:56:47.150468+00:00",
+        "original_publications": {
+          "main": {
+            "repository": "https://huggingface.co/BurnyCoder/novelty-es-qwen2.5-0.5b-main-seed0",
+            "revision": "7fc12026e96f4d9d0255fb80d8fe0315058a61c1",
+            "created_at": "2026-11-07T09:39:30+00:00",
+            "seconds_after_final_phase_deadline": -2300.441597223282,
+            "seconds_before_overall_deadline": 22637.150468349457
+          },
+          "reward_only": {
+            "repository": "https://huggingface.co/BurnyCoder/novelty-es-qwen2.5-0.5b-reward-only-seed0",
+            "revision": "4b3ffe8fa26555ca2b784b63ccd4af85e3f5b6ac",
+            "created_at": "2026-11-07T09:45:50+00:00",
+            "seconds_after_final_phase_deadline": -1920.4415972232819,
+            "seconds_before_overall_deadline": 22257.150468349457
+          },
+          "artifacts": {
+            "repository": "https://huggingface.co/datasets/BurnyCoder/novelty-es-pilot-artifacts",
+            "revision": "949e2dcb385bc2b7088c40444ef879b76596317d",
+            "created_at": "2026-11-07T10:41:48+00:00",
+            "seconds_after_final_phase_deadline": 1437.5584027767181,
+            "seconds_before_overall_deadline": 18899.150468349457
+          }
+        }
+      },
+      "continuation": {
+        "final_phase_deadline": "2026-11-12T04:21:29.203492+00:00",
+        "overall_deadline": "2026-11-12T07:20:59.950738+00:00",
+        "original_publications": {
+          "main": {
+            "repository": "https://huggingface.co/BurnyCoder/novelty-es-qwen2.5-0.5b-main-seed0-gen100",
+            "revision": "b35f45970cb91c7aec94eb741dc70e27a7d60947",
+            "created_at": "2026-11-12T02:57:36+00:00",
+            "seconds_after_final_phase_deadline": -5033.203491687775,
+            "seconds_before_overall_deadline": 15803.950737953186
+          },
+          "reward_only": {
+            "repository": "https://huggingface.co/BurnyCoder/novelty-es-qwen2.5-0.5b-reward-only-seed0-gen100",
+            "revision": "17bfd11b54d369426abb77fb5aa99fa42f31d3bd",
+            "created_at": "2026-11-12T03:02:21+00:00",
+            "seconds_after_final_phase_deadline": -4748.203491687775,
+            "seconds_before_overall_deadline": 15518.950737953186
+          },
+          "artifacts": {
+            "repository": "https://huggingface.co/datasets/BurnyCoder/novelty-es-continuation-seed0-gen100-artifacts",
+            "revision": "64ca85166e198f2e064f51b70f2228228d65e814",
+            "created_at": "2026-11-12T03:36:08+00:00",
+            "seconds_after_final_phase_deadline": -2721.2034916877747,
+            "seconds_before_overall_deadline": 13491.950737953186
+          }
+        }
+      }
+    }
   }
 }

@@ -15,6 +15,8 @@ uv run python scripts/restore_evidence.py --output-root artifacts/restored --cac
 
 The script reads pinned revisions from the original [pilot receipt](../reports/publication.json) and [continuation receipt](../reports/publication-continuation-seed0-gen100.json). It does not follow mutable model branches. Use `--dry-run` to inspect the exact downloads. Choose another short writable cache path on other machines. The model downloads preserve their upstream licenses. Corrections are new documentation revisions linked to these predecessors.
 
+This restores the public releases, not every historical local working file. The [restoration check](../reports/independent-restoration-2026-11-12.json) lists local-only calibration, pending-state, console/service-log and upload-receipt files. They are not needed by the read-only verification and reporting commands below; all files shared by the restored and local evidence matched byte for byte.
+
 ## Verify without modifying evidence
 
 ```powershell

@@ -1,5 +1,5 @@
 {
-  "date": "2026-11-12T12:20:21.132117+00:00",
+  "date": "2026-11-12T12:42:42.432070+00:00",
   "scope": "Locked environment software tests, synthetic fixtures and analytic checks; no research-model execution.",
   "suites": [
     {
@@ -381,26 +381,31 @@
       ]
     },
     {
-      "source_sha256": "b9999f9febe4fa3cd18a15b3231fa01e5636c25d799c39bdc320484d3fcbf70c",
+      "source_sha256": "9537791187b764a52a8c3dc1111c31d0dcc4d0c67e7257e699e4d64bbf2e0a34",
       "name": "pytest",
       "errors": "0",
       "failures": "0",
       "skipped": "0",
-      "tests": "1",
-      "time": "0.059",
-      "timestamp": "2026-11-12T13:19:45.778044+01:00",
+      "tests": "2",
+      "time": "0.068",
+      "timestamp": "2026-11-12T13:41:45.815776+01:00",
       "hostname": "burny",
       "cases": [
         {
           "classname": "tests.test_publish_corrections",
           "name": "test_hub_report_resolves_relative_links_and_preserves_external_links",
-          "time": "0.016"
+          "time": "0.018"
+        },
+        {
+          "classname": "tests.test_publish_corrections",
+          "name": "test_only_exact_new_pdf_storage_rule_is_allowed",
+          "time": "0.002"
         }
       ]
     }
   ],
   "totals": {
-    "tests": 74,
+    "tests": 75,
     "failures": 0,
     "errors": 0,
     "skipped": 0

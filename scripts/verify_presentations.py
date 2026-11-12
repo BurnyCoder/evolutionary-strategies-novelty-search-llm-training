@@ -140,6 +140,34 @@ def check_history(pilot, continuation, verification):
                 gaps=['Initial recovery control tensors were overwritten; exact initial preservation remains unverified.'])
 
 
+def check_publication_timing(pilot, continuation):
+    """Compare original Hub server commit times with persisted phase/overall clocks.
+
+    Commit metadata: https://huggingface.co/docs/huggingface_hub/package_reference/hf_api#huggingface_hub.HfApi.list_repo_commits .
+    The pilot registration explicitly permits publication transfers to finish later.
+    """
+    from huggingface_hub import HfApi
+
+    api, result = HfApi(), {}
+    for slug, directory, receipt in (('pilot', pilot, 'publication.json'),
+                                     ('continuation', continuation, 'publication-continuation-seed0-gen100.json')):
+        experiment = read(directory / 'experiment.json')
+        publication = read(Path('reports') / receipt)
+        commits = {}
+        for role, url in {**publication['models'], 'artifacts': publication['artifacts']}.items():
+            kind = 'dataset' if role == 'artifacts' else 'model'
+            repo = url.split('/datasets/')[-1] if kind == 'dataset' else url.split('huggingface.co/')[-1]
+            revision = publication['revisions'][role]
+            created = api.list_repo_commits(repo, repo_type=kind, revision=revision)[0].created_at
+            commits[role] = dict(repository=url, revision=revision, created_at=created.isoformat(),
+                                 seconds_after_final_phase_deadline=created.timestamp() - experiment['phases']['final']['deadline'],
+                                 seconds_before_overall_deadline=experiment['deadline'] - created.timestamp())
+        result[slug] = dict(final_phase_deadline=datetime.fromtimestamp(experiment['phases']['final']['deadline'], timezone.utc).isoformat(),
+                            overall_deadline=datetime.fromtimestamp(experiment['deadline'], timezone.utc).isoformat(),
+                            original_publications=commits)
+    return result
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     for flag in ('pilot-dir', 'continuation-dir', 'release-dir', 'verification', 'output'):
@@ -150,6 +178,7 @@ def main():
     result = {name: check_study(directory, args.release_dir, verified['studies'][name])
               for name, directory in (('pilot', args.pilot_dir), ('continuation', args.continuation_dir))}
     result['history'] = check_history(args.pilot_dir, args.continuation_dir, verified)
+    result['history']['publication_timing'] = check_publication_timing(args.pilot_dir, args.continuation_dir)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(result, indent=2) + '\n', encoding='utf-8')
     print(json.dumps(result, indent=2))
