@@ -11,7 +11,7 @@ from urllib.parse import urlsplit
 
 
 def read_json(path: Path, fallback):
-    """Atomic writers guarantee readers see either the previous or new complete JSON."""
+    """Read files replaced atomically by this project; malformed files still raise."""
     return json.loads(path.read_text(encoding="utf-8")) if path.exists() else fallback
 
 

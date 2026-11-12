@@ -103,7 +103,13 @@ class ModelRunner:
             self.embedder.eval()
 
     def embed(self, responses: list[str]) -> torch.Tensor:
-        """Use frozen normalized sentence embeddings on the complete probe response."""
+        """Pass full probe strings through the frozen embedder's own truncation policy.
+
+        The pinned MiniLM sentence_bert_config.json sets max_seq_length=256
+        WordPiece tokens including special tokens; complete strings do not imply
+        complete-token coverage. This historical policy is intentionally unchanged.
+        https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/blob/1110a243fdf4706b3f48f1d95db1a4f5529b4d41/sentence_bert_config.json
+        """
         self.load_embedder()
         return (
             self.embedder.encode(

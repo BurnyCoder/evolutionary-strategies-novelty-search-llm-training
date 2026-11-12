@@ -25,6 +25,7 @@ from matplotlib.ticker import MaxNLocator, PercentFormatter
 from .analysis import novelty_intervention, paired_bootstrap, pass_at_k
 from .dashboard import dashboard_state, read_json
 from .runtime import atomic_json
+from .verification import export_description, separate_output
 
 
 def logged_generation_work(path: Path) -> list[dict]:
@@ -99,12 +100,14 @@ def summarize(directory: Path) -> dict:
         "recovery": experiment.get("recovery"),
         "baseline_comparisons": {},
         "model_id": config["model_id"],
+        "export": export_description(directory / "main/model"),
         "seed": config["seed"],
         "initializations": {
             name: read_json(
                 Path(config.get("continuation", {}).get("parent_directory", directory)) / name / "initialization-audit.json", {}
             ) for name in ("main", "reward_only")
         },
+        "historical_audit_fields": "initializations, recovery_audit and restart_replay_audit preserve older assertions; see the independent correction evidence for current checks.",
         "novelty_weight": config["novelty_weight"],
         "finding": "No completed paired primary endpoint is available.",
         "generated_at": datetime.now(timezone.utc).isoformat(),
@@ -133,10 +136,15 @@ def summarize(directory: Path) -> dict:
         groups = defaultdict(list)
         for row in evaluation["sets"].get("sampled", []):
             groups[row["problem_id"]].append(row)
+        for rows in groups.values():
+            indices = [row["sample"] for row in rows]
+            if len(set(indices)) != len(indices) or any(
+                type(index) is not int or not 0 <= index < config["samples_per_problem"] for index in indices
+            ):
+                raise ValueError("Repeated or out-of-range sampled response indices")
+        if len(groups) > config["sampled_problem_count"]:
+            raise ValueError("Unexpected sampled problem coverage")
         complete_groups = [rows for rows in groups.values() if len(rows) == config["samples_per_problem"]]
-        for rows in complete_groups:
-            if len({row["sample"] for row in rows}) != config["samples_per_problem"]:
-                raise ValueError("Repeated sampled response indices")
         sampled = {
             "complete_problems": len(complete_groups),
             "expected": config["sampled_problem_count"],
@@ -276,7 +284,8 @@ def _percent(value) -> str:
 def result_table(summary: dict) -> list[list[str]]:
     """One canonical table feeds Markdown, PDF and model cards."""
     split = summary.get("primary_split", "test")
-    table = [["Condition", f"{split.title()} accuracy", "95% interval", "Hard accuracy", "pass@1", "pass@8", "Status"]]
+    table = [["Condition", f"{split.title()} greedy accuracy", "95% interval", "Hard greedy accuracy",
+              "Original-test pass@1", "Original-test pass@8", "Status"]]
     for name, method in summary["methods"].items():
         interval = method[split].get("interval")
         table.append(
@@ -322,7 +331,8 @@ def comparison_table(summary: dict) -> list[list[str]]:
 def diagnostic_table(summary: dict) -> list[list[str]]:
     """Keep probe performance and validity visible alongside the held-out endpoint."""
     split = summary.get("primary_split", "test")
-    table = [["Condition", "Probe accuracy", f"{split.title()} validity", "Hard validity", "Train tokens", "Eval tokens", "Train hours"]]
+    table = [["Condition", "Training-probe accuracy", f"{split.title()} validity", "Hard validity",
+              "Cumulative train tokens", "Stored eval tokens", "Phase wall hours"]]
     for name, method in summary["methods"].items():
         tokens = sum(method[s].get("generated_tokens", 0) for s in ("fresh", "test", "hard", "probes", "sampled") if s in method)
         table.append(
@@ -340,22 +350,25 @@ def diagnostic_table(summary: dict) -> list[list[str]]:
 
 
 def model_description(summary: dict) -> str:
-    """Read architecture from the recorded pinned-weight audit, never guessed model labels."""
-    audit = next((item for item in summary["initializations"].values() if item), {})
+    """Read architecture and tensor counts directly from the restored model export."""
+    audit = summary.get("export")
     if not audit:
-        return f"{summary['model_id']}; architecture audit not recorded."
+        return f"{summary['model_id']}; export unavailable, so architecture/counts were not reverified."
     architecture = audit["architecture"]
     return (
         f"{summary['model_id']}: {architecture['num_hidden_layers']} layers, width {architecture['hidden_size']}, "
         f"{architecture['num_attention_heads']} query heads and {architecture['num_key_value_heads']} key/value heads; "
         f"{audit['parameter_elements']:,} unique parameter elements in {audit['unique_tensors']} tensors. "
-        "Architecture and counts come from the pinned pretrained files and the generation-zero checkpoint audit."
+        "Architecture comes from the exported config; counts come from its safetensors headers. "
+        "This does not establish historical generation-zero tensor equality."
     )
 
 
 def diversity_table(summary: dict) -> list[list[str]]:
     """Expose within-problem sampled diversity separately from single greedy successes."""
-    table = [["Condition", "Greedy correct structures", "Complete sampled problems", "Mean correct structures / sampled problem"]]
+    split = summary.get("primary_split", "test")
+    table = [["Condition", f"{split.title()} greedy correct structures", "Original-test sampled problems",
+              "Mean correct structures / original-test sampled problem"]]
     for name, method in summary["methods"].items():
         value = method["sampled"].get("mean_unique_correct_structures")
         table.append([
@@ -363,6 +376,39 @@ def diversity_table(summary: dict) -> list[list[str]]:
             str(method["sampled"]["complete_problems"]), "missing" if value is None else f"{value:.4f}",
         ])
     return table
+
+
+def measurement_scope(summary: dict) -> str:
+    """Shared split/resource disclosure for every generated presentation surface."""
+    return (
+        "Accuracy columns use one greedy response per problem. Hard is the five-number split. "
+        "pass@1, pass@8 and sampled diversity always use the fixed original-test subset, including in the continuation. "
+        "Probes are training examples. Stored evaluation tokens include reused original-model outcomes; "
+        "parent fresh evaluations are separate from the three-condition diagnostic table. "
+        "Training tokens are cumulative committed-candidate tokens. Phase wall hours include overhead; for the continuation "
+        "they cover added work only, and control time excludes offline downtime and the unknown unlogged outage tail. "
+        "These are not GPU compute-hour measurements. "
+        "MiniLM receives complete response strings but truncates at its [pinned 256 WordPiece-token limit]"
+        "(https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/blob/1110a243fdf4706b3f48f1d95db1a4f5529b4d41/sentence_bert_config.json). "
+        "The verifier accepts restricted [Python expression syntax](https://docs.python.org/3.12/reference/expressions.html), either bare or inside one answer tag; "
+        "surrounding prose is ignored when one tag is present. "
+        + summary["interval_scope"]
+    )
+
+
+def correction_note(slug: str) -> str:
+    """Link dated documentation revisions to the original immutable publication receipt."""
+    receipt = "publication.json" if slug == "pilot" else f"publication-{slug}.json"
+    root = "https://github.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training"
+    published = read_json(Path("reports") / receipt, {})
+    raw = (f"[Immutable raw measurements]({published['artifacts']}/tree/{published['revisions']['artifacts']}). "
+           if published else "")
+    return ("Documentation correction dated 2026-11-12; raw evidence and weights are unchanged. "
+            + raw +
+            f"[Predecessor revisions]({root}/blob/cf0a402/reports/{receipt}). "
+            f"[Independent corrections and evidence gaps]({root}/blob/main/reports/independent-corrections-2026-11-12.md). "
+            "Old audit verdicts are retained as historical records, not independent proof. "
+            "Generation-zero tensors and a complete historical embedding/archive trajectory are unavailable.")
 
 
 def refresh_readme(path: Path, summary: dict, table: list[list[str]]) -> None:
@@ -381,6 +427,41 @@ def refresh_readme(path: Path, summary: dict, table: list[list[str]]) -> None:
         f"{summary['interval_scope']} [Full report](reports/experiment-{slug}.md).\n"
     )
     path.write_text(before + start + result + end + after, encoding="utf-8")
+
+
+def refresh_corrections(output_root: Path) -> None:
+    """Render the dated correction's empirical block from independently saved results."""
+    name = "independent-corrections-2026-11-12.md"
+    source = Path("reports") / name
+    if not source.exists():
+        return
+    verified = read_json(Path("reports/independent-verification-2026-11-12.json"), {})
+    tokenized = read_json(Path("reports/embedding-inputs-2026-11-12.json"), {})
+    if not verified or not tokenized:
+        return
+    rows = [["Study / primary split", "Main correct / problems", "Control correct / problems", "Difference (pp)",
+             "Paired 95% interval (pp)", "Main candidate weights changed"]]
+    tokens = [["Log", "Probe response events", "Above embedding cap", "Maximum input tokens", "Cap including special tokens"]]
+    for name, item in verified["studies"].items():
+        split = "test" if name == "pilot" else "fresh"
+        main, control = (item["evaluations"][condition][split] for condition in ("main", "reward_only"))
+        primary = item["primary"]
+        rows.append([f"{name} / {split}", f"{main['correct']} / {main['responses']}",
+                     f"{control['correct']} / {control['responses']}", f"{100 * primary['difference']:.3f}",
+                     f"[{100 * primary['low']:.3f}, {100 * primary['high']:.3f}]",
+                     str(item["trace"]["coefficients"]["main"]["candidates_weight_changed"])])
+        measured = tokenized[name]
+        tokens.append([name, *[str(measured[key]) for key in ('logged_probe_responses', 'above_limit', 'max_tokens', 'limit')]])
+    start, end = "<!-- BEGIN INDEPENDENT VERIFIED RESULTS -->", "<!-- END INDEPENDENT VERIFIED RESULTS -->"
+    text = source.read_text(encoding="utf-8")
+    block = (markdown_table(rows) + "\n\nIntervals resample problems conditional on the realized training seed. "
+             "Changed-weight counts are cumulative recorded populations, not additional continuation-only counts.\n\n"
+             + markdown_table(tokens) + "\n\nProbe-event counts include repeated logged responses; the continuation log excludes its pilot prefix. "
+             "Sources: [independent raw-record checks](independent-verification-2026-11-12.json) and "
+             "[pinned-tokenizer measurements](embedding-inputs-2026-11-12.json).\n")
+    target = output_root / "reports" / source.name
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text(text.split(start)[0] + start + "\n" + block + end + text.split(end)[1], encoding="utf-8")
 
 
 def outcome_description(summary: dict) -> str:
@@ -460,7 +541,7 @@ def continuation_description(experiment: dict) -> str:
         "evaluation after continuation training, so the change contrast pairs four outcomes per problem. "
         + budget
         + "Parent deadlines remain immutable. No stopping or checkpoint selection depends on interim accuracy. "
-        "The untrained baseline's older outcomes are reused with their source hash; its fresh outcomes are newly evaluated. "
+        "The original pretrained baseline's older outcomes are reused with their source hash; its fresh outcomes were evaluated in the continuation. "
         "This is a single-seed, pilot-motivated follow-up, not a test of seed robustness."
     )
 
@@ -478,8 +559,9 @@ def recovery_description(experiment: dict) -> str:
         f"including {config['train_seconds'] / 3600:g} for unfinished control training and "
         f"{config['final_seconds'] / 3600:g} for final work, capped by the original whole-week deadline. "
         "This amends the pretrained-stage allocation and may displace later studies. The main checkpoint is reused unchanged. "
-        "Every non-metadata checkpoint field and saved pending candidate is preserved exactly. "
-        "Training hours add the recorded active intervals before and after restart; the offline gap is excluded from compute time, "
+        "The historical recovery audit reports exact preservation of non-metadata checkpoint fields and pending candidates; "
+        "the initial recovery checkpoint was subsequently overwritten, so that initialization claim cannot now be fully rechecked. "
+        "Training hours add the recorded phase intervals before and after restart; the offline gap is excluded from these intervals, "
         "but remains part of the expired attempt's wall-clock history. Model-execution elapsed time refers to the recovery clock. "
         "The earlier execution allowance was not met, regardless of recovery completion."
     )
@@ -505,9 +587,10 @@ def restart_replay_description(summary: dict) -> str:
     if not audit:
         return ""
     return (
-        f"A post-restart numerical diagnostic compared {audit['replayed_rows']} naturally replayed GPU responses "
+        f"The historical replay-audit file reports comparison of {audit['replayed_rows']} naturally replayed GPU responses "
         f"from the unfinished candidate. Exact response, token and verifier matches: {audit['all_exact']}; "
-        f"mismatched rows: {len(audit['mismatches'])}. Only timestamps and batch duration were excluded. "
+        f"mismatched rows: {len(audit['mismatches'])}. These are historical audit assertions; the independent trace check "
+        "regrades and compares repeated training responses directly. Only timestamps and batch duration were excluded. "
         "This checks the observed candidate replay, not arbitrary hardware changes or a complete optimization trajectory."
     )
 
@@ -580,7 +663,7 @@ def plot_results(directory: Path, summary: dict, output: Path) -> None:
 def write_paper(path: Path, experiment: dict, summary: dict, figures: Path, table: list[list[str]]) -> None:
     """Build the dated paper from the same canonical results and registered configuration."""
     from reportlab.lib import colors
-    from reportlab.lib.styles import getSampleStyleSheet
+    from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
     from reportlab.lib.units import inch
     from reportlab.platypus import Image, Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
 
@@ -590,6 +673,7 @@ def write_paper(path: Path, experiment: dict, summary: dict, figures: Path, tabl
     styles["BodyText"].leading = 13
     styles["BodyText"].spaceAfter = 7
     styles["Heading2"].keepWithNext = True
+    styles.add(ParagraphStyle("Reference", parent=styles["BodyText"], fontSize=8, leading=10, spaceAfter=2))
     story = []
 
     def paragraph(text, style="BodyText"):
@@ -606,7 +690,7 @@ def write_paper(path: Path, experiment: dict, summary: dict, figures: Path, tabl
     section(
         "Abstract",
         "We test an adaptation of historical response novelty to full-weight Gaussian evolution strategies on witnessed arithmetic problems. "
-        "The comparison uses one paired training seed and an untrained base model. "
+        "The comparison uses one paired training seed and the original pretrained instruction model without task-specific updates here. "
         + html.escape(summary["finding"])
         + " Problem-resampling intervals exclude training-seed variability. All tables are generated from persisted evaluations; incomplete outcomes are labeled.",
     )
@@ -621,7 +705,8 @@ def write_paper(path: Path, experiment: dict, summary: dict, figures: Path, tabl
         "Background and related work",
         "Novelty-seeking ES was previously studied in control [4]. LLM-specific alternatives include EVOL-RL's within-group novelty [5], "
         "DARLING's quality/diversity objective [6], and the model/task coevolution of AC/DC [7]. These use different training or population mechanisms. "
-        "The repository literature audit distinguishes prompt evolution, artifact search and actual model-parameter training, with code/license verification.",
+        "The literature notes distinguish prompt evolution, artifact search and model-parameter training. "
+        "Only explicitly identified dependencies have pinned code/license checks; peripheral references are not implementation validations.",
     )
     section(
         "Method",
@@ -648,12 +733,15 @@ def write_paper(path: Path, experiment: dict, summary: dict, figures: Path, tabl
         "The update is theta_next = theta + (alpha / population) sum_i W_i epsilon_i. "
         "Each epsilon_i is independent standard Gaussian noise over every unique parameter tensor. "
         "A common positive novelty bonus is retained. Alpha includes the inverse-noise factor; it is not "
-        "an additional alpha/sigma update. MiniLM is frozen, and both conditions compute the same categories of probe work."
+        "an additional alpha/sigma update. MiniLM is frozen, and both conditions compute the same categories of probe work. "
+        "Complete response strings are passed to MiniLM, whose pinned sentence_bert_config.json caps inputs at 256 WordPiece tokens "
+        "including special tokens [9]. This is not a guarantee that every response token contributes to novelty."
     )
     paragraph(
         "Protocol amendment A replaced combined-reward ranks with source-aligned z-scored quality plus post-normalization novelty. "
         "It was published after calibration and partial original-model evaluation were visible, but before either trained condition began. "
-        "Both pilot arms started from the original pretrained weights using the amended rule from their first generation. "
+        "The run records describe both arms as starting from the original pretrained weights; their generation-zero tensors "
+        "were not retained, so equality cannot now be independently re-established. Recorded coefficients follow the amended rule. "
         "The original registration, changed configuration, code revisions and unchanged absolute deadline are retained in the run record. "
         "This ordering follows ES at Scale Algorithm 2 and ExTra Equation 2; it is not evidence that the hybrid outperforms the abandoned rule."
     )
@@ -664,9 +752,13 @@ def write_paper(path: Path, experiment: dict, summary: dict, figures: Path, tabl
     section(
         "Data, evaluation and preregistered analysis",
         "Synthetic problems have exact rational witnesses. Global number-multiset isolation prevents permutations or alternative targets crossing splits. "
-        "Only constants supplied in the prompt and allowlisted arithmetic are accepted. Greedy test accuracy at the final scheduled checkpoint is primary. "
+        "Only supplied integer literals and binary +, -, *, / in Python expression syntax are accepted [10]. "
+        "The grader accepts either a bare expression or the contents of one answer tag (surrounding prose is ignored). "
+        "Unary signs, powers, floor division, extra literals and unparenthesized line breaks are rejected. "
+        "Greedy accuracy on the designated primary split at the final scheduled checkpoint is primary. "
         "The directional hypothesis is falsified for this pilot if main minus control accuracy is nonpositive. "
-        "A paired problem bootstrap quantifies conditional uncertainty. Sampled pass@k follows the unbiased subset estimator [8]. "
+        "A paired problem bootstrap quantifies conditional uncertainty. Sampled pass@k is the exact uniform-subset success "
+        "probability; unbiasedness for model draws assumes independent samples [8]. "
         "Validation cannot select checkpoints. Exact dataset hashes, schedules, timing rules and sampling settings are recorded in "
         + ("reports/preregistration-recovery.md and configs/continuation-recovery.json."
            if summary.get("recovery") else "reports/preregistration-continuation.md and configs/continuation.json."
@@ -678,12 +770,12 @@ def write_paper(path: Path, experiment: dict, summary: dict, figures: Path, tabl
         "Dataset counts: " + ", ".join(f"{name} {item['count']}" for name, item in counts.items()) + ". "
         f"Greedy responses allow at most {config['max_new_tokens']} new tokens. "
         f"The sampled evaluation uses {config['samples_per_problem']} responses on each of "
-        f"{config['sampled_problem_count']} fixed test problems, with temperature {config['sampled_temperature']}, "
+        f"{config['sampled_problem_count']} fixed original-test problems (never the fresh split), with temperature {config['sampled_temperature']}, "
         f"top-p {config['sampled_top_p']} and top-k disabled. pass@k = 1 - C(n-c,k)/C(n,k), where c is the number "
         f"of correct samples. Intervals use {config['bootstrap_replicates']} paired resamples, seed {config['data_seed']}."
     )
     section("Results and claims", html.escape(summary["finding"]))
-    cells = [[Paragraph(html.escape(cell), styles["BodyText"]) for cell in row] for row in table]
+    cells = [[Paragraph(html.escape(cell.replace("Original-test", "Original test")), styles["BodyText"]) for cell in row] for row in table]
     result = Table(cells, colWidths=[64, 67, 87, 64, 52, 52, 66], repeatRows=1)
     result.setStyle(
         TableStyle(
@@ -730,7 +822,7 @@ def write_paper(path: Path, experiment: dict, summary: dict, figures: Path, tabl
     paragraph(html.escape(summary["interval_caveat"]))
     paragraph("Probe performance, validity and resources", "Heading2")
     diagnostics = Table(
-        [[Paragraph(html.escape(cell), styles["BodyText"]) for cell in row] for row in diagnostic_table(summary)],
+        [[Paragraph(html.escape(cell.replace("Training-probe", "Training probe")), styles["BodyText"]) for cell in row] for row in diagnostic_table(summary)],
         colWidths=[64, 64, 64, 64, 68, 68, 60],
         repeatRows=1,
     )
@@ -776,7 +868,9 @@ def write_paper(path: Path, experiment: dict, summary: dict, figures: Path, tabl
         if examples:
             row = examples[0]
             section(
-                "Fixed example: " + name, html.escape(row["prompt"]) + "<br/>Output: " + html.escape(row["response"])
+                "Fixed example: " + name, html.escape(row["problem_id"]) + " - "
+                + ("correct" if row["correct"] else "legal, wrong target" if row["valid"] else "invalid")
+                + "<br/>" + html.escape(row["prompt"]) + "<br/>Output: " + html.escape(row["response"])
             )
     section(
         "Implications and discussion",
@@ -793,7 +887,10 @@ def write_paper(path: Path, experiment: dict, summary: dict, figures: Path, tabl
         "Synthetic arithmetic does not measure general language quality. Similar pretraining patterns cannot be excluded. "
         "The fixed-probe objective can overfit. Small time budgets, laptop thermal variability and batch-level floating-point behavior limit extrapolation. "
         "CPU tests, report generation, audits and backups ran alongside training; elapsed times are descriptive, not isolated systems benchmarks. "
-        "Secondary endpoints are descriptive; no multiple-comparison significance claims are made.",
+        "Secondary endpoints are descriptive; no multiple-comparison significance claims are made. "
+        "Generation-zero tensors and the complete historical embedding/archive trajectory were not retained. "
+        "Historical initialization audits cannot replace these missing inputs for independent recomputation. "
+        "The current verification checks raw grades, schedules, coefficients and final exports; it does not reconstruct every historical novelty distance.",
     )
     section(
         "Conclusion",
@@ -802,18 +899,9 @@ def write_paper(path: Path, experiment: dict, summary: dict, figures: Path, tabl
     )
     section(
         "Appendix: reproducibility and failures",
-        ("Restore the pinned interrupted evidence as described in docs/continuation.md, then run uv sync --locked, "
-         "uv run pytest, uv run novelty-es download, and uv run novelty-es recover --config configs/continuation-recovery.json --run-dir PATH. "
-         "uv run novelty-es report --run-dir PATH regenerates tables, figures, this paper and the static website. "
-         if summary.get("recovery") else
-         "Restore the pinned parent release as described in docs/continuation.md, then run uv sync --locked, "
-         "uv run pytest, uv run novelty-es download, and uv run novelty-es run --config configs/continuation.json --run-dir PATH. "
-         "uv run novelty-es report --run-dir PATH regenerates tables, figures, this paper and the static website. "
-         if summary.get("continuation") else
-         "Run uv sync --locked, uv run pytest, uv run novelty-es prepare, "
-         "uv run novelty-es download, and uv run novelty-es run. "
-         "uv run novelty-es report regenerates tables, figures, this paper and the static website. ")
-        + "Repeating run resumes the same clock. "
+        "Restore both pinned evidence releases and their separately published model exports using docs/continuation.md. "
+        "The verify command recomputes evidence checks without inference; report-all regenerates both releases in a separate output tree. "
+        "Both require explicit input paths. Existing training allowances have expired; these corrections execute no training or new model evaluation. "
         "Atomic checkpoints contain weights, all RNG streams, archive, cursor, config and deadline. "
         f"Recorded technical failures: {len(summary['failures'])}. Model-execution elapsed seconds: {summary['elapsed_seconds']:.3f}. "
         "Final auditing, report preparation and publication follow model execution under the recorded allowance; expired attempts are disclosed separately. "
@@ -855,10 +943,15 @@ def write_paper(path: Path, experiment: dict, summary: dict, figures: Path, tabl
     if recovery:
         paragraph(
             f"The observed storage-failure recovery regenerated a batch of {recovery['replayed_batch_rows']} sampled responses. "
-            "Decoded text, token IDs, identities and verifier fields matched the preserved failed-write snapshot exactly; "
+            "The historical audit reports that decoded text, token IDs, identities and verifier fields matched the preserved failed-write snapshot; "
             "only elapsed batch time was excluded. The source hash and machine-readable check are published with the artifacts. "
             "This is evidence for this evaluation replay, not arbitrary training restarts or environments."
         )
+    receipt_name = "publication-continuation-seed0-gen100.json" if summary.get("continuation") else "publication.json"
+    receipt = read_json(Path("reports") / receipt_name, {})
+    evidence_url = (receipt.get("artifacts", "") + "/tree/" + receipt.get("revisions", {}).get("artifacts", ""))
+    paragraph("Empirical tables, figures, fixed-order examples and resource counts derive from the immutable raw evidence "
+              "release linked below, through reporting.py. The dated correction report records the independent reanalysis and its limits.")
     references = [
         ("1. ExTra", "https://arxiv.org/abs/2606.24994"),
         ("2. Evolution Strategies at Scale", "https://arxiv.org/abs/2509.24372"),
@@ -868,19 +961,25 @@ def write_paper(path: Path, experiment: dict, summary: dict, figures: Path, tabl
         ("6. DARLING", "https://arxiv.org/abs/2509.02534"),
         ("7. AC/DC", "https://arxiv.org/abs/2604.14969"),
         ("8. Evaluating Large Language Models Trained on Code", "https://arxiv.org/abs/2107.03374"),
+        ("9. Pinned MiniLM input limit", f"https://huggingface.co/{config['embedding_id']}/blob/{config['embedding_revision']}/sentence_bert_config.json"),
+        ("10. Python expression syntax", "https://docs.python.org/3.12/reference/expressions.html"),
+        ("Dated corrections and evidence limits", "https://github.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/blob/main/reports/independent-corrections-2026-11-12.md"),
+        ("Immutable raw responses, configurations and logs", evidence_url),
         (
             "Research protocol and source",
             "https://github.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training",
         ),
     ]
     paragraph("References", "Heading2")
-    links = [Paragraph(f'<link href="{url}" color="#185b96">{html.escape(label)}</link>', styles["BodyText"])
+    links = [Paragraph(f'<link href="{url}" color="#185b96">{html.escape(label)}</link>', styles["Reference"])
              for label, url in references]
     midpoint = (len(links) + 1) // 2
     bibliography = Table([[links[i], links[i + midpoint] if i + midpoint < len(links) else ""]
                           for i in range(midpoint)], colWidths=[250, 250])
     bibliography.setStyle(TableStyle([("VALIGN", (0, 0), (-1, -1), "TOP"),
-                                      ("LEFTPADDING", (0, 0), (-1, -1), 0)]))
+                                      ("LEFTPADDING", (0, 0), (-1, -1), 0),
+                                      ("TOPPADDING", (0, 0), (-1, -1), 1),
+                                      ("BOTTOMPADDING", (0, 0), (-1, -1), 1)]))
     story.append(bibliography)
     paragraph(
         "<b>AI statement.</b> Codex wrote this codebase and paper, and human cleanup and rewriting are in progress. "
@@ -904,13 +1003,16 @@ def write_paper(path: Path, experiment: dict, summary: dict, figures: Path, tabl
     ).build(story, onFirstPage=footer, onLaterPages=footer)
 
 
-def report(directory: Path, output_root: Path = Path(".")) -> dict:
-    """Single command regenerates JSON, tables, plots, reports, model cards, Pages and PDF."""
+def report(directory: Path, output_root: Path = Path("."), *, staged: bool = False) -> dict:
+    """Regenerate a release; staged mode never writes into the evidence directory."""
+    if staged:
+        separate_output(output_root, [directory])
     summary = summarize(directory)
-    atomic_json(directory / "summary.json", summary)
     experiment = read_json(directory / "experiment.json", {})
     continued = bool(summary.get("continuation"))
     slug = experiment["config"]["experiment"] if continued else "pilot"
+    release = output_root / "releases" / slug if staged else directory
+    atomic_json(release / "summary.json", summary)
     registration = "preregistration-recovery.md" if summary.get("recovery") else "preregistration-continuation.md" if continued else "preregistration.md"
     config_file = "continuation-recovery.json" if summary.get("recovery") else "continuation.json" if continued else "pilot.json"
     table = result_table(summary)
@@ -939,6 +1041,7 @@ def report(directory: Path, output_root: Path = Path(".")) -> dict:
         f'# {slug} experiment\n\nLibor "Burny" Burian · {datetime.now().date().isoformat()}\n\n'
         + (continuation_description(experiment) + "\n\n" + markdown_table(continuation_table(summary)) + "\n\n" if continued else "")
         + (restart_replay_description(summary) + "\n\n" if summary.get("restart_replay_audit") else "")
+        + correction_note(slug) + "\n\n" + measurement_scope(summary) + "\n\n"
         +
         f"{summary['finding']}\n\n{comparison}\n\n{summary['interval_scope']}\n\n"
         f"{outcome_description(summary)}\n\n"
@@ -969,7 +1072,8 @@ def report(directory: Path, output_root: Path = Path(".")) -> dict:
         "Validation does not choose the final checkpoint. "
         "Amendment A replaces combined-reward ranks with population-z-scored task reward plus post-normalization novelty. "
         "It was published after calibration and partial original-model evaluation, before either trained condition. "
-        "Both pilot arms started from original pretrained weights using the amended rule from generation one.\n\n"
+        "The run records describe both pilot arms as starting from original pretrained weights with the amended rule from generation one; "
+        "generation-zero tensors are no longer available for an independent equality check.\n\n"
         + model_description(summary) + "\n\n"
         "## Recorded measurements\n\nAll values below come from persisted outcomes. Missing conditions remain missing. "
         "Population training accuracy is distinct from unperturbed master validation and held-out test accuracy.\n\n"
@@ -994,7 +1098,7 @@ def report(directory: Path, output_root: Path = Path(".")) -> dict:
                 "training_code_revision": experiment.get("training_code_revision", experiment.get("code_revision")),
             }, indent=2,
         ) + "\n```\n\n"
-        "The first audit reconciled ExTra's correctness-filtered paper specification with its unfiltered embedding-memory insertion. "
+        "ExTra's pinned memory helper does not itself filter embedding insertion by correctness (see the linked source correspondence). "
         "Explicit Boolean masking and separate score/append operations implement the intended experiment. "
         "FP32 master reconstruction avoids repeated BF16 perturbation subtraction. "
         "Tests exercise interrupted candidate replay, archive RNG restoration, deadline preservation and exact arithmetic. "
@@ -1005,39 +1109,33 @@ def report(directory: Path, output_root: Path = Path(".")) -> dict:
     )
     (reports / f"experiment-{slug}.md").write_text(text, encoding="utf-8")
     refresh_readme(output_root / "README.md", summary, table)
-    aggregate = (
-        "# All experiments\n\nThe registered pretrained studies use paired ES training and original-model evaluation. "
-        "No scratch or diagnostic run is represented as executed.\n\n"
-        + summary["finding"] + "\n\n" + outcome_description(summary) + "\n\n"
-        + markdown_table(table)
-        + "\n\n" + model_description(summary)
-        + "\n\n" + markdown_table([
-            ["Condition", "Parameter update", "Objective", "Training data / schedule"],
-            ["Original", "Frozen pretrained checkpoint", "No optimization here", "No training here"],
-            ["Main", "Full-weight Gaussian ES", f"Z(task reward) + {summary['novelty_weight']} novelty", "Registered Countdown split; rotating problems and fixed probes"],
-            ["Reward-only", "Full-weight Gaussian ES", "Z(task reward)", "Same problems, perturbation seeds and generation count"],
-        ])
-        + "\n\n[Full pilot report](experiment-pilot.md). [Deferred studies](../docs/roadmap.md).\n\n"
-        "ES means comparing random weight changes instead of using backpropagation. Novelty is distance from previous "
-        "correct answers. Quality is verified arithmetic reward. Accuracy is exact success frequency. "
-        "pass@k estimates the chance of at least one success among k samples. A confidence interval here describes "
-        "uncertainty from which test problems were sampled, not uncertainty over training seeds.\n"
-    )
-    if continued:
-        original_summary = read_json(output_root / "docs/site/status.json", {}).get("summary", {})
-        aggregate += "\n\n## Original pilot (retained)\n\n" + markdown_table(result_table(original_summary)) if original_summary else ""
-        aggregate += f"\n\n## Longer continuation\n\n{markdown_table(continuation_table(summary))}\n\n[Full report](experiment-{slug}.md).\n"
+    # A per-study registry makes aggregation independent of regeneration order.
+    atomic_json(reports / "summaries" / f"{slug}.json", summary)
+    aggregate = "# All experiments\n\nEach study below is regenerated from its own raw records. "
+    aggregate += "Probes are training data; sampled pass@k always uses the original test subset.\n"
+    for saved in sorted((reports / "summaries").glob("*.json"), key=lambda path: (path.stem != "pilot", path.stem)):
+        item = read_json(saved, {})
+        aggregate += f"\n## {saved.stem}\n\n{item['finding']}\n\n{markdown_table(result_table(item))}\n\n"
+        aggregate += f"{outcome_description(item)}\n\n[Full report](experiment-{saved.stem}.md).\n"
+    aggregate += ("\nES evaluates random parameter perturbations and weights their update by measured reward. "
+                  "Main adds correct-response novelty; control uses task reward alone. The original pretrained checkpoint is frozen. "
+                  "Both trained arms use the same rotating training problems and fixed probes. There are no executed scratch, "
+                  "random-search or archive-ablation studies in this release.\n\n"
+                  "[Method and architecture](../README.md). [Evidence limitations](independent-corrections-2026-11-12.md).\n")
     (reports / "all-experiments.md").write_text(aggregate, encoding="utf-8")
     site = output_root / "docs/site"
     if continued:
         site /= slug
     site.mkdir(parents=True, exist_ok=True)
     shutil.copyfile("web/index.html", site / "index.html")
-    atomic_json(site / "status.json", dashboard_state(directory))
+    state = dashboard_state(directory)
+    state["summary"] = summary  # Never embed an older source summary in a new snapshot.
+    atomic_json(site / "status.json", state)
     (site / ".nojekyll").touch()
     for condition in ("main", "reward_only"):
-        model_dir = directory / condition / "model"
-        if model_dir.exists():
+        model_dir = release / condition / "model"
+        if (directory / condition / "model").exists():
+            model_dir.mkdir(parents=True, exist_ok=True)
             config = experiment["config"]
             (model_dir / "README.md").write_text(
                 f"---\nlicense: apache-2.0\nbase_model: {config['model_id']}\nlibrary_name: transformers\n"
@@ -1047,6 +1145,7 @@ def report(directory: Path, output_root: Path = Path(".")) -> dict:
                 + summary["finding"]
                 + "\n\n" + outcome_description(summary) + "\n\n"
                 + markdown_table(table)
+                + "\n\n" + measurement_scope(summary) + "\n\n" + correction_note(slug)
                 + "\n\nResearch-only arithmetic adaptation, with no evidence of general language improvements. "
                 "Intervals exclude training-seed variability. See the full preregistration, source, provenance and limitations at "
                 "https://github.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training .\n\n"
@@ -1055,9 +1154,10 @@ def report(directory: Path, output_root: Path = Path(".")) -> dict:
             )
     # The artifact repository is a documented research release, not a flat example dataset.
     # Hub card format: https://huggingface.co/docs/hub/datasets-cards .
-    (directory / "README.md").write_text(
+    (release / "README.md").write_text(
         "---\nlicense: apache-2.0\nlanguage:\n- en\ntags:\n- evolution-strategies\n- reproducibility\n---\n\n"
         f"# Novelty ES {slug} evidence\n\n" + summary["finding"] + "\n\n" + markdown_table(table)
+        + "\n\n" + measurement_scope(summary) + "\n\n" + correction_note(slug)
         + ("\n\n" + continuation_description(experiment) if continued else "")
         + "\n\n" + summary["interval_scope"] + "\n\n"
         "This repository contains raw evaluations, timestamped generation traces, configuration and code provenance, "
@@ -1066,18 +1166,20 @@ def report(directory: Path, output_root: Path = Path(".")) -> dict:
         "The checkpoints contain master tensors, RNG states, archive, cursor and the original absolute deadline. "
         "They preserve the completed run; loading them does not grant a new training allowance. "
         "Use the project's weights-only checkpoint loader in the recorded environment. "
-        "The SHA-256 manifest covers the explicitly uploaded evidence files. "
-        "The final upload receipt records immutable Hub commit revisions.\n\n"
+        "The original SHA-256 manifest covers the predecessor release, including its then-current README and summary. "
+        "Documentation corrections are dated separately; use the original pinned revision to verify that original manifest. "
+        "The original upload receipt records immutable Hub commit revisions.\n\n"
         "The source, synthetic datasets and their hashes, frozen configuration, dependency lock, detailed report and PDF are at "
         "https://github.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training . "
-        "Run `uv run novelty-es report --run-dir PATH` from that checkout to regenerate the report from these artifacts. "
+        "Follow [restoration and staged reporting](https://github.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/blob/main/docs/continuation.md), "
+        "including the separate model exports, then use `novelty-es report-all` with explicit input and output directories. "
         "The method adapts [ExTra](https://arxiv.org/abs/2606.24994) and "
         "[ES at Scale](https://arxiv.org/abs/2509.24372); it is not a reproduction. "
         "Amendment A preceded all training updates but followed calibration and partial original-model evaluation. "
         "This single-seed arithmetic study provides no evidence about general language quality or seed robustness.\n",
         encoding="utf-8",
     )
-    shutil.copyfile("LICENSE", directory / "LICENSE")
+    shutil.copyfile("LICENSE", release / "LICENSE")
     write_paper(output_root / f"output/pdf/novelty-es-{slug}.pdf", experiment, summary, figures, table)
     print(json.dumps({"report": str(reports / f"experiment-{slug}.md"), "finding": summary["finding"]}, indent=2))
     return summary

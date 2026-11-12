@@ -114,23 +114,8 @@ class EventLog:
         print(line, flush=True)
 
     def close(self) -> None:
-        """Release the stream after the phase's final event is durable."""
+        """Close and flush the stream; this is not a power-loss durability guarantee."""
         self.stream.close()
-
-
-def read_jsonl(path: Path) -> list[dict]:
-    """Allow only an unfinished final line after a crash; reject corruption in the middle."""
-    if not path.exists():
-        return []
-    lines = path.read_text(encoding="utf-8").splitlines()
-    result = []
-    for index, line in enumerate(lines):
-        try:
-            result.append(json.loads(line))
-        except json.JSONDecodeError:
-            if index != len(lines) - 1:
-                raise
-    return result
 
 
 def configure_runtime(seed: int) -> None:
