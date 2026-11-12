@@ -504,7 +504,7 @@
       ]
     },
     "reports/claim-ledger.json": {
-      "sha256": "d979fe1a6080fe8887db07af136598ba37d44d4ce9e7494198ab8ba8d2cc5a77",
+      "sha256": "0bbf91fb06efb0278a60d5017b056e5e4be84aa7661fe5b82ce04e165c4c6906",
       "disposition": "new bounded evidence/check record; inspect explicit gaps",
       "claim_ids": [
         "C26",
@@ -740,6 +740,15 @@
         "C53"
       ]
     },
+    "reports/independent-publication-2026-11-12.json": {
+      "sha256": "5b91e31edf90774a5510497cdf574ab81ab8a1d61a5ac4f21876e97307d4986d",
+      "disposition": "immutable original receipt or separately dated correction receipt",
+      "claim_ids": [
+        "C27",
+        "C49",
+        "C50"
+      ]
+    },
     "reports/independent-restoration-2026-11-12.json": {
       "sha256": "e606c80fdf203b1ed078b47fc6739d5b96839d84ab3ff79ca57d0803ca241f9d",
       "disposition": "new bounded evidence/check record; inspect explicit gaps",
@@ -765,7 +774,7 @@
       ]
     },
     "reports/independent-ui-2026-11-12.json": {
-      "sha256": "b86901155e5dc1bb370c39d9b633feca27595ee7f64d82495a273749f2d95204",
+      "sha256": "298f28ea9dccccf20b6c8462d01804a089086643bb82c97f08b42422e1f2e87e",
       "disposition": "new bounded evidence/check record; inspect explicit gaps",
       "claim_ids": [
         "C26",
@@ -859,7 +868,7 @@
       ]
     },
     "reports/publication-corrections-2026-11-12.json": {
-      "sha256": "0570bef1e89d780f2230bd9f5ad271fc633a78d5ae123ec79286c8ecca7f094f",
+      "sha256": "aa1ba7a67322f87a336e5fc23200d002c1108f818f9c381b687d4de39be77ace",
       "disposition": "immutable original receipt or separately dated correction receipt",
       "claim_ids": [
         "C27",
