@@ -1,0 +1,7 @@
+# Interrupted continuation: incomplete
+
+The earlier execution was interrupted after main generation 100 and control generation 31, with 19 candidates saved in the next control population. Its deadline (2026-11-08T18:50:55.807504+00:00) expired during the outage; that attempt remains incomplete. The separately registered recovery grants at most 10 hours, including 7 for unfinished control training and 3 for final work, capped by the original whole-week deadline. This amends the pretrained-stage allocation and may displace later studies. The main checkpoint is reused unchanged. Every non-metadata checkpoint field and saved pending candidate is preserved exactly. Training hours add the recorded active intervals before and after restart; the offline gap is excluded from compute time, but remains part of the expired attempt's wall-clock history. Model-execution elapsed time refers to the recovery clock. The earlier execution allowance was not met, regardless of recovery completion.
+
+No paired generation-100 endpoint was available under the expired allowance. The recovery registration was published before any fresh held-out evaluation. The source files and original deadlines remain immutable in restart-parent/.
+
+[Recovery registration](preregistration-recovery.md). [Pinned source evidence](../configs/continuation-recovery.json).

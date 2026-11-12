@@ -6,8 +6,20 @@ The first local GPU experiment is complete: one main-method seed, one matched re
 
 A [registered longer continuation](reports/preregistration-continuation.md) extends both existing arms to generation 100 under the same training method, with a fresh disjoint primary evaluation set. An OS interruption stopped its control training, and that attempt's deadline expired. The separately [registered recovery](reports/preregistration-recovery.md) preserves the completed main model and unfinished control state under a new bounded allowance, while retaining the interrupted evidence and original deadlines. The fixed target and analysis do not depend on interim accuracy. See the [recovery commands](docs/continuation.md).
 
+The recovered comparison is now evaluated. Explore the [longer-training results](https://burnycoder.github.io/evolutionary-strategies-novelty-search-llm-training/continuation-seed0-gen100/), [paper](output/pdf/novelty-es-continuation-seed0-gen100.pdf), and [interpretation and limitations](reports/analysis-notes-continuation.md). The first pilot remains a separate release below.
+
 <!-- BEGIN GENERATED CONTINUATION RESULTS -->
-Continuation results are pending. [Execution and resume commands](docs/continuation.md).
+The directional improvement hypothesis was not supported in this seed: main accuracy did not exceed reward-only ES. The paired interval includes zero, so this does not establish a performance difference.
+
+Both arms improved over their earlier checkpoints when evaluated on the same fresh problems. Both trained checkpoints score higher than the original model on this test set; the main-versus-control comparison determines whether novelty adds a benefit. Both also produce more legal expressions on the three/four-number test problems. Legality alone does not mean the target was reached.
+
+| Condition | Fresh accuracy | 95% interval | Hard accuracy | pass@1 | pass@8 | Status |
+| --- | --- | --- | --- | --- | --- | --- |
+| original | 0.24% | 0.05% - 0.49% | 0.10% | 0.12% | 0.89% | complete |
+| main | 7.37% | 6.25% - 8.50% | 0.39% | 2.27% | 10.66% | complete |
+| reward_only | 7.71% | 6.54% - 8.89% | 0.88% | 2.47% | 11.95% | complete |
+
+Problem uncertainty conditional on one training seed; excludes seed variability. [Full report](reports/experiment-continuation-seed0-gen100.md).
 <!-- END GENERATED CONTINUATION RESULTS -->
 
 <!-- BEGIN GENERATED PILOT RESULTS -->

@@ -1,0 +1,14 @@
+{
+  "checked_at": "2026-11-11T21:26:30.635998+00:00",
+  "generation_index": 31,
+  "candidate_index": 19,
+  "replayed_rows": 16,
+  "mismatches": [],
+  "all_exact": true,
+  "ignored_fields": [
+    "timestamp",
+    "batch_seconds"
+  ],
+  "source_trace_sha256": "34a4983448642b699a3061632571aef400162e5f353cba18aa3c989f2ec94d4b",
+  "scope": "Actual GPU response/token/verifier replay for the unfinished candidate; not a full trajectory replay."
+}
