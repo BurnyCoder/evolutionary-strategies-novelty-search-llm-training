@@ -1,0 +1,64 @@
+{
+  "checked_at": "2026-11-12T02:46:17.152591+00:00",
+  "absolute_deadline": 1794468059.950738,
+  "conditions": {
+    "original": {
+      "regraded_responses": {
+        "test": 2048,
+        "hard": 1024,
+        "probes": 16,
+        "sampled": 4096,
+        "fresh": 2048
+      },
+      "all_grades_match": true
+    },
+    "main": {
+      "regraded_responses": {
+        "fresh": 2048,
+        "test": 2048,
+        "hard": 1024,
+        "probes": 16,
+        "sampled": 4096
+      },
+      "all_grades_match": true,
+      "generation": 100,
+      "training_code_revision": "66884b2e7dcbd3f1f633554674dcd61faf2954e2",
+      "unique_tensors": 290,
+      "all_exported_tensors_match_final_master": true,
+      "all_recorded_update_coefficients_match": true
+    },
+    "reward_only": {
+      "regraded_responses": {
+        "fresh": 2048,
+        "test": 2048,
+        "hard": 1024,
+        "probes": 16,
+        "sampled": 4096
+      },
+      "all_grades_match": true,
+      "generation": 100,
+      "training_code_revision": "66884b2e7dcbd3f1f633554674dcd61faf2954e2",
+      "unique_tensors": 290,
+      "all_exported_tensors_match_final_master": true,
+      "all_recorded_update_coefficients_match": true
+    },
+    "parent_main": {
+      "regraded_responses": {
+        "fresh": 2048
+      },
+      "all_grades_match": true
+    },
+    "parent_reward_only": {
+      "regraded_responses": {
+        "fresh": 2048
+      },
+      "all_grades_match": true
+    }
+  },
+  "paired_training_schedule": {
+    "all_training_prompts_and_seeds_match": true,
+    "all_logged_training_grades_match": true,
+    "candidates_per_arm": 2430,
+    "scheduled_responses_per_arm": 116640
+  }
+}

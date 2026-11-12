@@ -46,3 +46,14 @@ uv run novelty-es publish --run-dir D:/AI/evolutionary-strategies-novelty-search
 ```
 
 Outputs use `continuation-seed0-gen100` in their names. Model repositories use `seed0-gen100` and share the existing research collection. The original report, paper, checkpoints, models and Pages snapshot remain available. Publication is separate from training and must be verified before expanding the study. Problem-bootstrap intervals omit training-seed variability; a longer single-seed trajectory is not a multi-seed result.
+
+After publication, the audited release can be downloaded and its tables, figures, paper and website regenerated without model execution:
+
+```powershell
+$releaseRevision = (Get-Content reports/publication-continuation-seed0-gen100.json -Raw | ConvertFrom-Json).revisions.artifacts
+uv run hf download BurnyCoder/novelty-es-continuation-seed0-gen100-artifacts --repo-type dataset --revision $releaseRevision --local-dir artifacts/continuation-release
+uv run novelty-es report --run-dir artifacts/continuation-release
+uv run python scripts/verify_results.py --run-dir artifacts/continuation-release
+```
+
+Restore the original pilot release as above for its pinned lineage checks. The newer release includes the interrupted source under `restart-parent/`, both final FP32 checkpoints, inference exports in the linked model repositories, raw evaluations and replay audits. Configuration paths and the dated allowances describe the recorded machine; an independent future training replication requires a separately registered configuration, not an edited deadline in these artifacts.

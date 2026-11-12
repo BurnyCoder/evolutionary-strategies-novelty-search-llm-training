@@ -203,6 +203,8 @@ def summarize(directory: Path) -> dict:
             summary["finding"] = (
                 "The directional improvement hypothesis was not supported in this seed: main accuracy did not exceed reward-only ES."
             )
+            if primary["high"] >= 0:
+                summary["finding"] += " The paired interval includes zero, so this does not establish a performance difference."
         elif primary["low"] > 0:
             summary["finding"] = (
                 "The paired test-problem interval supports an improvement conditional on this seed. Robustness across training seeds remains untested."
@@ -390,6 +392,9 @@ def outcome_description(summary: dict) -> str:
     original = methods["original"]
     trained = [methods[name] for name in ("main", "reward_only")]
     sentences = []
+    changes = summary.get("longitudinal", {}).get("changes", {})
+    if len(changes) == 2 and all(change["difference"] > 0 for change in changes.values()):
+        sentences.append("Both arms improved over their earlier checkpoints when evaluated on the same fresh problems.")
     if all(method[split]["accuracy"] > original[split]["accuracy"] for method in trained):
         sentences.append("Both trained checkpoints score higher than the original model on this test set; the main-versus-control comparison determines whether novelty adds a benefit.")
     if all(method[split]["validity"] > original[split]["validity"] for method in trained):
@@ -869,11 +874,16 @@ def write_paper(path: Path, experiment: dict, summary: dict, figures: Path, tabl
         ),
     ]
     paragraph("References", "Heading2")
-    for label, url in references:
-        paragraph(f'<link href="{url}" color="#185b96">{html.escape(label)}</link>')
-    section(
-        "AI statement",
-        "Codex wrote this codebase and paper, and human cleanup and rewriting are in progress. "
+    links = [Paragraph(f'<link href="{url}" color="#185b96">{html.escape(label)}</link>', styles["BodyText"])
+             for label, url in references]
+    midpoint = (len(links) + 1) // 2
+    bibliography = Table([[links[i], links[i + midpoint] if i + midpoint < len(links) else ""]
+                          for i in range(midpoint)], colWidths=[250, 250])
+    bibliography.setStyle(TableStyle([("VALIGN", (0, 0), (-1, -1), "TOP"),
+                                      ("LEFTPADDING", (0, 0), (-1, -1), 0)]))
+    story.append(bibliography)
+    paragraph(
+        "<b>AI statement.</b> Codex wrote this codebase and paper, and human cleanup and rewriting are in progress. "
         "A human provided the exact specification that was executed.",
     )
 
