@@ -1,0 +1,111 @@
+{
+  "scope": "Content publication and deployment verification; later receipt-only commits do not change these published content bytes.",
+  "pull_requests": [
+    {
+      "url": "https://github.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/pull/24",
+      "number": 24,
+      "head_sha": "253702d3eec5219f8e8deca2971d690f3c82a1d8",
+      "merge_commit_sha": "b3069a2e203419292f338f57a9a99a7cd0440603",
+      "merged": true,
+      "merged_at": "2026-11-12T12:47:39Z"
+    },
+    {
+      "url": "https://github.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/pull/25",
+      "number": 25,
+      "head_sha": "e3d32cc08771c6b3b792a3a54f523f8abfba08b0",
+      "merge_commit_sha": "62e5f10c760e9475cc7d6c1a826d63669be83497",
+      "merged": true,
+      "merged_at": "2026-11-12T12:55:04Z"
+    }
+  ],
+  "ci_checks": [
+    {
+      "name": "tests",
+      "head_sha": "253702d3eec5219f8e8deca2971d690f3c82a1d8",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/actions/runs/43220827502/job/131191599230",
+      "completed_at": "2026-11-12T12:46:43Z"
+    },
+    {
+      "name": "tests",
+      "head_sha": "253702d3eec5219f8e8deca2971d690f3c82a1d8",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/actions/runs/43220816023/job/131191564739",
+      "completed_at": "2026-11-12T12:46:26Z"
+    },
+    {
+      "name": "tests",
+      "head_sha": "e3d32cc08771c6b3b792a3a54f523f8abfba08b0",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/actions/runs/43222059573/job/131195769850",
+      "completed_at": "2026-11-12T12:54:34Z"
+    },
+    {
+      "name": "tests",
+      "head_sha": "e3d32cc08771c6b3b792a3a54f523f8abfba08b0",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/actions/runs/43222049981/job/131195732408",
+      "completed_at": "2026-11-12T12:54:30Z"
+    }
+  ],
+  "pages": {
+    "id": 43222329749,
+    "url": "https://github.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/actions/runs/43222329749",
+    "status": "completed",
+    "conclusion": "success",
+    "head_sha": "62e5f10c760e9475cc7d6c1a826d63669be83497",
+    "updated_at": "2026-11-12T12:55:26Z",
+    "http_verification": {
+      "observed_at": "2026-11-12T12:56:06.594136+00:00",
+      "commit": "62e5f10c760e9475cc7d6c1a826d63669be83497",
+      "files": [
+        {
+          "url": "https://burnycoder.github.io/evolutionary-strategies-novelty-search-llm-training/index.html",
+          "sha256": "59646e1e62371cf877b7d418436938510d7af3fde128f904285ea132cda8ef1c",
+          "bytes": 13521,
+          "matches_repository": true
+        },
+        {
+          "url": "https://burnycoder.github.io/evolutionary-strategies-novelty-search-llm-training/status.json",
+          "sha256": "31c3fa1fb53b7797d793008c90e6265ac27eb5a288ad4f2c244cc2804698c88d",
+          "bytes": 197484,
+          "matches_repository": true
+        },
+        {
+          "url": "https://burnycoder.github.io/evolutionary-strategies-novelty-search-llm-training/continuation-seed0-gen100/index.html",
+          "sha256": "59646e1e62371cf877b7d418436938510d7af3fde128f904285ea132cda8ef1c",
+          "bytes": 13521,
+          "matches_repository": true
+        },
+        {
+          "url": "https://burnycoder.github.io/evolutionary-strategies-novelty-search-llm-training/continuation-seed0-gen100/status.json",
+          "sha256": "7f9ae16ed73fbbf9fc57e809d03b09d6d12b80dc92e6c951c1a1477f17b6f6f4",
+          "bytes": 686595,
+          "matches_repository": true
+        }
+      ]
+    }
+  },
+  "hugging_face_receipt": "publication-corrections-2026-11-12.json",
+  "ui_record": "independent-ui-2026-11-12.json",
+  "frozen_paths_unchanged_from_predecessor": {
+    "paths": [
+      "configs",
+      "data",
+      "reports/preregistration.md",
+      "reports/preregistration-continuation.md",
+      "reports/preregistration-recovery.md",
+      "reports/publication.json",
+      "reports/publication-continuation-seed0-gen100.json"
+    ],
+    "changed_paths": []
+  },
+  "paper_bytes_match_visual_review": {
+    "output/pdf/novelty-es-pilot.pdf": true,
+    "output/pdf/novelty-es-continuation-seed0-gen100.pdf": true
+  }
+}

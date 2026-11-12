@@ -725,5 +725,6 @@
     ]
   },
   "heads_verified_at": "2026-11-12T12:45:13.175232+00:00",
-  "publication_recovery": "Resumed exact already-created documentation revisions after the initial storage-rule check and a Windows long-cache-path failure; verification used a short D:/AI cache. No duplicate model upload or weight mutation was performed."
+  "publication_recovery": "Resumed exact already-created documentation revisions after the initial storage-rule check and a Windows long-cache-path failure; verification used a short D:/AI cache. No duplicate model upload or weight mutation was performed.",
+  "github_pages_verification": "https://github.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/blob/main/reports/independent-publication-2026-11-12.json"
 }

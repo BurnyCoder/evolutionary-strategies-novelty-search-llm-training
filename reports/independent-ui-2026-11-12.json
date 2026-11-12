@@ -1,5 +1,5 @@
 {
-  "date": "2026-11-12T12:21:48.569840+00:00",
+  "date": "2026-11-12T12:59:05.656822+00:00",
   "predecessor": {
     "url": "https://burnycoder.github.io/evolutionary-strategies-novelty-search-llm-training/",
     "repository_revision": "cf0a402e543bbbf3f39db83a1f41f894d0bc6faf",
@@ -13,7 +13,32 @@
     "outcome": "passed"
   },
   "corrected_deployment": {
-    "outcome": "not yet published or inspected"
+    "repository_revision": "62e5f10c760e9475cc7d6c1a826d63669be83497",
+    "urls": [
+      "https://burnycoder.github.io/evolutionary-strategies-novelty-search-llm-training/",
+      "https://burnycoder.github.io/evolutionary-strategies-novelty-search-llm-training/continuation-seed0-gen100/"
+    ],
+    "browser": "Chrome through CUA",
+    "metric_selectors_exercised": [
+      "Candidate accuracy",
+      "Task reward",
+      "Correct-answer novelty",
+      "Answer validity",
+      "Master validation accuracy",
+      "Generated tokens / second"
+    ],
+    "observations": [
+      "Each metric selection changed the selected option and chart accessible label on both pages.",
+      "Full-range controls changed the display; screenshots confirmed zero-based shared scales for accuracy and novelty.",
+      "Matched-example selections changed the problem and all condition outputs on both pages.",
+      "Both final pages explicitly identify probes as training examples and sampled responses as original-test.",
+      "The final continuation recovery banner qualifies the missing initial recovered control checkpoint.",
+      "Held-out tables distinguish named-split greedy accuracy, harder-set accuracy and original-test pass@k.",
+      "The final continuation screenshot showed the independently verified table, paired interval and uncertainty caveats without observed clipping."
+    ],
+    "outcome": "passed",
+    "screenshots": "Visually inspected in the browser tool transcript; no screenshot file is claimed.",
+    "publication_verification": "independent-publication-2026-11-12.json"
   },
   "earlier_access_failures": "Detached Chrome handle recovered by selecting the public HTTPS tab; rejected file URL was not bypassed."
 }
