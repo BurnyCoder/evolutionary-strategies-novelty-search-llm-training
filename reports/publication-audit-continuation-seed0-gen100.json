@@ -1,0 +1,245 @@
+{
+  "verified_at": "2026-11-12T04:02:39.867238+00:00",
+  "elapsed_since_start_seconds": 24099.916499614716,
+  "clock_origin": "recovery initialization",
+  "absolute_deadline": 1794468059.950738,
+  "final_phase_deadline": 1794457289.2034917,
+  "within_absolute_allowance": true,
+  "within_final_phase_allowance": true,
+  "final_phase_overrun_seconds": 0.0,
+  "collection": "https://huggingface.co/collections/BurnyCoder/evolution-strategies-with-llm-novelty-6aeef0a424ee9d502250b8ff",
+  "repositories": {
+    "main": {
+      "url": "https://huggingface.co/BurnyCoder/novelty-es-qwen2.5-0.5b-main-seed0-gen100",
+      "revision": "b35f45970cb91c7aec94eb741dc70e27a7d60947",
+      "files": {
+        "LICENSE": {
+          "sha256": "832dd9e00a68dd83b3c3fb9f5588dad7dcf337a0db50f7d9483f310cd292e92e",
+          "bytes": 11343
+        },
+        "README.md": {
+          "sha256": "f3fe7b3fc3b76cd005f4f96a49ee0a929fd91811bed7a7ee3c4bc489d090f90e",
+          "bytes": 3358
+        },
+        "chat_template.jinja": {
+          "sha256": "8aa40ce145adb73cb3a75194dc0224702a95850ec5275cabb728496bbd749fc6",
+          "bytes": 2561
+        },
+        "config.json": {
+          "sha256": "98e4a63841172c3f6f5d039d6bdeb48b1bf59a62d10b234a6f8646733745ba16",
+          "bytes": 1341
+        },
+        "generation_config.json": {
+          "sha256": "677b75824c50508ba75fe13975c84ec09444ab28f8f2c695f327d8d9977413a3",
+          "bytes": 256
+        },
+        "model.safetensors": {
+          "sha256": "ef02e121fe4991ffadf7f390656703cff3146e1cc1d3ef8b9436ee6b63ce2ebf",
+          "bytes": 988097824
+        },
+        "tokenizer.json": {
+          "sha256": "f7f96da3a872b5e901575b2067c744ad336c3a3d77a21584d20024557b1bd7f0",
+          "bytes": 11422059
+        },
+        "tokenizer_config.json": {
+          "sha256": "bd667337917f3d3de225e9407258aa66fea87985bbed9cfb84d00adea253034a",
+          "bytes": 723
+        }
+      }
+    },
+    "reward_only": {
+      "url": "https://huggingface.co/BurnyCoder/novelty-es-qwen2.5-0.5b-reward-only-seed0-gen100",
+      "revision": "17bfd11b54d369426abb77fb5aa99fa42f31d3bd",
+      "files": {
+        "LICENSE": {
+          "sha256": "832dd9e00a68dd83b3c3fb9f5588dad7dcf337a0db50f7d9483f310cd292e92e",
+          "bytes": 11343
+        },
+        "README.md": {
+          "sha256": "f7d104c19c6424965f0bfcb9c835c2dfb073a4c3849ec02c5dbaec11454773ba",
+          "bytes": 3365
+        },
+        "chat_template.jinja": {
+          "sha256": "8aa40ce145adb73cb3a75194dc0224702a95850ec5275cabb728496bbd749fc6",
+          "bytes": 2561
+        },
+        "config.json": {
+          "sha256": "98e4a63841172c3f6f5d039d6bdeb48b1bf59a62d10b234a6f8646733745ba16",
+          "bytes": 1341
+        },
+        "generation_config.json": {
+          "sha256": "677b75824c50508ba75fe13975c84ec09444ab28f8f2c695f327d8d9977413a3",
+          "bytes": 256
+        },
+        "model.safetensors": {
+          "sha256": "b197ed855bc86064e9328fe6c708c1054ce4c53ad145514bef928339cc81b1cd",
+          "bytes": 988097824
+        },
+        "tokenizer.json": {
+          "sha256": "f7f96da3a872b5e901575b2067c744ad336c3a3d77a21584d20024557b1bd7f0",
+          "bytes": 11422059
+        },
+        "tokenizer_config.json": {
+          "sha256": "bd667337917f3d3de225e9407258aa66fea87985bbed9cfb84d00adea253034a",
+          "bytes": 723
+        }
+      }
+    },
+    "artifacts": {
+      "url": "https://huggingface.co/datasets/BurnyCoder/novelty-es-continuation-seed0-gen100-artifacts",
+      "revision": "64ca85166e198f2e064f51b70f2228228d65e814",
+      "files": {
+        "LICENSE": {
+          "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+          "bytes": 11358
+        },
+        "README.md": {
+          "sha256": "452bb8887d68f4b336a4637a1f9393faf3e03474de59200d3e3473343cb6bdcf",
+          "bytes": 3919
+        },
+        "artifact-manifest.json": {
+          "sha256": "798da514bdd28520812694488b4e37997f89a3e1f08483a58834549af9a90e2e",
+          "bytes": 5317
+        },
+        "events.jsonl": {
+          "sha256": "5bc13fff1c29c6f0df79e929d5cef67784e281b4e8d446d07c05cbeae15dad41",
+          "bytes": 430562659
+        },
+        "experiment.json": {
+          "sha256": "1ce85f03fadea587fcf2dfbe615f0de924df2bcbea8b708d1a422373c427b389",
+          "bytes": 23338
+        },
+        "final-audit.json": {
+          "sha256": "7fe9d70d2928a0fb1efae44cc889aa8815eaa8b22689f8b6634797374c1bf3cd",
+          "bytes": 1674
+        },
+        "main/checkpoint.pt": {
+          "sha256": "af6c6687c88cf2a76e2c664938ff09bbe2dde513e6fd005ff0720a71a4028c6f",
+          "bytes": 1976407269
+        },
+        "main/evaluation.json": {
+          "sha256": "82ca464572890a3b07617fafe9350a8dc42b95c005bc3991ffb71711e66795eb",
+          "bytes": 9843468
+        },
+        "main/fork-audit.json": {
+          "sha256": "aa2416040db42ab035e953d44e28780f6c410c01c86f99a3df07d9f2a3863447",
+          "bytes": 689
+        },
+        "main/metrics.json": {
+          "sha256": "56811e39d8b1632f7e8b4e6139496f4ec114f8124cf14d348bfa7d9a2e7d418c",
+          "bytes": 240655
+        },
+        "main/progress.json": {
+          "sha256": "84d74602ee961088bd538a2c9508631efa0ae777bed2c732db7b8903ac45a74f",
+          "bytes": 2367
+        },
+        "original/evaluation.json": {
+          "sha256": "2570a46e6073109d4b9e8f401b28cbf6a2a2c339b1e5b2e884217a3def3b0c48",
+          "bytes": 14855410
+        },
+        "parent_main/evaluation.json": {
+          "sha256": "77d896483dd8ccda78183d72e65c23511a48942749d1efc4080fa65d7a8d40b7",
+          "bytes": 2108809
+        },
+        "parent_reward_only/evaluation.json": {
+          "sha256": "78d332dc709a94babe5c496aa647f5ba4185ab024a0e38e1b216519e92276327",
+          "bytes": 2126401
+        },
+        "restart-audit.json": {
+          "sha256": "759db6d674f990ee400069f58dc4a0fe6c17f76d429c0ada75b6b8853f332be6",
+          "bytes": 4034
+        },
+        "restart-parent/events.jsonl": {
+          "sha256": "34a4983448642b699a3061632571aef400162e5f353cba18aa3c989f2ec94d4b",
+          "bytes": 222122027
+        },
+        "restart-parent/experiment.json": {
+          "sha256": "403d07a4e9bfd781eb307b3d9e09b1b06d73701f556f8842287eb8a82489b4d1",
+          "bytes": 12798
+        },
+        "restart-parent/main/checkpoint.pt": {
+          "sha256": "c982a2498d0829f0eb60fefc8793a31063604ed1e9f77cc42a799158296e0c3c",
+          "bytes": 1976405285
+        },
+        "restart-parent/main/fork-audit.json": {
+          "sha256": "aa2416040db42ab035e953d44e28780f6c410c01c86f99a3df07d9f2a3863447",
+          "bytes": 689
+        },
+        "restart-parent/main/metrics.json": {
+          "sha256": "56811e39d8b1632f7e8b4e6139496f4ec114f8124cf14d348bfa7d9a2e7d418c",
+          "bytes": 240655
+        },
+        "restart-parent/main/pending.pt": {
+          "sha256": "1b159106b689d11b7f6f01b27745fc70083e56d3348c4363749c1f9115b7d6f3",
+          "bytes": 1356329
+        },
+        "restart-parent/main/progress.json": {
+          "sha256": "84d74602ee961088bd538a2c9508631efa0ae777bed2c732db7b8903ac45a74f",
+          "bytes": 2367
+        },
+        "restart-parent/original/evaluation.json": {
+          "sha256": "dc58ae62c1ad682e3d1c2510560a056decb202b808d4fb9acb469232da7b0d09",
+          "bytes": 11765564
+        },
+        "restart-parent/reward_only/checkpoint.pt": {
+          "sha256": "9100aed6d5adbb1d06a74be1823ec2ed506ec3c4647919b22c1cff6195e933a1",
+          "bytes": 1976312617
+        },
+        "restart-parent/reward_only/fork-audit.json": {
+          "sha256": "192e6438942bde93a4c668bc1fa992e08cda7ab12bf36a8192c9c79f8c935574",
+          "bytes": 697
+        },
+        "restart-parent/reward_only/metrics.json": {
+          "sha256": "f3bafd0629f311f0b132945c21c655f7caf64c90d97df73c75a29c8cd7731b6c",
+          "bytes": 73729
+        },
+        "restart-parent/reward_only/pending.pt": {
+          "sha256": "167fd54be9ac5d67f984de193b487d033c700da13bf9501afa221207ff3964ef",
+          "bytes": 865963
+        },
+        "restart-parent/reward_only/progress.json": {
+          "sha256": "65a579c25d105fd91e18c6f6405b7628a4e465a9f29ac0d00a68008dba9c2e43",
+          "bytes": 310
+        },
+        "restart-preparation.json": {
+          "sha256": "1d502717515678a8538297c458a6c4bf32c67ea1165488ed83c4c041c3bb81e6",
+          "bytes": 6873
+        },
+        "restart-replay-audit.json": {
+          "sha256": "bb2382a17c98328d4a6e6041df8a39ad372c8119a6eef712724949f4be006717",
+          "bytes": 443
+        },
+        "reward_only/checkpoint.pt": {
+          "sha256": "927b2c36999861852a4cb13c01e2f49db1db02cd9b4cbc2dc1779471678c8a8d",
+          "bytes": 1976405989
+        },
+        "reward_only/evaluation.json": {
+          "sha256": "efa0f9f511001d8c70db3123e7eb7842a8b24cfa964569f2dd9f097312aecd32",
+          "bytes": 9754127
+        },
+        "reward_only/fork-audit.json": {
+          "sha256": "192e6438942bde93a4c668bc1fa992e08cda7ab12bf36a8192c9c79f8c935574",
+          "bytes": 697
+        },
+        "reward_only/metrics.json": {
+          "sha256": "7069760d398fcd271e08dece5381c3756df95be73f7a008417d8472e8efa029a",
+          "bytes": 242498
+        },
+        "reward_only/progress.json": {
+          "sha256": "ff885f9a688117168d766ce1cdd54860741974275099f5df493b7e18f4e3b731",
+          "bytes": 2485
+        },
+        "summary.json": {
+          "sha256": "7f9412480e0e21c506593e5acb849d726d8cd9b6f80b263cb0e6c04d3b2b9c6a",
+          "bytes": 73850
+        }
+      }
+    }
+  },
+  "pages": {
+    "url": "https://burnycoder.github.io/evolutionary-strategies-novelty-search-llm-training/continuation-seed0-gen100/",
+    "status_matches_committed_snapshot": true
+  },
+  "paper_sha256": "33523f2c25f215b99a710b92a06490a0acc6dd35993ac11628d0be76a37d3064",
+  "scope": "Large-file server SHA-256 metadata; direct downloaded-byte hashes for small files; no model inference."
+}

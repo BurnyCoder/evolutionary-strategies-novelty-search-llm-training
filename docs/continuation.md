@@ -57,3 +57,12 @@ uv run python scripts/verify_results.py --run-dir artifacts/continuation-release
 ```
 
 Restore the original pilot release as above for its pinned lineage checks. The newer release includes the interrupted source under `restart-parent/`, both final FP32 checkpoints, inference exports in the linked model repositories, raw evaluations and replay audits. Configuration paths and the dated allowances describe the recorded machine; an independent future training replication requires a separately registered configuration, not an edited deadline in these artifacts.
+
+Verify the immutable remote files and deployed results against the local release:
+
+```powershell
+$env:HF_HUB_CACHE = 'D:/AI/novelty-hub-cache'
+uv run python scripts/verify_publication.py --run-dir D:/AI/evolutionary-strategies-novelty-search-llm-training/continuation-seed0-gen100-recovery
+```
+
+The first verification attempt could not copy a downloaded file into the deeply nested repository-local Windows cache. Using the shorter cache path above resolved it without changing training, uploaded artifacts or Windows settings. Choose another short writable directory on other machines. [`HF_HUB_CACHE`](https://huggingface.co/docs/huggingface_hub/en/package_reference/environment_variables#hfhubcache) is Hugging Face's supported cache-location setting and must be set before the library is imported. The verifier hashes downloaded small files directly and checks large files against server SHA-256 metadata; it does not download and rerun either model.
