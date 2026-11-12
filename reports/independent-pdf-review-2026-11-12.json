@@ -1,0 +1,67 @@
+{
+  "date": "2026-11-12T12:20:21.116595+00:00",
+  "method": "Rendered every page at 110 dpi and visually inspected text, tables, plots, examples, references, author/date and AI statement. Checked page-boundary text with PyMuPDF extraction.",
+  "papers": {
+    "pilot": {
+      "path": "output/pdf/novelty-es-pilot.pdf",
+      "sha256": "635144c6bc109459c406e0a0f0e95410f8d145277c0227ac6849bf5cd302362c",
+      "pages": 5,
+      "visually_inspected_pages": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "no_observed_clipping_or_overlap": true,
+      "page_boundary_text_preserved": true,
+      "external_link_destinations": [
+        "https://arxiv.org/abs/1712.06560",
+        "https://arxiv.org/abs/2107.03374",
+        "https://arxiv.org/abs/2509.02534",
+        "https://arxiv.org/abs/2509.15194",
+        "https://arxiv.org/abs/2509.24372",
+        "https://arxiv.org/abs/2604.14969",
+        "https://arxiv.org/abs/2606.24994",
+        "https://arxiv.org/abs/2608.12679",
+        "https://docs.python.org/3.12/reference/expressions.html",
+        "https://github.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training",
+        "https://github.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/blob/main/reports/independent-corrections-2026-11-12.md",
+        "https://huggingface.co/datasets/BurnyCoder/novelty-es-pilot-artifacts/tree/949e2dcb385bc2b7088c40444ef879b76596317d",
+        "https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/blob/1110a243fdf4706b3f48f1d95db1a4f5529b4d41/sentence_bert_config.json"
+      ],
+      "final_wording_revision": "Publication transfer timing clarified; re-rendering changed only page 5, which was visually re-inspected. All other rendered page hashes were unchanged."
+    },
+    "continuation-seed0-gen100": {
+      "path": "output/pdf/novelty-es-continuation-seed0-gen100.pdf",
+      "sha256": "0f3fd968821e9d2b0674c06b5966a226c69fdb059b8364f1d278819b89e33aa5",
+      "pages": 6,
+      "visually_inspected_pages": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "no_observed_clipping_or_overlap": true,
+      "page_boundary_text_preserved": true,
+      "external_link_destinations": [
+        "https://arxiv.org/abs/1712.06560",
+        "https://arxiv.org/abs/2107.03374",
+        "https://arxiv.org/abs/2509.02534",
+        "https://arxiv.org/abs/2509.15194",
+        "https://arxiv.org/abs/2509.24372",
+        "https://arxiv.org/abs/2604.14969",
+        "https://arxiv.org/abs/2606.24994",
+        "https://arxiv.org/abs/2608.12679",
+        "https://docs.python.org/3.12/reference/expressions.html",
+        "https://github.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training",
+        "https://github.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/blob/main/reports/independent-corrections-2026-11-12.md",
+        "https://huggingface.co/datasets/BurnyCoder/novelty-es-continuation-seed0-gen100-artifacts/tree/64ca85166e198f2e064f51b70f2228228d65e814",
+        "https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/blob/1110a243fdf4706b3f48f1d95db1a4f5529b4d41/sentence_bert_config.json"
+      ],
+      "final_wording_revision": "Publication transfer timing clarified; re-rendering changed only page 5, which was visually re-inspected. All other rendered page hashes were unchanged."
+    }
+  }
+}

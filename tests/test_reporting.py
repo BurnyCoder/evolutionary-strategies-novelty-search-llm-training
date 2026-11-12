@@ -5,7 +5,7 @@ import json
 import pytest
 
 from novelty_es.continuation import experiment_data
-from novelty_es.reporting import diagnostic_table, report, summarize
+from novelty_es.reporting import diagnostic_table, report, result_table, summarize
 from novelty_es.runtime import atomic_json
 
 
@@ -144,13 +144,51 @@ def test_continuation_report_keeps_the_pilot_release_separate(tmp_path):
     preserved = output / "reports/experiment-pilot.md"
     preserved.parent.mkdir(parents=True)
     preserved.write_text("immutable original report", encoding="utf-8")
-    summary = report(directory, output)
+    before = {p.relative_to(directory): p.read_bytes() for p in directory.rglob('*') if p.is_file()}
+    summary = report(directory, output, staged=True)
+    assert before == {p.relative_to(directory): p.read_bytes() for p in directory.rglob('*') if p.is_file()}
+    assert (output / 'releases/continuation-seed0-gen100/summary.json').exists()
+    assert json.loads((output / 'docs/site/continuation-seed0-gen100/status.json').read_text())['summary'] == summary
     assert summary["primary"] is None
     assert preserved.read_text() == "immutable original report"
     assert (output / "reports/experiment-continuation-seed0-gen100.md").is_file()
     assert (output / "output/pdf/novelty-es-continuation-seed0-gen100.pdf").stat().st_size > 1000
     assert (output / "docs/site/continuation-seed0-gen100/status.json").is_file()
     assert not (output / "docs/site/status.json").exists()
+    # Regenerating the pilot after the continuation must retain both studies.
+    pilot = tmp_path / 'pilot'
+    pilot_config = json.loads(Path('configs/pilot.json').read_text())
+    pilot_config['bootstrap_replicates'] = 100
+    _, pilot_manifest = experiment_data(pilot_config, Path('data'))
+    atomic_json(pilot / 'experiment.json', {'config': pilot_config, 'dataset_manifest': pilot_manifest})
+    report(pilot, output, staged=True)
+    aggregate = (output / 'reports/all-experiments.md').read_text()
+    assert 'experiment-pilot.md' in aggregate
+    assert 'experiment-continuation-seed0-gen100.md' in aggregate
+    assert 'Original-test pass@8' in aggregate
+
+
+def test_sampled_indices_are_checked_even_in_incomplete_groups(tmp_path):
+    config = json.loads(open('configs/pilot.json', encoding='utf-8').read())
+    atomic_json(tmp_path / 'experiment.json', {
+        'config': config, 'dataset_manifest': {'splits': {'test': {'count': 2}, 'hard': {'count': 1}}},
+    })
+    evaluation = _evaluation(True)
+    row = {**evaluation['sets']['test'][0], 'sample': 0}
+    evaluation['sets']['sampled'] = [row, row]
+    atomic_json(tmp_path / 'main/evaluation.json', evaluation)
+    with pytest.raises(ValueError, match='sample'):
+        summarize(tmp_path)
+    evaluation['sets']['sampled'] = [{**row, 'sample': config['samples_per_problem']}]
+    atomic_json(tmp_path / 'main/evaluation.json', evaluation)
+    with pytest.raises(ValueError, match='sample'):
+        summarize(tmp_path)
+
+
+def test_result_headers_separate_greedy_and_sampled_splits():
+    header = result_table({'primary_split': 'fresh', 'methods': {}})[0]
+    assert 'Fresh greedy accuracy' in header
+    assert 'Original-test pass@8' in header
 
 
 def test_recovery_report_discloses_expired_attempt(tmp_path):

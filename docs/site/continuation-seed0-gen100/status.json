@@ -3416,6 +3416,67 @@
       }
     },
     "model_id": "Qwen/Qwen2.5-0.5B-Instruct",
+    "export": {
+      "architecture": {
+        "architectures": [
+          "Qwen2ForCausalLM"
+        ],
+        "attention_dropout": 0.0,
+        "bos_token_id": 151643,
+        "dtype": "bfloat16",
+        "eos_token_id": 151645,
+        "hidden_act": "silu",
+        "hidden_size": 896,
+        "initializer_range": 0.02,
+        "intermediate_size": 4864,
+        "layer_types": [
+          "full_attention",
+          "full_attention",
+          "full_attention",
+          "full_attention",
+          "full_attention",
+          "full_attention",
+          "full_attention",
+          "full_attention",
+          "full_attention",
+          "full_attention",
+          "full_attention",
+          "full_attention",
+          "full_attention",
+          "full_attention",
+          "full_attention",
+          "full_attention",
+          "full_attention",
+          "full_attention",
+          "full_attention",
+          "full_attention",
+          "full_attention",
+          "full_attention",
+          "full_attention",
+          "full_attention"
+        ],
+        "max_position_embeddings": 32768,
+        "max_window_layers": 21,
+        "model_type": "qwen2",
+        "num_attention_heads": 14,
+        "num_hidden_layers": 24,
+        "num_key_value_heads": 2,
+        "pad_token_id": null,
+        "rms_norm_eps": 1e-06,
+        "rope_parameters": {
+          "rope_theta": 1000000.0,
+          "rope_type": "default"
+        },
+        "sliding_window": null,
+        "tie_word_embeddings": true,
+        "transformers_version": "5.22.2",
+        "use_cache": true,
+        "use_sliding_window": false,
+        "vocab_size": 151936
+      },
+      "unique_tensors": 290,
+      "parameter_elements": 494032768
+    },
     "seed": 0,
     "initializations": {
       "main": {
@@ -3469,9 +3530,10 @@
         "absolute_deadline": 1794067007.1504683
       }
     },
+    "historical_audit_fields": "initializations, recovery_audit and restart_replay_audit preserve older assertions; see the independent correction evidence for current checks.",
     "novelty_weight": 1.0,
     "finding": "The directional improvement hypothesis was not supported in this seed: main accuracy did not exceed reward-only ES. The paired interval includes zero, so this does not establish a performance difference.",
-    "generated_at": "2026-11-12T02:51:48.935052+00:00",
+    "generated_at": "2026-11-12T12:11:29.674527+00:00",
     "interval_scope": "Problem uncertainty conditional on one training seed; excludes seed variability.",
     "interval_caveat": "Percentile bootstrap intervals can collapse at observed boundaries or when paired outcomes are identical. A zero-width interval does not prove zero population error or equivalence on unseen problems.",
     "discordance": {

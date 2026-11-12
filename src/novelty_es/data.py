@@ -116,8 +116,9 @@ def generate_dataset(
 ) -> dict[str, list[dict]]:
     """Generate unique multisets globally, making leakage by permutation impossible.
 
-    Numbers are uniform integers 1..50; accepted targets come from sampled trees.
-    This is deliberately not uniform sampling over solvable target problems.
+    Proposed numbers are independent uniform integers 1..50. Rejection of duplicate
+    multisets and unsuitable sampled trees changes the accepted distribution;
+    neither accepted problems nor their targets are uniformly sampled.
     """
     sizes = sizes or {"train": 8192, "validation": 512, "test": 2048, "hard": 1024}
     rng, seen, result = random.Random(seed), set(excluded_groups or ()), {}

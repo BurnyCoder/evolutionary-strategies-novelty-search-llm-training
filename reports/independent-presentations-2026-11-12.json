@@ -1,0 +1,147 @@
+{
+  "pilot": {
+    "summary_sha256": "7f2086436397fca17fd30850cef5411de99728de1d0c4e386e0622c75ab8898e",
+    "site_sha256": "31c3fa1fb53b7797d793008c90e6265ac27eb5a288ad4f2c244cc2804698c88d",
+    "estimates_intervals_examples_resources_match": true,
+    "primary": {
+      "difference": 0.0,
+      "low": -0.00244140625,
+      "high": 0.00244140625,
+      "n": 2048
+    }
+  },
+  "continuation": {
+    "summary_sha256": "b416099d80dbba2b0013cada7089d03ea978cac772361adcc322f86183e34e3c",
+    "site_sha256": "7f9ae16ed73fbbf9fc57e809d03b09d6d12b80dc92e6c951c1a1477f17b6f6f4",
+    "estimates_intervals_examples_resources_match": true,
+    "primary": {
+      "difference": -0.00341796875,
+      "low": -0.01025390625,
+      "high": 0.00341796875,
+      "n": 2048
+    }
+  },
+  "history": {
+    "chronology": {
+      "initial publication before pilot": {
+        "publication": {
+          "number": 1,
+          "title": "Implement the preregistered resumable novelty ES pilot",
+          "merged_at": "2026-11-07T03:56:30Z",
+          "merge_commit_sha": "ddcd928c1392fa2eb5beaff5b7b6f192dfa04817",
+          "url": "https://github.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/pull/1"
+        },
+        "execution_start_utc": "2026-11-07T03:56:47.150468+00:00",
+        "seconds_before": 17.150468
+      },
+      "weighting amendment before training": {
+        "publication": {
+          "number": 7,
+          "title": "Use source-aligned ES and ExTra weighting from the first trained generation",
+          "merged_at": "2026-11-07T04:52:35Z",
+          "merge_commit_sha": "b892e49df3cf9a0d3f83fd544e35fd9caee2f2ab",
+          "url": "https://github.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/pull/7"
+        },
+        "execution_start_utc": "2026-11-07T04:56:47.650068+00:00",
+        "seconds_before": 252.650068
+      },
+      "continuation registration before execution": {
+        "publication": {
+          "number": 19,
+          "title": "Register a matched extension to generation 100 with a fresh endpoint",
+          "merged_at": "2026-11-07T12:38:45Z",
+          "merge_commit_sha": "143833d3833fc564e9ff919e208db3d76b3fa024",
+          "url": "https://github.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/pull/19"
+        },
+        "execution_start_utc": "2026-11-07T12:50:55.807504+00:00",
+        "seconds_before": 730.807504
+      },
+      "continuation core before execution": {
+        "publication": {
+          "number": 20,
+          "title": "Continue matched ES checkpoints with immutable lineage and fresh evaluation",
+          "merged_at": "2026-11-07T12:50:16Z",
+          "merge_commit_sha": "66884b2e7dcbd3f1f633554674dcd61faf2954e2",
+          "url": "https://github.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/pull/20"
+        },
+        "execution_start_utc": "2026-11-07T12:50:55.807504+00:00",
+        "seconds_before": 39.807504
+      },
+      "recovery registration before preparation": {
+        "publication": {
+          "number": 21,
+          "title": "Register and implement exact-state recovery after the OS interruption",
+          "merged_at": "2026-11-11T21:20:13Z",
+          "merge_commit_sha": "93a409e91387830d24c39c919e78123e94c29790",
+          "url": "https://github.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/pull/21"
+        },
+        "execution_start_utc": "2026-11-11T21:20:59.950738+00:00",
+        "seconds_before": 46.950738
+      }
+    },
+    "recovery_source_hashes_match": true,
+    "recovered_main_weights_unchanged": true,
+    "failed_write_prefix_rows": 2128,
+    "replayed_batch_rows": 16,
+    "failed_write_replay_matches": true,
+    "gaps": [
+      "Initial recovery control tensors were overwritten; exact initial preservation remains unverified."
+    ],
+    "publication_timing": {
+      "pilot": {
+        "final_phase_deadline": "2026-11-07T10:17:50.441597+00:00",
+        "overall_deadline": "2026-11-07T15:56:47.150468+00:00",
+        "original_publications": {
+          "main": {
+            "repository": "https://huggingface.co/BurnyCoder/novelty-es-qwen2.5-0.5b-main-seed0",
+            "revision": "7fc12026e96f4d9d0255fb80d8fe0315058a61c1",
+            "created_at": "2026-11-07T09:39:30+00:00",
+            "seconds_after_final_phase_deadline": -2300.441597223282,
+            "seconds_before_overall_deadline": 22637.150468349457
+          },
+          "reward_only": {
+            "repository": "https://huggingface.co/BurnyCoder/novelty-es-qwen2.5-0.5b-reward-only-seed0",
+            "revision": "4b3ffe8fa26555ca2b784b63ccd4af85e3f5b6ac",
+            "created_at": "2026-11-07T09:45:50+00:00",
+            "seconds_after_final_phase_deadline": -1920.4415972232819,
+            "seconds_before_overall_deadline": 22257.150468349457
+          },
+          "artifacts": {
+            "repository": "https://huggingface.co/datasets/BurnyCoder/novelty-es-pilot-artifacts",
+            "revision": "949e2dcb385bc2b7088c40444ef879b76596317d",
+            "created_at": "2026-11-07T10:41:48+00:00",
+            "seconds_after_final_phase_deadline": 1437.5584027767181,
+            "seconds_before_overall_deadline": 18899.150468349457
+          }
+        }
+      },
+      "continuation": {
+        "final_phase_deadline": "2026-11-12T04:21:29.203492+00:00",
+        "overall_deadline": "2026-11-12T07:20:59.950738+00:00",
+        "original_publications": {
+          "main": {
+            "repository": "https://huggingface.co/BurnyCoder/novelty-es-qwen2.5-0.5b-main-seed0-gen100",
+            "revision": "b35f45970cb91c7aec94eb741dc70e27a7d60947",
+            "created_at": "2026-11-12T02:57:36+00:00",
+            "seconds_after_final_phase_deadline": -5033.203491687775,
+            "seconds_before_overall_deadline": 15803.950737953186
+          },
+          "reward_only": {
+            "repository": "https://huggingface.co/BurnyCoder/novelty-es-qwen2.5-0.5b-reward-only-seed0-gen100",
+            "revision": "17bfd11b54d369426abb77fb5aa99fa42f31d3bd",
+            "created_at": "2026-11-12T03:02:21+00:00",
+            "seconds_after_final_phase_deadline": -4748.203491687775,
+            "seconds_before_overall_deadline": 15518.950737953186
+          },
+          "artifacts": {
+            "repository": "https://huggingface.co/datasets/BurnyCoder/novelty-es-continuation-seed0-gen100-artifacts",
+            "revision": "64ca85166e198f2e064f51b70f2228228d65e814",
+            "created_at": "2026-11-12T03:36:08+00:00",
+            "seconds_after_final_phase_deadline": -2721.2034916877747,
+            "seconds_before_overall_deadline": 13491.950737953186
+          }
+        }
+      }
+    }
+  }
+}

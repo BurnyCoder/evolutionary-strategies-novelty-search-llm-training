@@ -1,0 +1,729 @@
+{
+  "date": "2026-11-12T12:43:15.406912+00:00",
+  "mode": "publish",
+  "changed_scope": "Documentation plus the exact Hub-added LFS rule for the new PDF. All pre-existing scientific evidence, checkpoints, weights and licenses are unchanged.",
+  "repositories": [
+    {
+      "repo_id": "BurnyCoder/novelty-es-qwen2.5-0.5b-main-seed0",
+      "repo_type": "model",
+      "predecessor": "7fc12026e96f4d9d0255fb80d8fe0315058a61c1",
+      "predecessor_created_at": "2026-11-07T09:39:30+00:00",
+      "files": {
+        "README.md": {
+          "bytes": 3571,
+          "sha256": "86216442e1c28cfccda3f8afc7861ffa0d5e0ab4376eef3237a50bfaf738a833"
+        },
+        "corrections/2026-11-12/summary.json": {
+          "bytes": 69191,
+          "sha256": "7f2086436397fca17fd30850cef5411de99728de1d0c4e386e0622c75ab8898e"
+        },
+        "corrections/2026-11-12/correction-report.md": {
+          "bytes": 16041,
+          "sha256": "6f5b0f4432f0490ed86babf491199c9c2e87860d2496e62d5c019164ab3413b1"
+        },
+        "corrections/2026-11-12/paper.pdf": {
+          "bytes": 293403,
+          "sha256": "635144c6bc109459c406e0a0f0e95410f8d145277c0227ac6849bf5cd302362c"
+        }
+      },
+      "revision": "a32c982efac25800fb375dd8a163fa8c16f34652",
+      "commit_url": "https://huggingface.co/BurnyCoder/novelty-es-qwen2.5-0.5b-main-seed0/commit/a32c982efac25800fb375dd8a163fa8c16f34652",
+      "unchanged_predecessor_files": {
+        "LICENSE": {
+          "bytes": 11343,
+          "blob_id": "6634c8cc3133b3848ec74b9f275acaaa1ea618ab",
+          "sha256": null
+        },
+        "chat_template.jinja": {
+          "bytes": 2561,
+          "blob_id": "9840d40f49842423ad9d3c92bbedac488564c088",
+          "sha256": null
+        },
+        "config.json": {
+          "bytes": 1341,
+          "blob_id": "97bb092157587458f4348cee6b3b53ce3e7e7752",
+          "sha256": null
+        },
+        "generation_config.json": {
+          "bytes": 256,
+          "blob_id": "962bbbdec337d017625cc24c0612fc79aca3bd31",
+          "sha256": null
+        },
+        "model.safetensors": {
+          "bytes": 988097824,
+          "blob_id": "9414e7bc5f37b66d4b9b42717441d9574c30e906",
+          "sha256": "6493314e9e298bb4a15f736bf2b5b62fea6767ea85701ae85883680352d42bab"
+        },
+        "tokenizer.json": {
+          "bytes": 11422059,
+          "blob_id": "3c72934ff14f453009e8012528e9cf977e88ce2e",
+          "sha256": "f7f96da3a872b5e901575b2067c744ad336c3a3d77a21584d20024557b1bd7f0"
+        },
+        "tokenizer_config.json": {
+          "bytes": 723,
+          "blob_id": "83570c57d05e2bd167c9988dda388f022277b94c",
+          "sha256": null
+        }
+      },
+      "storage_metadata": {
+        ".gitattributes": {
+          "added_rule": "corrections/2026-11-12/paper.pdf filter=lfs diff=lfs merge=lfs -text",
+          "before": {
+            "bytes": 1570,
+            "blob_id": "52373fe24473b1aa44333d318f578ae6bf04b49b",
+            "sha256": null
+          },
+          "after": {
+            "bytes": 1639,
+            "blob_id": "d0b46714626b9219ec62dc33835240fc4096c4c2",
+            "sha256": null
+          }
+        }
+      },
+      "remote_hashes_match": true
+    },
+    {
+      "repo_id": "BurnyCoder/novelty-es-qwen2.5-0.5b-reward-only-seed0",
+      "repo_type": "model",
+      "predecessor": "4b3ffe8fa26555ca2b784b63ccd4af85e3f5b6ac",
+      "predecessor_created_at": "2026-11-07T09:45:50+00:00",
+      "files": {
+        "README.md": {
+          "bytes": 3578,
+          "sha256": "3c8f247c0bba03e11e7de5cee60036a1c04a4ccb6b4b5a650d1a03b115767044"
+        },
+        "corrections/2026-11-12/summary.json": {
+          "bytes": 69191,
+          "sha256": "7f2086436397fca17fd30850cef5411de99728de1d0c4e386e0622c75ab8898e"
+        },
+        "corrections/2026-11-12/correction-report.md": {
+          "bytes": 16041,
+          "sha256": "6f5b0f4432f0490ed86babf491199c9c2e87860d2496e62d5c019164ab3413b1"
+        },
+        "corrections/2026-11-12/paper.pdf": {
+          "bytes": 293403,
+          "sha256": "635144c6bc109459c406e0a0f0e95410f8d145277c0227ac6849bf5cd302362c"
+        }
+      },
+      "revision": "9a63abc9884c5b18b6895f5c0897813312bc8d7b",
+      "commit_url": "https://huggingface.co/BurnyCoder/novelty-es-qwen2.5-0.5b-reward-only-seed0/commit/9a63abc9884c5b18b6895f5c0897813312bc8d7b",
+      "unchanged_predecessor_files": {
+        "LICENSE": {
+          "bytes": 11343,
+          "blob_id": "6634c8cc3133b3848ec74b9f275acaaa1ea618ab",
+          "sha256": null
+        },
+        "chat_template.jinja": {
+          "bytes": 2561,
+          "blob_id": "9840d40f49842423ad9d3c92bbedac488564c088",
+          "sha256": null
+        },
+        "config.json": {
+          "bytes": 1341,
+          "blob_id": "97bb092157587458f4348cee6b3b53ce3e7e7752",
+          "sha256": null
+        },
+        "generation_config.json": {
+          "bytes": 256,
+          "blob_id": "962bbbdec337d017625cc24c0612fc79aca3bd31",
+          "sha256": null
+        },
+        "model.safetensors": {
+          "bytes": 988097824,
+          "blob_id": "8b91364ac5bab964d6bf4a0428ec14f7b5b325f4",
+          "sha256": "069f2d8cc94b1184c2127b732fb5850cfbaa585b215035757c8ce92a92b47f3e"
+        },
+        "tokenizer.json": {
+          "bytes": 11422059,
+          "blob_id": "3c72934ff14f453009e8012528e9cf977e88ce2e",
+          "sha256": "f7f96da3a872b5e901575b2067c744ad336c3a3d77a21584d20024557b1bd7f0"
+        },
+        "tokenizer_config.json": {
+          "bytes": 723,
+          "blob_id": "83570c57d05e2bd167c9988dda388f022277b94c",
+          "sha256": null
+        }
+      },
+      "storage_metadata": {
+        ".gitattributes": {
+          "added_rule": "corrections/2026-11-12/paper.pdf filter=lfs diff=lfs merge=lfs -text",
+          "before": {
+            "bytes": 1570,
+            "blob_id": "52373fe24473b1aa44333d318f578ae6bf04b49b",
+            "sha256": null
+          },
+          "after": {
+            "bytes": 1639,
+            "blob_id": "d0b46714626b9219ec62dc33835240fc4096c4c2",
+            "sha256": null
+          }
+        }
+      },
+      "remote_hashes_match": true
+    },
+    {
+      "repo_id": "BurnyCoder/novelty-es-pilot-artifacts",
+      "repo_type": "dataset",
+      "predecessor": "949e2dcb385bc2b7088c40444ef879b76596317d",
+      "predecessor_created_at": "2026-11-07T10:41:48+00:00",
+      "files": {
+        "README.md": {
+          "bytes": 4393,
+          "sha256": "c422eb7691ddc6f61c90779f12808a16beab78309e348bada07ebcd115c93de9"
+        },
+        "corrections/2026-11-12/summary.json": {
+          "bytes": 69191,
+          "sha256": "7f2086436397fca17fd30850cef5411de99728de1d0c4e386e0622c75ab8898e"
+        },
+        "corrections/2026-11-12/correction-report.md": {
+          "bytes": 16041,
+          "sha256": "6f5b0f4432f0490ed86babf491199c9c2e87860d2496e62d5c019164ab3413b1"
+        },
+        "corrections/2026-11-12/paper.pdf": {
+          "bytes": 293403,
+          "sha256": "635144c6bc109459c406e0a0f0e95410f8d145277c0227ac6849bf5cd302362c"
+        }
+      },
+      "revision": "77e334957f12bcfdbec88e223c5de94955af293a",
+      "commit_url": "https://huggingface.co/datasets/BurnyCoder/novelty-es-pilot-artifacts/commit/77e334957f12bcfdbec88e223c5de94955af293a",
+      "unchanged_predecessor_files": {
+        "LICENSE": {
+          "bytes": 11358,
+          "blob_id": "d645695673349e3947e8e5ae42332d0ac3164cd7",
+          "sha256": null
+        },
+        "artifact-manifest.json": {
+          "bytes": 3261,
+          "blob_id": "da44cf050f58cfdef997bd57c1f46d2439af91c8",
+          "sha256": null
+        },
+        "before-amendment-A.json": {
+          "bytes": 4536,
+          "blob_id": "8d5a1386b761a7330f98b953059791e60ae6cf31",
+          "sha256": null
+        },
+        "calibration.json": {
+          "bytes": 358,
+          "blob_id": "f4fbc5eeb7f639a18ba174bc460b8ee94b7dd7ec",
+          "sha256": null
+        },
+        "config-amendment-A.json": {
+          "bytes": 1031,
+          "blob_id": "d7d6ccf9f86455d53921894d85eb5a67906cfe3c",
+          "sha256": null
+        },
+        "events.jsonl": {
+          "bytes": 155930589,
+          "blob_id": "932389b09639192c2ed1137840c0e8f91c951150",
+          "sha256": "fa0ac6fd32dae576c56545532c50a401a673f76c8d92dbea26469cb724211b3f"
+        },
+        "experiment.json": {
+          "bytes": 7448,
+          "blob_id": "ea4299cdd95821baa858edcbd7828f590ade7e43",
+          "sha256": null
+        },
+        "failure-evaluation-uncommitted.json": {
+          "bytes": 8461272,
+          "blob_id": "a5a6f37dcfaf157f336730f9804c70e69cd62f0b",
+          "sha256": null
+        },
+        "final-audit.json": {
+          "bytes": 1355,
+          "blob_id": "587b1f0c3c9265587b3a9d2fc38d1036dff4e2e2",
+          "sha256": null
+        },
+        "main/checkpoint.pt": {
+          "bytes": 1976288749,
+          "blob_id": "ca7ebb79a0d89d3436e0201ef8f07920f75454eb",
+          "sha256": "786ac734ea7760f2448d4e5307177cfdd0e30ad8767489e342673c9e867836b0"
+        },
+        "main/evaluation.json": {
+          "bytes": 8683137,
+          "blob_id": "6b41a517b8a4fd860ffbe79bedea6dca0761b43b",
+          "sha256": null
+        },
+        "main/initialization-audit.json": {
+          "bytes": 806,
+          "blob_id": "2aad0d4213c2d34f7ad3bc6da1da709e0ace815f",
+          "sha256": null
+        },
+        "main/metrics.json": {
+          "bytes": 45035,
+          "blob_id": "20f00a9008993de4f3345fb4f63626e1f58dfcff",
+          "sha256": null
+        },
+        "main/progress.json": {
+          "bytes": 2425,
+          "blob_id": "65c17a4c244a277fe4c21d6e41bdf16da88d69b6",
+          "sha256": null
+        },
+        "original/evaluation.json": {
+          "bytes": 11765382,
+          "blob_id": "04bc9a87978544d5c3c5ea414f4e3b404c4099e7",
+          "sha256": "ce25ab9f5f4e64da463f08bcd0effc3eda4b0ec9a4227557b01c44b872276a86"
+        },
+        "recovery-audit.json": {
+          "bytes": 543,
+          "blob_id": "51410c1a8991595259ddfd08aa8166242119fc68",
+          "sha256": null
+        },
+        "reward_only/checkpoint.pt": {
+          "bytes": 1976285423,
+          "blob_id": "3a4b2d582dc4a1af2badd18994b86fd2692b4aeb",
+          "sha256": "3b367b67a077447ad641da45162fdbd9d804660d54e83d6aadea67218cc426be"
+        },
+        "reward_only/evaluation.json": {
+          "bytes": 8914115,
+          "blob_id": "7535608e0656a92c4c7047e630475736093755d2",
+          "sha256": null
+        },
+        "reward_only/initialization-audit.json": {
+          "bytes": 813,
+          "blob_id": "613247b8c9742297f784612705109accda93344a",
+          "sha256": null
+        },
+        "reward_only/metrics.json": {
+          "bytes": 45101,
+          "blob_id": "f840ba328ba86f7625a701439c9719b536a0c278",
+          "sha256": null
+        },
+        "reward_only/progress.json": {
+          "bytes": 2447,
+          "blob_id": "6f471da0fbaccc9f041c3d99d09615c5d3204ad3",
+          "sha256": null
+        },
+        "summary.json": {
+          "bytes": 65595,
+          "blob_id": "e4d8360eef3ab721b843c98be0733dadd84a2d0a",
+          "sha256": null
+        }
+      },
+      "storage_metadata": {
+        ".gitattributes": {
+          "added_rule": "corrections/2026-11-12/paper.pdf filter=lfs diff=lfs merge=lfs -text",
+          "before": {
+            "bytes": 2614,
+            "blob_id": "1192e09b26fcde869261fccaf873554d9749e642",
+            "sha256": null
+          },
+          "after": {
+            "bytes": 2683,
+            "blob_id": "52b06a011e0e40a1840d65d8ec58bafb19cced8d",
+            "sha256": null
+          }
+        }
+      },
+      "remote_hashes_match": true
+    },
+    {
+      "repo_id": "BurnyCoder/novelty-es-qwen2.5-0.5b-main-seed0-gen100",
+      "repo_type": "model",
+      "predecessor": "b35f45970cb91c7aec94eb741dc70e27a7d60947",
+      "predecessor_created_at": "2026-11-12T02:57:36+00:00",
+      "files": {
+        "README.md": {
+          "bytes": 5529,
+          "sha256": "84d6f7ffeffc68971dad9b86829cca188b8da03cb6a0963898f5d540f7f60aea"
+        },
+        "corrections/2026-11-12/summary.json": {
+          "bytes": 75637,
+          "sha256": "b416099d80dbba2b0013cada7089d03ea978cac772361adcc322f86183e34e3c"
+        },
+        "corrections/2026-11-12/correction-report.md": {
+          "bytes": 16041,
+          "sha256": "6f5b0f4432f0490ed86babf491199c9c2e87860d2496e62d5c019164ab3413b1"
+        },
+        "corrections/2026-11-12/paper.pdf": {
+          "bytes": 399659,
+          "sha256": "0f3fd968821e9d2b0674c06b5966a226c69fdb059b8364f1d278819b89e33aa5"
+        }
+      },
+      "revision": "1c235baa51277d3e551ffe3b02561d29de39bf1a",
+      "commit_url": "https://huggingface.co/BurnyCoder/novelty-es-qwen2.5-0.5b-main-seed0-gen100/commit/1c235baa51277d3e551ffe3b02561d29de39bf1a",
+      "unchanged_predecessor_files": {
+        "LICENSE": {
+          "bytes": 11343,
+          "blob_id": "6634c8cc3133b3848ec74b9f275acaaa1ea618ab",
+          "sha256": null
+        },
+        "chat_template.jinja": {
+          "bytes": 2561,
+          "blob_id": "9840d40f49842423ad9d3c92bbedac488564c088",
+          "sha256": null
+        },
+        "config.json": {
+          "bytes": 1341,
+          "blob_id": "97bb092157587458f4348cee6b3b53ce3e7e7752",
+          "sha256": null
+        },
+        "generation_config.json": {
+          "bytes": 256,
+          "blob_id": "962bbbdec337d017625cc24c0612fc79aca3bd31",
+          "sha256": null
+        },
+        "model.safetensors": {
+          "bytes": 988097824,
+          "blob_id": "c094a40b08b426aa2998015c286093441ea4f1e0",
+          "sha256": "ef02e121fe4991ffadf7f390656703cff3146e1cc1d3ef8b9436ee6b63ce2ebf"
+        },
+        "tokenizer.json": {
+          "bytes": 11422059,
+          "blob_id": "3c72934ff14f453009e8012528e9cf977e88ce2e",
+          "sha256": "f7f96da3a872b5e901575b2067c744ad336c3a3d77a21584d20024557b1bd7f0"
+        },
+        "tokenizer_config.json": {
+          "bytes": 723,
+          "blob_id": "83570c57d05e2bd167c9988dda388f022277b94c",
+          "sha256": null
+        }
+      },
+      "storage_metadata": {
+        ".gitattributes": {
+          "added_rule": "corrections/2026-11-12/paper.pdf filter=lfs diff=lfs merge=lfs -text",
+          "before": {
+            "bytes": 1570,
+            "blob_id": "52373fe24473b1aa44333d318f578ae6bf04b49b",
+            "sha256": null
+          },
+          "after": {
+            "bytes": 1639,
+            "blob_id": "d0b46714626b9219ec62dc33835240fc4096c4c2",
+            "sha256": null
+          }
+        }
+      },
+      "remote_hashes_match": true
+    },
+    {
+      "repo_id": "BurnyCoder/novelty-es-qwen2.5-0.5b-reward-only-seed0-gen100",
+      "repo_type": "model",
+      "predecessor": "17bfd11b54d369426abb77fb5aa99fa42f31d3bd",
+      "predecessor_created_at": "2026-11-12T03:02:21+00:00",
+      "files": {
+        "README.md": {
+          "bytes": 5536,
+          "sha256": "9cae38139f1a7fc95c4a8f583524dcf01f1c6d14f4b859961ae6b59161e555bb"
+        },
+        "corrections/2026-11-12/summary.json": {
+          "bytes": 75637,
+          "sha256": "b416099d80dbba2b0013cada7089d03ea978cac772361adcc322f86183e34e3c"
+        },
+        "corrections/2026-11-12/correction-report.md": {
+          "bytes": 16041,
+          "sha256": "6f5b0f4432f0490ed86babf491199c9c2e87860d2496e62d5c019164ab3413b1"
+        },
+        "corrections/2026-11-12/paper.pdf": {
+          "bytes": 399659,
+          "sha256": "0f3fd968821e9d2b0674c06b5966a226c69fdb059b8364f1d278819b89e33aa5"
+        }
+      },
+      "revision": "63b72378ae2542865ab0272644e0eb78b19649ff",
+      "commit_url": "https://huggingface.co/BurnyCoder/novelty-es-qwen2.5-0.5b-reward-only-seed0-gen100/commit/63b72378ae2542865ab0272644e0eb78b19649ff",
+      "unchanged_predecessor_files": {
+        "LICENSE": {
+          "bytes": 11343,
+          "blob_id": "6634c8cc3133b3848ec74b9f275acaaa1ea618ab",
+          "sha256": null
+        },
+        "chat_template.jinja": {
+          "bytes": 2561,
+          "blob_id": "9840d40f49842423ad9d3c92bbedac488564c088",
+          "sha256": null
+        },
+        "config.json": {
+          "bytes": 1341,
+          "blob_id": "97bb092157587458f4348cee6b3b53ce3e7e7752",
+          "sha256": null
+        },
+        "generation_config.json": {
+          "bytes": 256,
+          "blob_id": "962bbbdec337d017625cc24c0612fc79aca3bd31",
+          "sha256": null
+        },
+        "model.safetensors": {
+          "bytes": 988097824,
+          "blob_id": "153d089526dce54d551b868aa54164a15f979132",
+          "sha256": "b197ed855bc86064e9328fe6c708c1054ce4c53ad145514bef928339cc81b1cd"
+        },
+        "tokenizer.json": {
+          "bytes": 11422059,
+          "blob_id": "3c72934ff14f453009e8012528e9cf977e88ce2e",
+          "sha256": "f7f96da3a872b5e901575b2067c744ad336c3a3d77a21584d20024557b1bd7f0"
+        },
+        "tokenizer_config.json": {
+          "bytes": 723,
+          "blob_id": "83570c57d05e2bd167c9988dda388f022277b94c",
+          "sha256": null
+        }
+      },
+      "storage_metadata": {
+        ".gitattributes": {
+          "added_rule": "corrections/2026-11-12/paper.pdf filter=lfs diff=lfs merge=lfs -text",
+          "before": {
+            "bytes": 1570,
+            "blob_id": "52373fe24473b1aa44333d318f578ae6bf04b49b",
+            "sha256": null
+          },
+          "after": {
+            "bytes": 1639,
+            "blob_id": "d0b46714626b9219ec62dc33835240fc4096c4c2",
+            "sha256": null
+          }
+        }
+      },
+      "remote_hashes_match": true
+    },
+    {
+      "repo_id": "BurnyCoder/novelty-es-continuation-seed0-gen100-artifacts",
+      "repo_type": "dataset",
+      "predecessor": "64ca85166e198f2e064f51b70f2228228d65e814",
+      "predecessor_created_at": "2026-11-12T03:36:08+00:00",
+      "files": {
+        "README.md": {
+          "bytes": 6409,
+          "sha256": "59a05bb4dacfe893c5b4da72a9d4a88dbc255f73210ed8c760ebf21153e0dd47"
+        },
+        "corrections/2026-11-12/summary.json": {
+          "bytes": 75637,
+          "sha256": "b416099d80dbba2b0013cada7089d03ea978cac772361adcc322f86183e34e3c"
+        },
+        "corrections/2026-11-12/correction-report.md": {
+          "bytes": 16041,
+          "sha256": "6f5b0f4432f0490ed86babf491199c9c2e87860d2496e62d5c019164ab3413b1"
+        },
+        "corrections/2026-11-12/paper.pdf": {
+          "bytes": 399659,
+          "sha256": "0f3fd968821e9d2b0674c06b5966a226c69fdb059b8364f1d278819b89e33aa5"
+        }
+      },
+      "revision": "af2682ddbdbf768fa3624277095628c400f0e6a5",
+      "commit_url": "https://huggingface.co/datasets/BurnyCoder/novelty-es-continuation-seed0-gen100-artifacts/commit/af2682ddbdbf768fa3624277095628c400f0e6a5",
+      "unchanged_predecessor_files": {
+        "LICENSE": {
+          "bytes": 11358,
+          "blob_id": "d645695673349e3947e8e5ae42332d0ac3164cd7",
+          "sha256": null
+        },
+        "artifact-manifest.json": {
+          "bytes": 5317,
+          "blob_id": "38efa708d0dbe791c63468530fd2192a3f821157",
+          "sha256": null
+        },
+        "events.jsonl": {
+          "bytes": 430562659,
+          "blob_id": "e2cf565ee620a7eb3aaf4e9e7b85600f1a09d145",
+          "sha256": "5bc13fff1c29c6f0df79e929d5cef67784e281b4e8d446d07c05cbeae15dad41"
+        },
+        "experiment.json": {
+          "bytes": 23338,
+          "blob_id": "dd9966da6a9517340f6d583eebe2cc65b6401ec8",
+          "sha256": null
+        },
+        "final-audit.json": {
+          "bytes": 1674,
+          "blob_id": "43940ebb2328bbf590bb2c8b40224651d65bf402",
+          "sha256": null
+        },
+        "main/checkpoint.pt": {
+          "bytes": 1976407269,
+          "blob_id": "c58f92c18974e2200e933b7460bccddb0299038b",
+          "sha256": "af6c6687c88cf2a76e2c664938ff09bbe2dde513e6fd005ff0720a71a4028c6f"
+        },
+        "main/evaluation.json": {
+          "bytes": 9843468,
+          "blob_id": "0deea48f315b7fd516013553b35459e37800a5e8",
+          "sha256": null
+        },
+        "main/fork-audit.json": {
+          "bytes": 689,
+          "blob_id": "ba46c91f23ef79050c6464b38d86bad7959a6916",
+          "sha256": null
+        },
+        "main/metrics.json": {
+          "bytes": 240655,
+          "blob_id": "3de980268a8447c459f526871490009221243d86",
+          "sha256": null
+        },
+        "main/progress.json": {
+          "bytes": 2367,
+          "blob_id": "2fce042b8ee5e6519d95ff5d68ba90fe22ea0b20",
+          "sha256": null
+        },
+        "original/evaluation.json": {
+          "bytes": 14855410,
+          "blob_id": "d8429d06ace1b9d9e86aca28174bcb5ac9db9130",
+          "sha256": "2570a46e6073109d4b9e8f401b28cbf6a2a2c339b1e5b2e884217a3def3b0c48"
+        },
+        "parent_main/evaluation.json": {
+          "bytes": 2108809,
+          "blob_id": "30cb5e6fd3d801d26b06a9d525efd318a17e682a",
+          "sha256": null
+        },
+        "parent_reward_only/evaluation.json": {
+          "bytes": 2126401,
+          "blob_id": "4be9ce9924237c5819665e4faea3172f6a2b8f0d",
+          "sha256": null
+        },
+        "restart-audit.json": {
+          "bytes": 4034,
+          "blob_id": "f222b16af55479e95fbd3b18fb5f508357b91d3d",
+          "sha256": null
+        },
+        "restart-parent/events.jsonl": {
+          "bytes": 222122027,
+          "blob_id": "c447ef3c3b36145de080c4961774f6f1eac264d3",
+          "sha256": "34a4983448642b699a3061632571aef400162e5f353cba18aa3c989f2ec94d4b"
+        },
+        "restart-parent/experiment.json": {
+          "bytes": 12798,
+          "blob_id": "14c1968d8a2609c5dcaca880c674ef7aedb957bd",
+          "sha256": null
+        },
+        "restart-parent/main/checkpoint.pt": {
+          "bytes": 1976405285,
+          "blob_id": "6fdc616101dd32a0654f89ebf9f7e07d5a322072",
+          "sha256": "c982a2498d0829f0eb60fefc8793a31063604ed1e9f77cc42a799158296e0c3c"
+        },
+        "restart-parent/main/fork-audit.json": {
+          "bytes": 689,
+          "blob_id": "ba46c91f23ef79050c6464b38d86bad7959a6916",
+          "sha256": null
+        },
+        "restart-parent/main/metrics.json": {
+          "bytes": 240655,
+          "blob_id": "3de980268a8447c459f526871490009221243d86",
+          "sha256": null
+        },
+        "restart-parent/main/pending.pt": {
+          "bytes": 1356329,
+          "blob_id": "0e503b0ab1d6a9f24dca140448c04ff90fb7b264",
+          "sha256": "1b159106b689d11b7f6f01b27745fc70083e56d3348c4363749c1f9115b7d6f3"
+        },
+        "restart-parent/main/progress.json": {
+          "bytes": 2367,
+          "blob_id": "2fce042b8ee5e6519d95ff5d68ba90fe22ea0b20",
+          "sha256": null
+        },
+        "restart-parent/original/evaluation.json": {
+          "bytes": 11765564,
+          "blob_id": "626d028aa135a09485dbab44098ee8d506e629cc",
+          "sha256": "dc58ae62c1ad682e3d1c2510560a056decb202b808d4fb9acb469232da7b0d09"
+        },
+        "restart-parent/reward_only/checkpoint.pt": {
+          "bytes": 1976312617,
+          "blob_id": "da79be4c27b1f81663c6bdcff2487bb1449998b6",
+          "sha256": "9100aed6d5adbb1d06a74be1823ec2ed506ec3c4647919b22c1cff6195e933a1"
+        },
+        "restart-parent/reward_only/fork-audit.json": {
+          "bytes": 697,
+          "blob_id": "36d5e924c5f0011f4271f32d2297343dbd29e175",
+          "sha256": null
+        },
+        "restart-parent/reward_only/metrics.json": {
+          "bytes": 73729,
+          "blob_id": "6639e5d25558e6da4a0f81b9bdf9fde626b139a9",
+          "sha256": null
+        },
+        "restart-parent/reward_only/pending.pt": {
+          "bytes": 865963,
+          "blob_id": "c6f1763b7dba6597b11a8b4c9565044a4a7e2446",
+          "sha256": "167fd54be9ac5d67f984de193b487d033c700da13bf9501afa221207ff3964ef"
+        },
+        "restart-parent/reward_only/progress.json": {
+          "bytes": 310,
+          "blob_id": "7120bd63bf8d0c22247297aebcab215c966a0af9",
+          "sha256": null
+        },
+        "restart-preparation.json": {
+          "bytes": 6873,
+          "blob_id": "9498ed8b7200d97eccc578ae1a7ad2e4f66511b1",
+          "sha256": null
+        },
+        "restart-replay-audit.json": {
+          "bytes": 443,
+          "blob_id": "17b90505ac19384b6dea24a4d4c58f5636aa9a1b",
+          "sha256": null
+        },
+        "reward_only/checkpoint.pt": {
+          "bytes": 1976405989,
+          "blob_id": "1ed01a4e1395c6c4d23023c5365e3749b6bebfea",
+          "sha256": "927b2c36999861852a4cb13c01e2f49db1db02cd9b4cbc2dc1779471678c8a8d"
+        },
+        "reward_only/evaluation.json": {
+          "bytes": 9754127,
+          "blob_id": "79e8af4bd89ed7f1dbacf4fee77a13de48c0842f",
+          "sha256": null
+        },
+        "reward_only/fork-audit.json": {
+          "bytes": 697,
+          "blob_id": "36d5e924c5f0011f4271f32d2297343dbd29e175",
+          "sha256": null
+        },
+        "reward_only/metrics.json": {
+          "bytes": 242498,
+          "blob_id": "9ac814783778843d34053146fc476afc86855787",
+          "sha256": null
+        },
+        "reward_only/progress.json": {
+          "bytes": 2485,
+          "blob_id": "260caa7b2b7aae5e9bfae8f3386444cc5c1e4fcd",
+          "sha256": null
+        },
+        "summary.json": {
+          "bytes": 73850,
+          "blob_id": "bfb1e813da7a5439bf7f0e6be926e71786939ea6",
+          "sha256": null
+        }
+      },
+      "storage_metadata": {
+        ".gitattributes": {
+          "added_rule": "corrections/2026-11-12/paper.pdf filter=lfs diff=lfs merge=lfs -text",
+          "before": {
+            "bytes": 2754,
+            "blob_id": "bef365905b7e5fa8663d59a10464b4aded23a7b0",
+            "sha256": null
+          },
+          "after": {
+            "bytes": 2823,
+            "blob_id": "a8d98ce26c0dfb540dfac2eda609fa7ce09311e3",
+            "sha256": null
+          }
+        }
+      },
+      "remote_hashes_match": true
+    }
+  ],
+  "collection": {
+    "url": "https://huggingface.co/collections/BurnyCoder/evolution-strategies-with-llm-novelty-6aeef0a424ee9d502250b8ff",
+    "title": "Evolution Strategies with LLM Novelty",
+    "description": "Preregistered full-weight ES, correctness-gated novelty, controls and reports.",
+    "items": [
+      {
+        "repository": "BurnyCoder/novelty-es-qwen2.5-0.5b-main-seed0",
+        "type": "model"
+      },
+      {
+        "repository": "BurnyCoder/novelty-es-qwen2.5-0.5b-reward-only-seed0",
+        "type": "model"
+      },
+      {
+        "repository": "BurnyCoder/novelty-es-pilot-artifacts",
+        "type": "dataset"
+      },
+      {
+        "repository": "BurnyCoder/novelty-es-qwen2.5-0.5b-main-seed0-gen100",
+        "type": "model"
+      },
+      {
+        "repository": "BurnyCoder/novelty-es-qwen2.5-0.5b-reward-only-seed0-gen100",
+        "type": "model"
+      },
+      {
+        "repository": "BurnyCoder/novelty-es-continuation-seed0-gen100-artifacts",
+        "type": "dataset"
+      }
+    ]
+  },
+  "heads_verified_at": "2026-11-12T12:45:13.175232+00:00",
+  "publication_recovery": "Resumed exact already-created documentation revisions after the initial storage-rule check and a Windows long-cache-path failure; verification used a short D:/AI cache. No duplicate model upload or weight mutation was performed."
+}

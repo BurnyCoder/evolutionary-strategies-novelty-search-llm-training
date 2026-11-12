@@ -1,0 +1,1443 @@
+{
+  "local": [
+    {
+      "location": "reports/independent-corrections-2026-11-12.md",
+      "label": "claim ledger",
+      "target": "claim-ledger.json",
+      "exists": true
+    },
+    {
+      "location": "reports/independent-corrections-2026-11-12.md",
+      "label": "file inventory",
+      "target": "claim-inventory.json",
+      "exists": true
+    },
+    {
+      "location": "reports/independent-corrections-2026-11-12.md",
+      "label": "pilot receipt",
+      "target": "publication.json",
+      "exists": true
+    },
+    {
+      "location": "reports/independent-corrections-2026-11-12.md",
+      "label": "continuation receipt",
+      "target": "publication-continuation-seed0-gen100.json",
+      "exists": true
+    },
+    {
+      "location": "reports/independent-corrections-2026-11-12.md",
+      "label": "correction publication receipt",
+      "target": "publication-corrections-2026-11-12.json",
+      "exists": false
+    },
+    {
+      "location": "reports/independent-corrections-2026-11-12.md",
+      "label": "ExTra paper and pinned caller/advantage code",
+      "target": "../docs/literature.md#extra-implementation-reconciliation",
+      "exists": true
+    },
+    {
+      "location": "reports/independent-corrections-2026-11-12.md",
+      "label": "ES at Scale numerical path and license",
+      "target": "../docs/literature.md#es-at-scale-source-reuse-scope",
+      "exists": true
+    },
+    {
+      "location": "reports/independent-corrections-2026-11-12.md",
+      "label": "independent raw-record checks",
+      "target": "independent-verification-2026-11-12.json",
+      "exists": true
+    },
+    {
+      "location": "reports/independent-corrections-2026-11-12.md",
+      "label": "pinned-tokenizer measurements",
+      "target": "embedding-inputs-2026-11-12.json",
+      "exists": true
+    },
+    {
+      "location": "reports/independent-corrections-2026-11-12.md",
+      "label": "pilot",
+      "target": "experiment-pilot.md",
+      "exists": true
+    },
+    {
+      "location": "reports/independent-corrections-2026-11-12.md",
+      "label": "continuation",
+      "target": "experiment-continuation-seed0-gen100.md",
+      "exists": true
+    },
+    {
+      "location": "reports/independent-corrections-2026-11-12.md",
+      "label": "independent verifier",
+      "target": "../src/novelty_es/verification.py",
+      "exists": true
+    },
+    {
+      "location": "reports/independent-corrections-2026-11-12.md",
+      "label": "saved results",
+      "target": "independent-verification-2026-11-12.json",
+      "exists": true
+    },
+    {
+      "location": "reports/independent-corrections-2026-11-12.md",
+      "label": "presentation checker",
+      "target": "../scripts/verify_presentations.py",
+      "exists": true
+    },
+    {
+      "location": "reports/independent-corrections-2026-11-12.md",
+      "label": "result",
+      "target": "independent-presentations-2026-11-12.json",
+      "exists": true
+    },
+    {
+      "location": "reports/independent-corrections-2026-11-12.md",
+      "label": "Tokenization-only checks",
+      "target": "../scripts/check_embedding_inputs.py",
+      "exists": true
+    },
+    {
+      "location": "reports/independent-corrections-2026-11-12.md",
+      "label": "test record",
+      "target": "independent-test-results-2026-11-12.json",
+      "exists": true
+    },
+    {
+      "location": "reports/independent-corrections-2026-11-12.md",
+      "label": "Citation checks",
+      "target": "independent-citations-2026-11-12.json",
+      "exists": false
+    },
+    {
+      "location": "reports/independent-corrections-2026-11-12.md",
+      "label": "PDF inspection record",
+      "target": "independent-pdf-review-2026-11-12.json",
+      "exists": true
+    },
+    {
+      "location": "reports/independent-corrections-2026-11-12.md",
+      "label": "UI inspection record",
+      "target": "independent-ui-2026-11-12.json",
+      "exists": true
+    },
+    {
+      "location": "reports/independent-corrections-2026-11-12.md",
+      "label": "restoration record",
+      "target": "independent-restoration-2026-11-12.json",
+      "exists": false
+    },
+    {
+      "location": "reports/independent-corrections-2026-11-12.md",
+      "label": "restoration workflow",
+      "target": "../docs/continuation.md",
+      "exists": true
+    },
+    {
+      "location": "AGENTS.md",
+      "label": "restoration instructions",
+      "target": "docs/continuation.md",
+      "exists": true
+    },
+    {
+      "location": "AGENTS.md",
+      "label": "the correction report",
+      "target": "reports/independent-corrections-2026-11-12.md",
+      "exists": true
+    },
+    {
+      "location": "README.md",
+      "label": "Amendment A",
+      "target": "reports/preregistration.md#amendment-a-source-aligned-weighting-before-either-trained-condition",
+      "exists": true
+    },
+    {
+      "location": "README.md",
+      "label": "full report",
+      "target": "reports/experiment-pilot.md",
+      "exists": true
+    },
+    {
+      "location": "README.md",
+      "label": "registered longer continuation",
+      "target": "reports/preregistration-continuation.md",
+      "exists": true
+    },
+    {
+      "location": "README.md",
+      "label": "registered recovery",
+      "target": "reports/preregistration-recovery.md",
+      "exists": true
+    },
+    {
+      "location": "README.md",
+      "label": "recovery commands",
+      "target": "docs/continuation.md",
+      "exists": true
+    },
+    {
+      "location": "README.md",
+      "label": "paper",
+      "target": "output/pdf/novelty-es-continuation-seed0-gen100.pdf",
+      "exists": true
+    },
+    {
+      "location": "README.md",
+      "label": "interpretation and limitations",
+      "target": "reports/analysis-notes-continuation.md",
+      "exists": true
+    },
+    {
+      "location": "README.md",
+      "label": "original publication receipt",
+      "target": "reports/publication-continuation-seed0-gen100.json",
+      "exists": true
+    },
+    {
+      "location": "README.md",
+      "label": "independent corrections",
+      "target": "reports/independent-corrections-2026-11-12.md",
+      "exists": true
+    },
+    {
+      "location": "README.md",
+      "label": "Full report",
+      "target": "reports/experiment-continuation-seed0-gen100.md",
+      "exists": true
+    },
+    {
+      "location": "README.md",
+      "label": "Full report",
+      "target": "reports/experiment-pilot.md",
+      "exists": true
+    },
+    {
+      "location": "README.md",
+      "label": "Recorded test accuracy with problem-bootstrap intervals",
+      "target": "reports/figures/accuracy.png",
+      "exists": true
+    },
+    {
+      "location": "README.md",
+      "label": "Preregistration",
+      "target": "reports/preregistration.md",
+      "exists": true
+    },
+    {
+      "location": "README.md",
+      "label": "Literature and source audit",
+      "target": "docs/literature.md",
+      "exists": true
+    },
+    {
+      "location": "README.md",
+      "label": "Source correspondence",
+      "target": "docs/source-conformance.md",
+      "exists": true
+    },
+    {
+      "location": "README.md",
+      "label": "Historical initialization audits",
+      "target": "reports/initialization-audits.json",
+      "exists": true
+    },
+    {
+      "location": "README.md",
+      "label": "historical final audit",
+      "target": "reports/final-audit.json",
+      "exists": true
+    },
+    {
+      "location": "README.md",
+      "label": "claim ledger",
+      "target": "reports/claim-ledger.json",
+      "exists": true
+    },
+    {
+      "location": "README.md",
+      "label": "Publication receipt",
+      "target": "reports/publication.json",
+      "exists": true
+    },
+    {
+      "location": "README.md",
+      "label": "remote integrity checks",
+      "target": "reports/publication-audit.json",
+      "exists": true
+    },
+    {
+      "location": "README.md",
+      "label": "Amended training configuration",
+      "target": "configs/pilot.json",
+      "exists": true
+    },
+    {
+      "location": "README.md",
+      "label": "data manifest",
+      "target": "data/manifest.json",
+      "exists": true
+    },
+    {
+      "location": "README.md",
+      "label": "roadmap",
+      "target": "docs/roadmap.md",
+      "exists": true
+    },
+    {
+      "location": "README.md",
+      "label": "pinned restoration workflow",
+      "target": "docs/continuation.md",
+      "exists": true
+    },
+    {
+      "location": "README.md",
+      "label": "operations guide",
+      "target": "docs/operations.md",
+      "exists": true
+    },
+    {
+      "location": "README.md",
+      "label": "generated report",
+      "target": "reports/experiment-pilot.md",
+      "exists": true
+    },
+    {
+      "location": "README.md",
+      "label": "pinned by commit",
+      "target": "configs/pilot.json",
+      "exists": true
+    },
+    {
+      "location": "README.md",
+      "label": "synthetic generator and verifier",
+      "target": "src/novelty_es/data.py",
+      "exists": true
+    },
+    {
+      "location": "README.md",
+      "label": "Amendment A",
+      "target": "reports/preregistration.md#amendment-a-source-aligned-weighting-before-either-trained-condition",
+      "exists": true
+    },
+    {
+      "location": "README.md",
+      "label": "Source correspondence",
+      "target": "docs/source-conformance.md",
+      "exists": true
+    },
+    {
+      "location": "README.md",
+      "label": "NOTICE",
+      "target": "NOTICE",
+      "exists": true
+    },
+    {
+      "location": "README.md",
+      "label": "LICENSE",
+      "target": "LICENSE",
+      "exists": true
+    },
+    {
+      "location": "docs/continuation.md",
+      "label": "continuation registration",
+      "target": "../reports/preregistration-continuation.md",
+      "exists": true
+    },
+    {
+      "location": "docs/continuation.md",
+      "label": "recovery registration",
+      "target": "../reports/preregistration-recovery.md",
+      "exists": true
+    },
+    {
+      "location": "docs/continuation.md",
+      "label": "generated report",
+      "target": "../reports/experiment-continuation-seed0-gen100.md",
+      "exists": true
+    },
+    {
+      "location": "docs/continuation.md",
+      "label": "dated corrections",
+      "target": "../reports/independent-corrections-2026-11-12.md",
+      "exists": true
+    },
+    {
+      "location": "docs/continuation.md",
+      "label": "pilot receipt",
+      "target": "../reports/publication.json",
+      "exists": true
+    },
+    {
+      "location": "docs/continuation.md",
+      "label": "continuation receipt",
+      "target": "../reports/publication-continuation-seed0-gen100.json",
+      "exists": true
+    },
+    {
+      "location": "docs/literature.md",
+      "label": "NOTICE",
+      "target": "../NOTICE",
+      "exists": true
+    },
+    {
+      "location": "docs/literature.md",
+      "label": "amendment A",
+      "target": "../reports/preregistration.md#amendment-a-source-aligned-weighting-before-either-trained-condition",
+      "exists": true
+    },
+    {
+      "location": "docs/operations.md",
+      "label": "read-only restoration, verification and staged reporting commands",
+      "target": "continuation.md",
+      "exists": true
+    },
+    {
+      "location": "docs/operations.md",
+      "label": "analysis notes",
+      "target": "../reports/analysis-notes.md",
+      "exists": true
+    },
+    {
+      "location": "docs/operations.md",
+      "label": "literature audit",
+      "target": "literature.md",
+      "exists": true
+    },
+    {
+      "location": "docs/roadmap.md",
+      "label": "historical publication audit",
+      "target": "../reports/publication-audit.json",
+      "exists": true
+    },
+    {
+      "location": "docs/roadmap.md",
+      "label": "timing deviation",
+      "target": "../reports/analysis-notes.md#publication-timing-deviation",
+      "exists": true
+    },
+    {
+      "location": "docs/roadmap.md",
+      "label": "dated correction report",
+      "target": "../reports/independent-corrections-2026-11-12.md",
+      "exists": true
+    },
+    {
+      "location": "docs/roadmap.md",
+      "label": "publication receipt",
+      "target": "../reports/publication-continuation-seed0-gen100.json",
+      "exists": true
+    },
+    {
+      "location": "docs/roadmap.md",
+      "label": "historical integrity audit",
+      "target": "../reports/publication-audit-continuation-seed0-gen100.json",
+      "exists": true
+    },
+    {
+      "location": "docs/source-conformance.md",
+      "label": "Amendment A",
+      "target": "../reports/preregistration.md#amendment-a-source-aligned-weighting-before-either-trained-condition",
+      "exists": true
+    },
+    {
+      "location": "docs/source-conformance.md",
+      "label": "claim ledger",
+      "target": "../reports/claim-ledger.json",
+      "exists": true
+    },
+    {
+      "location": "docs/source-conformance.md",
+      "label": "verifier",
+      "target": "../src/novelty_es/data.py",
+      "exists": true
+    },
+    {
+      "location": "docs/source-conformance.md",
+      "label": "Machine-readable results",
+      "target": "../reports/source-conformance.json",
+      "exists": true
+    },
+    {
+      "location": "docs/source-conformance.md",
+      "label": "Unit tests",
+      "target": "../tests/test_novelty.py",
+      "exists": true
+    },
+    {
+      "location": "docs/source-conformance.md",
+      "label": "Optimizer tests",
+      "target": "../tests/test_optimizer.py",
+      "exists": true
+    },
+    {
+      "location": "docs/source-conformance.md",
+      "label": "Pipeline tests",
+      "target": "../tests/test_pipeline.py",
+      "exists": true
+    },
+    {
+      "location": "reports/all-experiments.md",
+      "label": "Full report",
+      "target": "experiment-pilot.md",
+      "exists": true
+    },
+    {
+      "location": "reports/all-experiments.md",
+      "label": "Full report",
+      "target": "experiment-continuation-seed0-gen100.md",
+      "exists": true
+    },
+    {
+      "location": "reports/all-experiments.md",
+      "label": "Method and architecture",
+      "target": "../README.md",
+      "exists": true
+    },
+    {
+      "location": "reports/all-experiments.md",
+      "label": "Evidence limitations",
+      "target": "independent-corrections-2026-11-12.md",
+      "exists": true
+    },
+    {
+      "location": "reports/analysis-notes-continuation.md",
+      "label": "experiment report",
+      "target": "experiment-continuation-seed0-gen100.md",
+      "exists": true
+    },
+    {
+      "location": "reports/analysis-notes-continuation.md",
+      "label": "recovery registration",
+      "target": "preregistration-recovery.md",
+      "exists": true
+    },
+    {
+      "location": "reports/analysis-notes-continuation.md",
+      "label": "historical publication audit",
+      "target": "publication-audit-continuation-seed0-gen100.json",
+      "exists": true
+    },
+    {
+      "location": "reports/analysis-notes-continuation.md",
+      "label": "dated corrections",
+      "target": "independent-corrections-2026-11-12.md",
+      "exists": true
+    },
+    {
+      "location": "reports/analysis-notes-continuation.md",
+      "label": "restoration instructions",
+      "target": "../docs/continuation.md",
+      "exists": true
+    },
+    {
+      "location": "reports/analysis-notes.md",
+      "label": "correction report",
+      "target": "independent-corrections-2026-11-12.md",
+      "exists": true
+    },
+    {
+      "location": "reports/analysis-notes.md",
+      "label": "Amendment A",
+      "target": "preregistration.md#amendment-a-source-aligned-weighting-before-either-trained-condition",
+      "exists": true
+    },
+    {
+      "location": "reports/analysis-notes.md",
+      "label": "Publication verification",
+      "target": "publication-audit.json",
+      "exists": true
+    },
+    {
+      "location": "reports/experiment-continuation-interrupted.md",
+      "label": "Recovery registration",
+      "target": "preregistration-recovery.md",
+      "exists": true
+    },
+    {
+      "location": "reports/experiment-continuation-interrupted.md",
+      "label": "Pinned source evidence",
+      "target": "../configs/continuation-recovery.json",
+      "exists": true
+    },
+    {
+      "location": "reports/experiment-continuation-seed0-gen100.md",
+      "label": "Accuracy",
+      "target": "figures/continuation-seed0-gen100/accuracy.png",
+      "exists": true
+    },
+    {
+      "location": "reports/experiment-continuation-seed0-gen100.md",
+      "label": "Training",
+      "target": "figures/continuation-seed0-gen100/training.png",
+      "exists": true
+    },
+    {
+      "location": "reports/experiment-continuation-seed0-gen100.md",
+      "label": "analysis notes",
+      "target": "analysis-notes.md",
+      "exists": true
+    },
+    {
+      "location": "reports/experiment-continuation-seed0-gen100.md",
+      "label": "preregistration",
+      "target": "preregistration-recovery.md",
+      "exists": true
+    },
+    {
+      "location": "reports/experiment-continuation-seed0-gen100.md",
+      "label": "configuration",
+      "target": "../configs/continuation-recovery.json",
+      "exists": true
+    },
+    {
+      "location": "reports/experiment-continuation-seed0-gen100.md",
+      "label": "data hashes",
+      "target": "../data/manifest.json",
+      "exists": true
+    },
+    {
+      "location": "reports/experiment-continuation-seed0-gen100.md",
+      "label": "literature audit",
+      "target": "../docs/literature.md",
+      "exists": true
+    },
+    {
+      "location": "reports/experiment-pilot.md",
+      "label": "Accuracy",
+      "target": "figures/accuracy.png",
+      "exists": true
+    },
+    {
+      "location": "reports/experiment-pilot.md",
+      "label": "Training",
+      "target": "figures/training.png",
+      "exists": true
+    },
+    {
+      "location": "reports/experiment-pilot.md",
+      "label": "analysis notes",
+      "target": "analysis-notes.md",
+      "exists": true
+    },
+    {
+      "location": "reports/experiment-pilot.md",
+      "label": "preregistration",
+      "target": "preregistration.md",
+      "exists": true
+    },
+    {
+      "location": "reports/experiment-pilot.md",
+      "label": "configuration",
+      "target": "../configs/pilot.json",
+      "exists": true
+    },
+    {
+      "location": "reports/experiment-pilot.md",
+      "label": "data hashes",
+      "target": "../data/manifest.json",
+      "exists": true
+    },
+    {
+      "location": "reports/experiment-pilot.md",
+      "label": "literature audit",
+      "target": "../docs/literature.md",
+      "exists": true
+    },
+    {
+      "location": "reports/implementation-audit.md",
+      "label": "correction report and claim ledger",
+      "target": "independent-corrections-2026-11-12.md",
+      "exists": true
+    },
+    {
+      "location": "reports/implementation-audit.md",
+      "label": "Amendment A",
+      "target": "preregistration.md#amendment-a-source-aligned-weighting-before-either-trained-condition",
+      "exists": true
+    },
+    {
+      "location": "reports/preregistration-continuation.md",
+      "label": "first registration",
+      "target": "preregistration.md",
+      "exists": true
+    },
+    {
+      "location": "reports/preregistration-continuation.md",
+      "label": "configuration",
+      "target": "../configs/continuation.json",
+      "exists": true
+    },
+    {
+      "location": "reports/preregistration-continuation.md",
+      "label": "fresh manifest",
+      "target": "../data/continuation/manifest.json",
+      "exists": true
+    },
+    {
+      "location": "reports/preregistration-continuation.md",
+      "label": "completed pilot",
+      "target": "experiment-pilot.md",
+      "exists": true
+    },
+    {
+      "location": "reports/preregistration-continuation.md",
+      "label": "source correspondence audit",
+      "target": "../docs/source-conformance.md",
+      "exists": true
+    },
+    {
+      "location": "reports/preregistration-recovery.md",
+      "label": "earlier continuation registration",
+      "target": "preregistration-continuation.md",
+      "exists": true
+    },
+    {
+      "location": "reports/preregistration-recovery.md",
+      "label": "recovery configuration",
+      "target": "../configs/continuation-recovery.json",
+      "exists": true
+    },
+    {
+      "location": "reports/preregistration-recovery.md",
+      "label": "source-audited",
+      "target": "../docs/source-conformance.md",
+      "exists": true
+    },
+    {
+      "location": "reports/preregistration.md",
+      "label": "data manifest",
+      "target": "../data/manifest.json",
+      "exists": true
+    },
+    {
+      "location": "reports/preregistration.md",
+      "label": "configs/pilot.json",
+      "target": "../configs/pilot.json",
+      "exists": true
+    },
+    {
+      "location": "reports/preregistration.md",
+      "label": "manifest",
+      "target": "../data/manifest.json",
+      "exists": true
+    },
+    {
+      "location": "reports/preregistration.md",
+      "label": "audit",
+      "target": "../docs/literature.md",
+      "exists": true
+    }
+  ],
+  "external": {
+    "https://BurnyCoder.github.io/evolutionary-strategies-novelty-search-llm-training/": {
+      "locations": [
+        "README.md"
+      ],
+      "status": 200,
+      "destination": "https://BurnyCoder.github.io/evolutionary-strategies-novelty-search-llm-training/"
+    },
+    "https://arxiv.org/abs/1712.06560": {
+      "locations": [
+        "docs/literature.md",
+        "src/novelty_es/reporting.py"
+      ],
+      "status": 200,
+      "destination": "https://arxiv.org/abs/1712.06560"
+    },
+    "https://arxiv.org/abs/1807.03341": {
+      "locations": [
+        "docs/literature.md"
+      ],
+      "status": 200,
+      "destination": "https://arxiv.org/abs/1807.03341"
+    },
+    "https://arxiv.org/abs/2107.03374": {
+      "locations": [
+        "reports/preregistration.md",
+        "src/novelty_es/analysis.py",
+        "src/novelty_es/reporting.py",
+        "src/novelty_es/verification.py"
+      ],
+      "status": 200,
+      "destination": "https://arxiv.org/abs/2107.03374"
+    },
+    "https://arxiv.org/abs/2108.02497v3": {
+      "locations": [
+        "docs/literature.md"
+      ],
+      "status": 200,
+      "destination": "https://arxiv.org/abs/2108.02497v3"
+    },
+    "https://arxiv.org/abs/2305.07759": {
+      "locations": [
+        "docs/literature.md"
+      ],
+      "status": 200,
+      "destination": "https://arxiv.org/abs/2305.07759"
+    },
+    "https://arxiv.org/abs/2305.17333": {
+      "locations": [
+        "docs/literature.md"
+      ],
+      "status": 200,
+      "destination": "https://arxiv.org/abs/2305.17333"
+    },
+    "https://arxiv.org/abs/2310.13032": {
+      "locations": [
+        "docs/literature.md"
+      ],
+      "status": 200,
+      "destination": "https://arxiv.org/abs/2310.13032"
+    },
+    "https://arxiv.org/abs/2405.09997": {
+      "locations": [
+        "docs/literature.md"
+      ],
+      "status": 200,
+      "destination": "https://arxiv.org/abs/2405.09997"
+    },
+    "https://arxiv.org/abs/2501.18101": {
+      "locations": [
+        "docs/literature.md"
+      ],
+      "status": 200,
+      "destination": "https://arxiv.org/abs/2501.18101"
+    },
+    "https://arxiv.org/abs/2502.06301": {
+      "locations": [
+        "docs/literature.md"
+      ],
+      "status": 200,
+      "destination": "https://arxiv.org/abs/2502.06301"
+    },
+    "https://arxiv.org/abs/2504.05228": {
+      "locations": [
+        "docs/literature.md"
+      ],
+      "status": 200,
+      "destination": "https://arxiv.org/abs/2504.05228"
+    },
+    "https://arxiv.org/abs/2509.02534": {
+      "locations": [
+        "docs/literature.md",
+        "src/novelty_es/reporting.py"
+      ],
+      "status": 200,
+      "destination": "https://arxiv.org/abs/2509.02534"
+    },
+    "https://arxiv.org/abs/2509.04784": {
+      "locations": [
+        "docs/literature.md"
+      ],
+      "status": 200,
+      "destination": "https://arxiv.org/abs/2509.04784"
+    },
+    "https://arxiv.org/abs/2509.09675": {
+      "locations": [
+        "docs/literature.md"
+      ],
+      "status": 200,
+      "destination": "https://arxiv.org/abs/2509.09675"
+    },
+    "https://arxiv.org/abs/2509.15194": {
+      "locations": [
+        "docs/literature.md",
+        "src/novelty_es/reporting.py"
+      ],
+      "status": 200,
+      "destination": "https://arxiv.org/abs/2509.15194"
+    },
+    "https://arxiv.org/abs/2509.24372": {
+      "locations": [
+        "README.md",
+        "docs/literature.md",
+        "docs/site/continuation-seed0-gen100/index.html",
+        "docs/site/index.html",
+        "reports/experiment-continuation-seed0-gen100.md",
+        "reports/experiment-pilot.md",
+        "src/novelty_es/optimizer.py",
+        "src/novelty_es/reporting.py",
+        "web/index.html"
+      ],
+      "status": 200,
+      "destination": "https://arxiv.org/abs/2509.24372"
+    },
+    "https://arxiv.org/abs/2511.16652": {
+      "locations": [
+        "docs/literature.md"
+      ],
+      "status": 200,
+      "destination": "https://arxiv.org/abs/2511.16652"
+    },
+    "https://arxiv.org/abs/2604.14969": {
+      "locations": [
+        "docs/literature.md",
+        "src/novelty_es/reporting.py"
+      ],
+      "status": 200,
+      "destination": "https://arxiv.org/abs/2604.14969"
+    },
+    "https://arxiv.org/abs/2605.09781": {
+      "locations": [
+        "docs/literature.md"
+      ],
+      "status": 200,
+      "destination": "https://arxiv.org/abs/2605.09781"
+    },
+    "https://arxiv.org/abs/2605.22817": {
+      "locations": [
+        "docs/literature.md"
+      ],
+      "status": 200,
+      "destination": "https://arxiv.org/abs/2605.22817"
+    },
+    "https://arxiv.org/abs/2606.24994": {
+      "locations": [
+        "README.md",
+        "docs/literature.md",
+        "docs/site/continuation-seed0-gen100/index.html",
+        "docs/site/index.html",
+        "reports/experiment-continuation-seed0-gen100.md",
+        "reports/experiment-pilot.md",
+        "reports/preregistration.md",
+        "src/novelty_es/reporting.py",
+        "web/index.html"
+      ],
+      "status": 200,
+      "destination": "https://arxiv.org/abs/2606.24994"
+    },
+    "https://arxiv.org/abs/2608.12679": {
+      "locations": [
+        "docs/literature.md",
+        "src/novelty_es/reporting.py"
+      ],
+      "status": 200,
+      "destination": "https://arxiv.org/abs/2608.12679"
+    },
+    "https://arxiv.org/abs/2609.14896": {
+      "locations": [
+        "docs/literature.md"
+      ],
+      "status": 200,
+      "destination": "https://arxiv.org/abs/2609.14896"
+    },
+    "https://arxiv.org/html/2107.03374": {
+      "locations": [
+        "docs/literature.md",
+        "reports/independent-corrections-2026-11-12.md"
+      ],
+      "status": 200,
+      "destination": "https://arxiv.org/html/2107.03374"
+    },
+    "https://arxiv.org/html/2509.15194v4": {
+      "locations": [
+        "docs/literature.md"
+      ],
+      "status": 200,
+      "destination": "https://arxiv.org/html/2509.15194v4"
+    },
+    "https://arxiv.org/html/2509.24372v3": {
+      "locations": [
+        "docs/literature.md",
+        "docs/source-conformance.md",
+        "reports/preregistration-continuation.md",
+        "reports/preregistration.md"
+      ],
+      "status": 200,
+      "destination": "https://arxiv.org/html/2509.24372v3"
+    },
+    "https://arxiv.org/html/2604.14969v1": {
+      "locations": [
+        "docs/literature.md"
+      ],
+      "status": 200,
+      "destination": "https://arxiv.org/html/2604.14969v1"
+    },
+    "https://arxiv.org/html/2606.24994v1": {
+      "locations": [
+        "docs/literature.md",
+        "docs/source-conformance.md",
+        "reports/preregistration-continuation.md",
+        "reports/preregistration.md",
+        "src/novelty_es/novelty.py",
+        "src/novelty_es/optimizer.py"
+      ],
+      "status": 200,
+      "destination": "https://arxiv.org/html/2606.24994v1"
+    },
+    "https://burnycoder.github.io/evolutionary-strategies-novelty-search-llm-training/": {
+      "locations": [
+        "docs/site/continuation-seed0-gen100/index.html",
+        "docs/site/index.html",
+        "scripts/verify_publication.py",
+        "web/index.html"
+      ],
+      "status": 200,
+      "destination": "https://burnycoder.github.io/evolutionary-strategies-novelty-search-llm-training/"
+    },
+    "https://burnycoder.github.io/evolutionary-strategies-novelty-search-llm-training/continuation-seed0-gen100/": {
+      "locations": [
+        "README.md",
+        "docs/site/continuation-seed0-gen100/index.html",
+        "docs/site/index.html",
+        "web/index.html"
+      ],
+      "status": 200,
+      "destination": "https://burnycoder.github.io/evolutionary-strategies-novelty-search-llm-training/continuation-seed0-gen100/"
+    },
+    "https://docs.astral.sh/uv/": {
+      "locations": [
+        "README.md"
+      ],
+      "status": 200,
+      "destination": "https://docs.astral.sh/uv/"
+    },
+    "https://docs.python.org/3.12/library/ast.html": {
+      "locations": [
+        "src/novelty_es/data.py"
+      ],
+      "status": 200,
+      "destination": "https://docs.python.org/3.12/library/ast.html"
+    },
+    "https://docs.python.org/3.12/library/fractions.html": {
+      "locations": [
+        "src/novelty_es/data.py",
+        "src/novelty_es/verification.py"
+      ],
+      "status": 200,
+      "destination": "https://docs.python.org/3.12/library/fractions.html"
+    },
+    "https://docs.python.org/3.12/library/hashlib.html": {
+      "locations": [
+        "src/novelty_es/publishing.py"
+      ],
+      "status": 200,
+      "destination": "https://docs.python.org/3.12/library/hashlib.html"
+    },
+    "https://docs.python.org/3.12/library/http.server.html": {
+      "locations": [
+        "src/novelty_es/dashboard.py"
+      ],
+      "status": 200,
+      "destination": "https://docs.python.org/3.12/library/http.server.html"
+    },
+    "https://docs.python.org/3.12/library/os.html": {
+      "locations": [
+        "reports/preregistration-recovery.md",
+        "src/novelty_es/restart.py",
+        "src/novelty_es/runtime.py"
+      ],
+      "status": 200,
+      "destination": "https://docs.python.org/3.12/library/os.html"
+    },
+    "https://docs.python.org/3.12/library/urllib.request.html": {
+      "locations": [
+        "scripts/check_citations.py"
+      ],
+      "status": 200,
+      "destination": "https://docs.python.org/3.12/library/urllib.request.html"
+    },
+    "https://docs.python.org/3.12/reference/expressions.html": {
+      "locations": [
+        "reports/experiment-continuation-seed0-gen100.md",
+        "reports/experiment-pilot.md",
+        "src/novelty_es/reporting.py",
+        "src/novelty_es/verification.py"
+      ],
+      "status": 200,
+      "destination": "https://docs.python.org/3.12/reference/expressions.html"
+    },
+    "https://docs.pytorch.org/docs/stable/generated/torch.Generator.html": {
+      "locations": [
+        "src/novelty_es/optimizer.py"
+      ],
+      "status": 200,
+      "destination": "https://docs.pytorch.org/docs/stable/generated/torch.Generator.html"
+    },
+    "https://docs.pytorch.org/docs/stable/notes/randomness.html": {
+      "locations": [
+        "src/novelty_es/runtime.py"
+      ],
+      "status": 200,
+      "destination": "https://docs.pytorch.org/docs/stable/notes/randomness.html"
+    },
+    "https://docs.pytorch.org/docs/stable/notes/serialization.html": {
+      "locations": [
+        "reports/preregistration-recovery.md",
+        "src/novelty_es/continuation.py",
+        "src/novelty_es/restart.py"
+      ],
+      "status": 200,
+      "destination": "https://docs.pytorch.org/docs/stable/notes/serialization.html"
+    },
+    "https://docs.reportlab.com/reportlab/userguide/ch6_paragraphs/": {
+      "locations": [
+        "src/novelty_es/reporting.py"
+      ],
+      "status": 200,
+      "destination": "https://docs.reportlab.com/reportlab/userguide/ch6_paragraphs/"
+    },
+    "https://github.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training": {
+      "locations": [
+        "docs/site/continuation-seed0-gen100/index.html",
+        "docs/site/index.html",
+        "src/novelty_es/reporting.py",
+        "web/index.html"
+      ],
+      "status": 200,
+      "destination": "https://github.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training"
+    },
+    "https://github.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training.git": {
+      "locations": [
+        "README.md"
+      ],
+      "status": 200,
+      "destination": "https://github.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training"
+    },
+    "https://github.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/blob/cf0a402/reports/publication-continuation-seed0-gen100.json": {
+      "locations": [
+        "reports/experiment-continuation-seed0-gen100.md"
+      ],
+      "status": 200,
+      "destination": "https://github.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/blob/cf0a402/reports/publication-continuation-seed0-gen100.json"
+    },
+    "https://github.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/blob/cf0a402/reports/publication.json": {
+      "locations": [
+        "reports/experiment-pilot.md"
+      ],
+      "status": 200,
+      "destination": "https://github.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/blob/cf0a402/reports/publication.json"
+    },
+    "https://github.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/blob/main/docs/continuation.md": {
+      "locations": [
+        "src/novelty_es/reporting.py"
+      ],
+      "status": 200,
+      "destination": "https://github.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/blob/main/docs/continuation.md"
+    },
+    "https://github.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/blob/main/reports/independent-corrections-2026-11-12.md": {
+      "locations": [
+        "docs/site/continuation-seed0-gen100/index.html",
+        "docs/site/index.html",
+        "reports/experiment-continuation-seed0-gen100.md",
+        "reports/experiment-pilot.md",
+        "src/novelty_es/reporting.py",
+        "web/index.html"
+      ],
+      "status": 404,
+      "error": "HTTP Error 404: Not Found"
+    },
+    "https://github.com/CarperAI/OpenELM": {
+      "locations": [
+        "docs/literature.md"
+      ],
+      "status": 200,
+      "destination": "https://github.com/CarperAI/OpenELM"
+    },
+    "https://github.com/Mafi412/Novelty-based-Evolution-Strategies-and-Decision-Transformers": {
+      "locations": [
+        "docs/literature.md"
+      ],
+      "status": 200,
+      "destination": "https://github.com/Mafi412/Novelty-based-Evolution-Strategies-and-Decision-Transformers"
+    },
+    "https://github.com/VsonicV/es-at-scale": {
+      "locations": [
+        "docs/literature.md"
+      ],
+      "status": 200,
+      "destination": "https://github.com/VsonicV/es-at-scale"
+    },
+    "https://github.com/VsonicV/es-at-scale/blob/574a9d134da1ffce2a8bb812019899e5c96b588a/LICENSE.txt": {
+      "locations": [
+        "docs/literature.md"
+      ],
+      "status": 200,
+      "destination": "https://github.com/VsonicV/es-at-scale/blob/574a9d134da1ffce2a8bb812019899e5c96b588a/LICENSE.txt"
+    },
+    "https://github.com/VsonicV/es-at-scale/blob/574a9d134da1ffce2a8bb812019899e5c96b588a/es_at_scale/trainer/es_trainer.py": {
+      "locations": [
+        "docs/literature.md"
+      ],
+      "status": 200,
+      "destination": "https://github.com/VsonicV/es-at-scale/blob/574a9d134da1ffce2a8bb812019899e5c96b588a/es_at_scale/trainer/es_trainer.py"
+    },
+    "https://github.com/VsonicV/es-at-scale/blob/574a9d134da1ffce2a8bb812019899e5c96b588a/es_at_scale/utils/reward_shaping.py": {
+      "locations": [
+        "docs/literature.md",
+        "docs/source-conformance.md",
+        "reports/preregistration.md"
+      ],
+      "status": 200,
+      "destination": "https://github.com/VsonicV/es-at-scale/blob/574a9d134da1ffce2a8bb812019899e5c96b588a/es_at_scale/utils/reward_shaping.py"
+    },
+    "https://github.com/VsonicV/es-at-scale/blob/574a9d134da1ffce2a8bb812019899e5c96b588a/es_at_scale/utils/worker_extension.py": {
+      "locations": [
+        "docs/literature.md"
+      ],
+      "status": 200,
+      "destination": "https://github.com/VsonicV/es-at-scale/blob/574a9d134da1ffce2a8bb812019899e5c96b588a/es_at_scale/utils/worker_extension.py"
+    },
+    "https://github.com/YujunZhou/EVOL-RL": {
+      "locations": [
+        "docs/literature.md"
+      ],
+      "status": 200,
+      "destination": "https://github.com/YujunZhou/EVOL-RL"
+    },
+    "https://github.com/allen4747/extra": {
+      "locations": [
+        "docs/literature.md"
+      ],
+      "status": 200,
+      "destination": "https://github.com/allen4747/extra"
+    },
+    "https://github.com/allen4747/extra/blob/ea53e68036356f8f276e261e886fbbc102633be3/verl/recipe/extra/curiosity_memory.py": {
+      "locations": [
+        "docs/literature.md",
+        "docs/source-conformance.md"
+      ],
+      "status": 200,
+      "destination": "https://github.com/allen4747/extra/blob/ea53e68036356f8f276e261e886fbbc102633be3/verl/recipe/extra/curiosity_memory.py"
+    },
+    "https://github.com/allen4747/extra/blob/ea53e68036356f8f276e261e886fbbc102633be3/verl/recipe/extra/extra_core_algos.py": {
+      "locations": [
+        "docs/literature.md"
+      ],
+      "status": 200,
+      "destination": "https://github.com/allen4747/extra/blob/ea53e68036356f8f276e261e886fbbc102633be3/verl/recipe/extra/extra_core_algos.py"
+    },
+    "https://github.com/allen4747/extra/blob/ea53e68036356f8f276e261e886fbbc102633be3/verl/recipe/extra/extra_ray_trainer.py": {
+      "locations": [
+        "docs/literature.md"
+      ],
+      "status": 200,
+      "destination": "https://github.com/allen4747/extra/blob/ea53e68036356f8f276e261e886fbbc102633be3/verl/recipe/extra/extra_ray_trainer.py"
+    },
+    "https://github.com/facebookresearch/darling": {
+      "locations": [
+        "docs/literature.md"
+      ],
+      "status": 200,
+      "destination": "https://github.com/facebookresearch/darling"
+    },
+    "https://github.com/fairytale9/diversity-quality-optimization": {
+      "locations": [
+        "docs/literature.md"
+      ],
+      "status": 200,
+      "destination": "https://github.com/fairytale9/diversity-quality-optimization"
+    },
+    "https://github.com/novelty-bench/novelty-bench": {
+      "locations": [
+        "docs/literature.md"
+      ],
+      "status": 200,
+      "destination": "https://github.com/novelty-bench/novelty-bench"
+    },
+    "https://github.com/uber-research/deep-neuroevolution": {
+      "locations": [
+        "docs/literature.md"
+      ],
+      "status": 200,
+      "destination": "https://github.com/uber-research/deep-neuroevolution"
+    },
+    "https://github.com/yuanjiayiy/mode-conditioned-diversity-alignment": {
+      "locations": [
+        "docs/literature.md"
+      ],
+      "status": 200,
+      "destination": "https://github.com/yuanjiayiy/mode-conditioned-diversity-alignment"
+    },
+    "https://huggingface.co/BurnyCoder/novelty-es-qwen2.5-0.5b-main-seed0-gen100": {
+      "locations": [
+        "README.md"
+      ],
+      "status": 200,
+      "destination": "https://huggingface.co/BurnyCoder/novelty-es-qwen2.5-0.5b-main-seed0-gen100"
+    },
+    "https://huggingface.co/BurnyCoder/novelty-es-qwen2.5-0.5b-reward-only-seed0-gen100": {
+      "locations": [
+        "README.md"
+      ],
+      "status": 200,
+      "destination": "https://huggingface.co/BurnyCoder/novelty-es-qwen2.5-0.5b-reward-only-seed0-gen100"
+    },
+    "https://huggingface.co/Qwen/Qwen2.5-0.5B-Instruct": {
+      "locations": [
+        "docs/literature.md"
+      ],
+      "status": 200,
+      "destination": "https://huggingface.co/Qwen/Qwen2.5-0.5B-Instruct"
+    },
+    "https://huggingface.co/collections/BurnyCoder/evolution-strategies-with-llm-novelty-6aeef0a424ee9d502250b8ff": {
+      "locations": [
+        "README.md"
+      ],
+      "status": 200,
+      "destination": "https://huggingface.co/collections/BurnyCoder/evolution-strategies-with-llm-novelty"
+    },
+    "https://huggingface.co/datasets/BurnyCoder/novelty-es-continuation-seed0-gen100-artifacts": {
+      "locations": [
+        "README.md"
+      ],
+      "status": 200,
+      "destination": "https://huggingface.co/datasets/BurnyCoder/novelty-es-continuation-seed0-gen100-artifacts"
+    },
+    "https://huggingface.co/datasets/BurnyCoder/novelty-es-continuation-seed0-gen100-artifacts/tree/64ca85166e198f2e064f51b70f2228228d65e814": {
+      "locations": [
+        "reports/experiment-continuation-seed0-gen100.md",
+        "reports/independent-corrections-2026-11-12.md"
+      ],
+      "status": 200,
+      "destination": "https://huggingface.co/datasets/BurnyCoder/novelty-es-continuation-seed0-gen100-artifacts/tree/64ca85166e198f2e064f51b70f2228228d65e814"
+    },
+    "https://huggingface.co/datasets/BurnyCoder/novelty-es-pilot-artifacts/tree/949e2dcb385bc2b7088c40444ef879b76596317d": {
+      "locations": [
+        "reports/experiment-pilot.md",
+        "reports/independent-corrections-2026-11-12.md"
+      ],
+      "status": 200,
+      "destination": "https://huggingface.co/datasets/BurnyCoder/novelty-es-pilot-artifacts/tree/949e2dcb385bc2b7088c40444ef879b76596317d"
+    },
+    "https://huggingface.co/docs/hub/datasets-cards": {
+      "locations": [
+        "docs/operations.md",
+        "src/novelty_es/reporting.py"
+      ],
+      "status": 200,
+      "destination": "https://huggingface.co/docs/hub/datasets-cards"
+    },
+    "https://huggingface.co/docs/huggingface_hub/en/package_reference/hf_api": {
+      "locations": [
+        "docs/operations.md",
+        "scripts/verify_publication.py",
+        "src/novelty_es/publishing.py"
+      ],
+      "status": 200,
+      "destination": "https://huggingface.co/docs/huggingface_hub/en/package_reference/hf_api"
+    },
+    "https://huggingface.co/docs/huggingface_hub/guides/download": {
+      "locations": [
+        "docs/continuation.md",
+        "scripts/restore_evidence.py"
+      ],
+      "status": 200,
+      "destination": "https://huggingface.co/docs/huggingface_hub/guides/download"
+    },
+    "https://huggingface.co/docs/huggingface_hub/package_reference/hf_api": {
+      "locations": [
+        "scripts/publish_corrections.py"
+      ],
+      "status": 200,
+      "destination": "https://huggingface.co/docs/huggingface_hub/package_reference/hf_api"
+    },
+    "https://huggingface.co/docs/safetensors/index": {
+      "locations": [
+        "scripts/verify_initialization.py",
+        "scripts/verify_results.py",
+        "src/novelty_es/verification.py"
+      ],
+      "status": 200,
+      "destination": "https://huggingface.co/docs/safetensors/index"
+    },
+    "https://huggingface.co/docs/transformers/en/chat_templating": {
+      "locations": [
+        "src/novelty_es/models.py"
+      ],
+      "status": 200,
+      "destination": "https://huggingface.co/docs/transformers/en/chat_templating"
+    },
+    "https://huggingface.co/docs/transformers/en/main_classes/text_generation": {
+      "locations": [
+        "src/novelty_es/models.py"
+      ],
+      "status": 200,
+      "destination": "https://huggingface.co/docs/transformers/en/main_classes/text_generation"
+    },
+    "https://huggingface.co/docs/transformers/main_classes/tokenizer": {
+      "locations": [
+        "scripts/check_embedding_inputs.py"
+      ],
+      "status": 200,
+      "destination": "https://huggingface.co/docs/transformers/main_classes/tokenizer"
+    },
+    "https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2": {
+      "locations": [
+        "docs/literature.md"
+      ],
+      "status": 200,
+      "destination": "https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2"
+    },
+    "https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/blob/1110a243fdf4706b3f48f1d95db1a4f5529b4d41/sentence_bert_config.json": {
+      "locations": [
+        "README.md",
+        "docs/literature.md",
+        "docs/source-conformance.md",
+        "reports/experiment-continuation-seed0-gen100.md",
+        "reports/experiment-pilot.md",
+        "src/novelty_es/models.py",
+        "src/novelty_es/reporting.py"
+      ],
+      "status": 200,
+      "destination": "https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/blob/1110a243fdf4706b3f48f1d95db1a4f5529b4d41/sentence_bert_config.json"
+    },
+    "https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createfilew": {
+      "locations": [
+        "reports/analysis-notes.md",
+        "src/novelty_es/runtime.py"
+      ],
+      "status": 200,
+      "destination": "https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createfilew"
+    },
+    "https://matplotlib.org/stable/api/ticker_api.html": {
+      "locations": [
+        "src/novelty_es/reporting.py"
+      ],
+      "status": 200,
+      "destination": "https://matplotlib.org/stable/api/ticker_api.html"
+    },
+    "https://matplotlib.org/stable/users/explain/quick_start.html": {
+      "locations": [
+        "src/novelty_es/reporting.py"
+      ],
+      "status": 200,
+      "destination": "https://matplotlib.org/stable/users/explain/quick_start.html"
+    },
+    "https://neurips.cc/public/guides/PaperChecklist": {
+      "locations": [
+        "docs/literature.md"
+      ],
+      "status": 200,
+      "destination": "https://neurips.cc/public/guides/PaperChecklist"
+    },
+    "https://numpy.org/doc/stable/reference/random/generator.html": {
+      "locations": [
+        "scripts/verify_presentations.py",
+        "src/novelty_es/analysis.py"
+      ],
+      "status": 200,
+      "destination": "https://numpy.org/doc/stable/reference/random/generator.html"
+    },
+    "https://papers.neurips.cc/paper_files/paper/2023/file/a9bbeb2858dfbdbd4c19814e5d80ec60-Paper-Conference.pdf": {
+      "locations": [
+        "docs/literature.md"
+      ],
+      "status": 200,
+      "destination": "https://papers.neurips.cc/paper_files/paper/2023/file/a9bbeb2858dfbdbd4c19814e5d80ec60-Paper-Conference.pdf"
+    },
+    "https://proceedings.mlr.press/v306/lee26ay.html": {
+      "locations": [
+        "docs/literature.md"
+      ],
+      "status": 200,
+      "destination": "https://proceedings.mlr.press/v306/lee26ay.html"
+    },
+    "https://sbert.net/docs/package_reference/sentence_transformer/SentenceTransformer.html": {
+      "locations": [
+        "src/novelty_es/models.py"
+      ],
+      "status": 200,
+      "destination": "https://sbert.net/docs/package_reference/sentence_transformer/model.html"
+    }
+  }
+}

@@ -16,3 +16,11 @@ The user's full research specification governs this project. Preserve its scient
 - Report positive, negative, failed and inconclusive outcomes with appropriate limits. Paper author is Libor "Burny" Burian; include the current date. The required AI statement belongs in the paper only.
 - Finish and publish the first pilot before expanding to the six paired pretrained seeds, diagnostic controls or the separate TinyStories scratch study. Freeze each later methodological amendment before its results exist.
 - Do one bounded review unless a serious defect justifies more. Prefer simple library-backed components, useful contextual comments and focused tests to speculative infrastructure.
+
+## Evidence correction workflow (2026-11-12)
+
+- The current task prohibits training, resumed training, model inference and new experimental runs. Use existing raw records and tensor inspection only.
+- Use `novelty-es verify` with explicit pilot, continuation, data, fresh-data and separate output directories. Use `novelty-es report-all` to stage both releases together. See [restoration instructions](docs/continuation.md).
+- Preserve the original registrations, deadlines, publication receipts, raw logs and weights. Corrections are dated revisions. Previous audits are historical assertions, not substitutes for primary evidence.
+- Generation-zero tensors and a complete per-generation embedding/archive trajectory are not retained. State these limits whenever describing independent reproducibility; see [the correction report](reports/independent-corrections-2026-11-12.md).
+- Label fresh greedy accuracy separately from original-test sampled pass@k. Probes are training data. Distinguish cumulative committed tokens, reused evaluations and additional wall intervals.

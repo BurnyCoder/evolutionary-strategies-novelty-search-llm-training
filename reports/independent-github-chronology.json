@@ -1,0 +1,166 @@
+{
+  "source": "https://api.github.com/repos/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/pulls?state=closed&per_page=100",
+  "records": [
+    {
+      "number": 23,
+      "title": "Record verified longer-training publication and close the release",
+      "merged_at": "2026-11-12T04:04:32Z",
+      "merge_commit_sha": "cf0a402e543bbbf3f39db83a1f41f894d0bc6faf",
+      "url": "https://github.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/pull/23"
+    },
+    {
+      "number": 22,
+      "title": "Publish the generation-100 comparison: no demonstrated novelty advantage",
+      "merged_at": "2026-11-12T02:53:58Z",
+      "merge_commit_sha": "99993a949c2dac0efc306eddc6915fdfabdf12fd",
+      "url": "https://github.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/pull/22"
+    },
+    {
+      "number": 21,
+      "title": "Register and implement exact-state recovery after the OS interruption",
+      "merged_at": "2026-11-11T21:20:13Z",
+      "merge_commit_sha": "93a409e91387830d24c39c919e78123e94c29790",
+      "url": "https://github.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/pull/21"
+    },
+    {
+      "number": 20,
+      "title": "Continue matched ES checkpoints with immutable lineage and fresh evaluation",
+      "merged_at": "2026-11-07T12:50:16Z",
+      "merge_commit_sha": "66884b2e7dcbd3f1f633554674dcd61faf2954e2",
+      "url": "https://github.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/pull/20"
+    },
+    {
+      "number": 19,
+      "title": "Register a matched extension to generation 100 with a fresh endpoint",
+      "merged_at": "2026-11-07T12:38:45Z",
+      "merge_commit_sha": "143833d3833fc564e9ff919e208db3d76b3fa024",
+      "url": "https://github.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/pull/19"
+    },
+    {
+      "number": 18,
+      "title": "Record verified model and evidence publication with timing disclosure",
+      "merged_at": "2026-11-07T10:46:14Z",
+      "merge_commit_sha": "eae9ef46d5da813bb30c7e9997bfc3881badd6e2",
+      "url": "https://github.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/pull/18"
+    },
+    {
+      "number": 17,
+      "title": "Publish the completed single-seed ES novelty pilot",
+      "merged_at": "2026-11-07T09:44:38Z",
+      "merge_commit_sha": "0b15cc4ce1d9c262ee64983d501cb2bb4e9c5b66",
+      "url": "https://github.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/pull/17"
+    },
+    {
+      "number": 16,
+      "title": "Audit final pilot artifacts and explain recorded outcomes",
+      "merged_at": "2026-11-07T09:33:46Z",
+      "merge_commit_sha": "387f946bb39922278b7c578a972b940da170f84e",
+      "url": "https://github.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/pull/16"
+    },
+    {
+      "number": 15,
+      "title": "Make low-valued experiment curves readable",
+      "merged_at": "2026-11-07T08:24:36Z",
+      "merge_commit_sha": "31bf98ffcfbd7b43708b9c95224b60fa20991f26",
+      "url": "https://github.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/pull/15"
+    },
+    {
+      "number": 14,
+      "title": "Distinguish computed control novelty from applied update changes",
+      "merged_at": "2026-11-07T08:09:28Z",
+      "merge_commit_sha": "27fa100b3fb4623510c857a562f0c8bf7419212b",
+      "url": "https://github.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/pull/14"
+    },
+    {
+      "number": 13,
+      "title": "Complete pilot publication evidence and paired reporting",
+      "merged_at": "2026-11-07T06:10:26Z",
+      "merge_commit_sha": "2d4012498c3b1ec5c1b819e0c8aa5eeef10d4495",
+      "url": "https://github.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/pull/13"
+    },
+    {
+      "number": 12,
+      "title": "Preserve observed CUDA evaluation replay evidence",
+      "merged_at": "2026-11-07T05:44:17Z",
+      "merge_commit_sha": "0592ec19830cdf4f2a8c57c74b54796977317cc6",
+      "url": "https://github.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/pull/12"
+    },
+    {
+      "number": 11,
+      "title": "Publish amended pilot snapshot while preserving incomplete conditions",
+      "merged_at": "2026-11-07T05:10:02Z",
+      "merge_commit_sha": "ad9f3fa2543e11e0c17e38a4eafe4c55e3db0436",
+      "url": "https://github.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/pull/11"
+    },
+    {
+      "number": 10,
+      "title": "Generate README results, architecture overview and sampled diversity",
+      "merged_at": "2026-11-07T05:04:43Z",
+      "merge_commit_sha": "491e99e6b4cb0375ab7303fab837e62834a51146",
+      "url": "https://github.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/pull/10"
+    },
+    {
+      "number": 9,
+      "title": "Record exact pretrained initialization evidence for each trained arm",
+      "merged_at": "2026-11-07T04:59:37Z",
+      "merge_commit_sha": "fcf04f4001ac39c2e4613a033ee0dc8ebd37f7ab",
+      "url": "https://github.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/pull/9"
+    },
+    {
+      "number": 8,
+      "title": "Carry protocol amendments and execution repairs into reports",
+      "merged_at": "2026-11-07T04:56:20Z",
+      "merge_commit_sha": "c3287590ad44b25c9f2a6b690180055210b955e1",
+      "url": "https://github.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/pull/8"
+    },
+    {
+      "number": 7,
+      "title": "Use source-aligned ES and ExTra weighting from the first trained generation",
+      "merged_at": "2026-11-07T04:52:35Z",
+      "merge_commit_sha": "b892e49df3cf9a0d3f83fd544e35fd9caee2f2ab",
+      "url": "https://github.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/pull/7"
+    },
+    {
+      "number": 6,
+      "title": "Recover from transient Windows locks during atomic checkpoint writes",
+      "merged_at": "2026-11-07T04:44:02Z",
+      "merge_commit_sha": "e6c0e89cc60246ca5b63ea52c7346e230dc38877",
+      "url": "https://github.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/pull/6"
+    },
+    {
+      "number": 5,
+      "title": "Correct source-reuse guidance for this noncommercial research project",
+      "merged_at": "2026-11-07T04:30:22Z",
+      "merge_commit_sha": "28f8e6fdc0fd9bd5bbe3bca15f8664f7398e6c7f",
+      "url": "https://github.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/pull/5"
+    },
+    {
+      "number": 4,
+      "title": "Show completed evaluation batches in the live dashboard",
+      "merged_at": "2026-11-07T04:24:24Z",
+      "merge_commit_sha": "d6ef4a6520598046e125c0a0b66deef00a40841c",
+      "url": "https://github.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/pull/4"
+    },
+    {
+      "number": 3,
+      "title": "Report novelty activation, rank interventions and complete resource accounting",
+      "merged_at": "2026-11-07T04:20:21Z",
+      "merge_commit_sha": "4aab3499aec8e455f328f1c3d0feb37ae7fc2596",
+      "url": "https://github.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/pull/3"
+    },
+    {
+      "number": 2,
+      "title": "Document the active pilot and research workflow",
+      "merged_at": "2026-11-07T03:58:41Z",
+      "merge_commit_sha": "e4564b459b6b574193aef8709256f020d234f1bf",
+      "url": "https://github.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/pull/2"
+    },
+    {
+      "number": 1,
+      "title": "Implement the preregistered resumable novelty ES pilot",
+      "merged_at": "2026-11-07T03:56:30Z",
+      "merge_commit_sha": "ddcd928c1392fa2eb5beaff5b7b6f192dfa04817",
+      "url": "https://github.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/pull/1"
+    }
+  ]
+}

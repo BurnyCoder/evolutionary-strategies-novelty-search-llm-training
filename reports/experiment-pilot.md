@@ -1,8 +1,12 @@
-# Pilot experiment
+# pilot experiment
 
-Libor "Burny" Burian · 2026-11-07
+Libor "Burny" Burian · 2026-11-12
 
-The directional improvement hypothesis was not supported in this seed: main accuracy did not exceed reward-only ES.
+Documentation correction dated 2026-11-12; raw evidence and weights are unchanged. [Immutable raw measurements](https://huggingface.co/datasets/BurnyCoder/novelty-es-pilot-artifacts/tree/949e2dcb385bc2b7088c40444ef879b76596317d). [Predecessor revisions](https://github.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/blob/cf0a402/reports/publication.json). [Independent corrections and evidence gaps](https://github.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/blob/main/reports/independent-corrections-2026-11-12.md). Old audit verdicts are retained as historical records, not independent proof. Generation-zero tensors and a complete historical embedding/archive trajectory are unavailable.
+
+Accuracy columns use one greedy response per problem. Hard is the five-number split. pass@1, pass@8 and sampled diversity always use the fixed original-test subset, including in the continuation. Probes are training examples. Stored evaluation tokens include reused original-model outcomes; parent fresh evaluations are separate from the three-condition diagnostic table. Training tokens are cumulative committed-candidate tokens. Phase wall hours include overhead; for the continuation they cover added work only, and control time excludes offline downtime and the unknown unlogged outage tail. These are not GPU compute-hour measurements. MiniLM receives complete response strings but truncates at its [pinned 256 WordPiece-token limit](https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/blob/1110a243fdf4706b3f48f1d95db1a4f5529b4d41/sentence_bert_config.json). The verifier accepts restricted [Python expression syntax](https://docs.python.org/3.12/reference/expressions.html), either bare or inside one answer tag; surrounding prose is ignored when one tag is present. Problem uncertainty conditional on one training seed; excludes seed variability.
+
+The directional improvement hypothesis was not supported in this seed: main accuracy did not exceed reward-only ES. The paired interval includes zero, so this does not establish a performance difference.
 
 Paired difference: 0.000 percentage points; 95% interval [-0.244, 0.244]; 2048 paired test problems.
 
@@ -12,7 +16,7 @@ Both trained checkpoints score higher than the original model on this test set; 
 
 Percentile bootstrap intervals can collapse at observed boundaries or when paired outcomes are identical. A zero-width interval does not prove zero population error or equivalence on unseen problems.
 
-| Condition | Test accuracy | 95% interval | Hard accuracy | pass@1 | pass@8 | Status |
+| Condition | Test greedy accuracy | 95% interval | Hard greedy accuracy | Original-test pass@1 | Original-test pass@8 | Status |
 | --- | --- | --- | --- | --- | --- | --- |
 | original | 0.29% | 0.10% - 0.54% | 0.10% | 0.12% | 0.89% | complete |
 | main | 1.12% | 0.68% - 1.61% | 0.00% | 0.27% | 2.06% | complete |
@@ -26,7 +30,7 @@ original: greedy problems test 2048/2048, hard 1024/1024, probes 16/16; sampled 
 | main - original (secondary) | 0.830 | [0.438, 1.270] | 2048 |
 | reward_only - original (secondary) | 0.830 | [0.391, 1.270] | 2048 |
 
-Comparisons with the original checkpoint are descriptive secondary estimates with unadjusted intervals.
+All comparisons other than the final main-minus-control primary endpoint are descriptive secondary estimates with unadjusted intervals.
 
 ![Accuracy](figures/accuracy.png)
 
@@ -34,7 +38,7 @@ Comparisons with the original checkpoint are descriptive secondary estimates wit
 
 ## Probe performance, validity and resources
 
-| Condition | Probe accuracy | Test validity | Hard validity | Train tokens | Eval tokens | Train hours |
+| Condition | Training-probe accuracy | Test validity | Hard validity | Cumulative train tokens | Stored eval tokens | Phase wall hours |
 | --- | --- | --- | --- | --- | --- | --- |
 | original | 0.00% | 29.30% | 10.64% | 0 | 385121 | 0.000 |
 | main | 0.00% | 76.12% | 2.05% | 798675 | 217202 | 1.688 |
@@ -50,7 +54,7 @@ See [analysis notes](analysis-notes.md) for when this descriptive check was adde
 
 ## Within-problem expression diversity
 
-| Condition | Greedy correct structures | Complete sampled problems | Mean correct structures / sampled problem |
+| Condition | Test greedy correct structures | Original-test sampled problems | Mean correct structures / original-test sampled problem |
 | --- | --- | --- | --- |
 | original | 6 | 256 | 0.0156 |
 | main | 23 | 256 | 0.0391 |
@@ -60,9 +64,9 @@ Greedy structure counts equal successful problems, since each problem has one re
 
 ## Method and scope
 
-See the [preregistration](preregistration.md), [configuration](../configs/pilot.json), [data hashes](../data/manifest.json), and [literature audit](../docs/literature.md). This is an adaptation of [ExTra](https://arxiv.org/abs/2606.24994) and [ES at Scale](https://arxiv.org/abs/2509.24372), not a reproduction. The archive gate uses exact correctness; positive legality reward is insufficient. Validation does not choose the final checkpoint. Amendment A replaces combined-reward ranks with population-z-scored task reward plus post-normalization novelty. It was published after calibration and partial original-model evaluation, before either trained condition. Both trained arms start from original pretrained weights using the amended rule from generation one.
+See the [preregistration](preregistration.md), [configuration](../configs/pilot.json), [data hashes](../data/manifest.json), and [literature audit](../docs/literature.md). This is an adaptation of [ExTra](https://arxiv.org/abs/2606.24994) and [ES at Scale](https://arxiv.org/abs/2509.24372), not a reproduction. The archive gate uses exact correctness; positive legality reward is insufficient. Validation does not choose the final checkpoint. Amendment A replaces combined-reward ranks with population-z-scored task reward plus post-normalization novelty. It was published after calibration and partial original-model evaluation, before either trained condition. The run records describe both pilot arms as starting from original pretrained weights with the amended rule from generation one; generation-zero tensors are no longer available for an independent equality check.
 
-Qwen/Qwen2.5-0.5B-Instruct: 24 layers, width 896, 14 query heads and 2 key/value heads; 494,032,768 unique parameter elements in 290 tensors. Architecture and counts come from the pinned pretrained files and the generation-zero checkpoint audit.
+Qwen/Qwen2.5-0.5B-Instruct: 24 layers, width 896, 14 query heads and 2 key/value heads; 494,032,768 unique parameter elements in 290 tensors. Architecture comes from the exported config; counts come from its safetensors headers. This does not establish historical generation-zero tensor equality.
 
 ## Recorded measurements
 
@@ -131,6 +135,21 @@ All values below come from persisted outcomes. Missing conditions remain missing
       },
       "training": {},
       "training_observations": {
+        "responses": 0,
+        "generated_tokens": 0,
+        "truncated": 0,
+        "weight_diagnostic": {
+          "generations_observed": 0,
+          "candidates_observed": 0,
+          "candidates_positive_novelty": 0,
+          "generations_positive_novelty": 0,
+          "generations_weight_changed": 0,
+          "candidates_weight_changed": 0,
+          "largest_absolute_weight_change": 0.0
+        }
+      },
+      "added_training_observations": {
+        "generations": 0,
         "responses": 0,
         "generated_tokens": 0,
         "truncated": 0,
@@ -225,6 +244,21 @@ All values below come from persisted outcomes. Missing conditions remain missing
           "largest_absolute_weight_change": 0.0625
         }
       },
+      "added_training_observations": {
+        "generations": 19,
+        "responses": 27360,
+        "generated_tokens": 798675,
+        "truncated": 1999,
+        "weight_diagnostic": {
+          "generations_observed": 19,
+          "candidates_observed": 570,
+          "candidates_positive_novelty": 15,
+          "generations_positive_novelty": 10,
+          "generations_weight_changed": 9,
+          "candidates_weight_changed": 14,
+          "largest_absolute_weight_change": 0.0625
+        }
+      },
       "training_seconds": 6078.265563964844
     },
     "reward_only": {
@@ -293,6 +327,21 @@ All values below come from persisted outcomes. Missing conditions remain missing
         "responses": 27360
       },
       "training_observations": {
+        "responses": 27360,
+        "generated_tokens": 814802,
+        "truncated": 2093,
+        "weight_diagnostic": {
+          "generations_observed": 19,
+          "candidates_observed": 570,
+          "candidates_positive_novelty": 13,
+          "generations_positive_novelty": 9,
+          "generations_weight_changed": 0,
+          "candidates_weight_changed": 0,
+          "largest_absolute_weight_change": 0.0
+        }
+      },
+      "added_training_observations": {
+        "generations": 19,
         "responses": 27360,
         "generated_tokens": 814802,
         "truncated": 2093,
@@ -452,7 +501,7 @@ All values below come from persisted outcomes. Missing conditions remain missing
 }
 ```
 
-The first audit reconciled ExTra's correctness-filtered paper specification with its unfiltered embedding-memory insertion. Explicit Boolean masking and separate score/append operations implement the intended experiment. FP32 master reconstruction avoids repeated BF16 perturbation subtraction. Tests exercise interrupted candidate replay, archive RNG restoration, deadline preservation and exact arithmetic. Hyperparameters are preregistered choices, not claimed optima. Further training requires reviewing this pilot.
+ExTra's pinned memory helper does not itself filter embedding insertion by correctness (see the linked source correspondence). Explicit Boolean masking and separate score/append operations implement the intended experiment. FP32 master reconstruction avoids repeated BF16 perturbation subtraction. Tests exercise interrupted candidate replay, archive RNG restoration, deadline preservation and exact arithmetic. Hyperparameters are preregistered choices, not claimed optima. Further training requires reviewing this pilot.
 
 ## Limitations
 

@@ -314,6 +314,21 @@
             "largest_absolute_weight_change": 0.0
           }
         },
+        "added_training_observations": {
+          "generations": 0,
+          "responses": 0,
+          "generated_tokens": 0,
+          "truncated": 0,
+          "weight_diagnostic": {
+            "generations_observed": 0,
+            "candidates_observed": 0,
+            "candidates_positive_novelty": 0,
+            "generations_positive_novelty": 0,
+            "generations_weight_changed": 0,
+            "candidates_weight_changed": 0,
+            "largest_absolute_weight_change": 0.0
+          }
+        },
         "training_seconds": 0.0
       },
       "main": {
@@ -395,6 +410,21 @@
             "largest_absolute_weight_change": 0.0625
           }
         },
+        "added_training_observations": {
+          "generations": 19,
+          "responses": 27360,
+          "generated_tokens": 798675,
+          "truncated": 1999,
+          "weight_diagnostic": {
+            "generations_observed": 19,
+            "candidates_observed": 570,
+            "candidates_positive_novelty": 15,
+            "generations_positive_novelty": 10,
+            "generations_weight_changed": 9,
+            "candidates_weight_changed": 14,
+            "largest_absolute_weight_change": 0.0625
+          }
+        },
         "training_seconds": 6078.265563964844
       },
       "reward_only": {
@@ -463,6 +493,21 @@
           "responses": 27360
         },
         "training_observations": {
+          "responses": 27360,
+          "generated_tokens": 814802,
+          "truncated": 2093,
+          "weight_diagnostic": {
+            "generations_observed": 19,
+            "candidates_observed": 570,
+            "candidates_positive_novelty": 13,
+            "generations_positive_novelty": 9,
+            "generations_weight_changed": 0,
+            "candidates_weight_changed": 0,
+            "largest_absolute_weight_change": 0.0
+          }
+        },
+        "added_training_observations": {
+          "generations": 19,
           "responses": 27360,
           "generated_tokens": 814802,
           "truncated": 2093,
@@ -2742,6 +2787,9 @@
       "high": 0.00244140625,
       "n": 2048
     },
+    "primary_split": "test",
+    "continuation": null,
+    "recovery": null,
     "baseline_comparisons": {
       "main": {
         "difference": 0.00830078125,
@@ -2757,6 +2805,67 @@
       }
     },
     "model_id": "Qwen/Qwen2.5-0.5B-Instruct",
+    "export": {
+      "architecture": {
+        "architectures": [
+          "Qwen2ForCausalLM"
+        ],
+        "attention_dropout": 0.0,
+        "bos_token_id": 151643,
+        "dtype": "bfloat16",
+        "eos_token_id": 151645,
+        "hidden_act": "silu",
+        "hidden_size": 896,
+        "initializer_range": 0.02,
+        "intermediate_size": 4864,
+        "layer_types": [
+          "full_attention",
+          "full_attention",
+          "full_attention",
+          "full_attention",
+          "full_attention",
+          "full_attention",
+          "full_attention",
+          "full_attention",
+          "full_attention",
+          "full_attention",
+          "full_attention",
+          "full_attention",
+          "full_attention",
+          "full_attention",
+          "full_attention",
+          "full_attention",
+          "full_attention",
+          "full_attention",
+          "full_attention",
+          "full_attention",
+          "full_attention",
+          "full_attention",
+          "full_attention",
+          "full_attention"
+        ],
+        "max_position_embeddings": 32768,
+        "max_window_layers": 21,
+        "model_type": "qwen2",
+        "num_attention_heads": 14,
+        "num_hidden_layers": 24,
+        "num_key_value_heads": 2,
+        "pad_token_id": null,
+        "rms_norm_eps": 1e-06,
+        "rope_parameters": {
+          "rope_theta": 1000000.0,
+          "rope_type": "default"
+        },
+        "sliding_window": null,
+        "tie_word_embeddings": true,
+        "transformers_version": "5.22.2",
+        "use_cache": true,
+        "use_sliding_window": false,
+        "vocab_size": 151936
+      },
+      "unique_tensors": 290,
+      "parameter_elements": 494032768
+    },
     "seed": 0,
     "initializations": {
       "main": {
@@ -2810,11 +2919,18 @@
         "absolute_deadline": 1794067007.1504683
       }
     },
+    "historical_audit_fields": "initializations, recovery_audit and restart_replay_audit preserve older assertions; see the independent correction evidence for current checks.",
     "novelty_weight": 1.0,
-    "finding": "The directional improvement hypothesis was not supported in this seed: main accuracy did not exceed reward-only ES.",
-    "generated_at": "2026-11-07T09:33:53.529406+00:00",
+    "finding": "The directional improvement hypothesis was not supported in this seed: main accuracy did not exceed reward-only ES. The paired interval includes zero, so this does not establish a performance difference.",
+    "generated_at": "2026-11-12T12:11:23.787392+00:00",
     "interval_scope": "Problem uncertainty conditional on one training seed; excludes seed variability.",
     "interval_caveat": "Percentile bootstrap intervals can collapse at observed boundaries or when paired outcomes are identical. A zero-width interval does not prove zero population error or equivalence on unseen problems.",
+    "discordance": {
+      "both_correct": 20,
+      "main_only": 3,
+      "control_only": 3,
+      "both_wrong": 2022
+    },
     "failures": [
       {
         "time": 1794026144.5639172,
@@ -2869,6 +2985,7 @@
       "absolute_deadline": 1794067007.1504683,
       "scope": "Observed storage-failure recovery; not a claim about arbitrary restarts or environments"
     },
+    "restart_replay_audit": {},
     "logged_generation_work": [
       {
         "condition": "calibration",
