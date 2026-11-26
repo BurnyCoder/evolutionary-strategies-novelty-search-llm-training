@@ -1,0 +1,140 @@
+{
+  "checked_at": "2026-11-26T12:43:23.057839+00:00",
+  "github_revision": "82aa56cdc524395a52477a00bf1f3bfa06c57e2a",
+  "files": [
+    {
+      "url": "https://raw.githubusercontent.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/82aa56cdc524395a52477a00bf1f3bfa06c57e2a/docs/site/continuation-seed0-gen100/index.html",
+      "bytes": 14363,
+      "sha256": "2894987a89d312194b867cc69b4a5cefd4df8a0ad60f1187d978ea90bdde2d0a"
+    },
+    {
+      "url": "https://burnycoder.github.io/evolutionary-strategies-novelty-search-llm-training/continuation-seed0-gen100/index.html?revision=82aa56cdc524395a52477a00bf1f3bfa06c57e2a",
+      "bytes": 14363,
+      "sha256": "2894987a89d312194b867cc69b4a5cefd4df8a0ad60f1187d978ea90bdde2d0a"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/82aa56cdc524395a52477a00bf1f3bfa06c57e2a/docs/site/continuation-seed0-gen100/status.json",
+      "bytes": 684993,
+      "sha256": "cfec7bbb3fa1f91e70ded1418cd46123b06b81eb1c58eb759d28aa83d0fcc905"
+    },
+    {
+      "url": "https://burnycoder.github.io/evolutionary-strategies-novelty-search-llm-training/continuation-seed0-gen100/status.json?revision=82aa56cdc524395a52477a00bf1f3bfa06c57e2a",
+      "bytes": 684993,
+      "sha256": "cfec7bbb3fa1f91e70ded1418cd46123b06b81eb1c58eb759d28aa83d0fcc905"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/82aa56cdc524395a52477a00bf1f3bfa06c57e2a/docs/site/index.html",
+      "bytes": 14363,
+      "sha256": "2894987a89d312194b867cc69b4a5cefd4df8a0ad60f1187d978ea90bdde2d0a"
+    },
+    {
+      "url": "https://burnycoder.github.io/evolutionary-strategies-novelty-search-llm-training/index.html?revision=82aa56cdc524395a52477a00bf1f3bfa06c57e2a",
+      "bytes": 14363,
+      "sha256": "2894987a89d312194b867cc69b4a5cefd4df8a0ad60f1187d978ea90bdde2d0a"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/82aa56cdc524395a52477a00bf1f3bfa06c57e2a/docs/site/status.json",
+      "bytes": 195752,
+      "sha256": "80488d4fadc82b31edf26f043d99798f345d8ab6c98b1d2600c3e7b7587d4e6b"
+    },
+    {
+      "url": "https://burnycoder.github.io/evolutionary-strategies-novelty-search-llm-training/status.json?revision=82aa56cdc524395a52477a00bf1f3bfa06c57e2a",
+      "bytes": 195752,
+      "sha256": "80488d4fadc82b31edf26f043d99798f345d8ab6c98b1d2600c3e7b7587d4e6b"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/82aa56cdc524395a52477a00bf1f3bfa06c57e2a/output/pdf/novelty-es-continuation-seed0-gen100.pdf",
+      "bytes": 400165,
+      "sha256": "7eb24e300e158cdc2bdd977bed02574deda3542392de3e51cb1ef385efd87a04"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/82aa56cdc524395a52477a00bf1f3bfa06c57e2a/output/pdf/novelty-es-pilot.pdf",
+      "bytes": 294175,
+      "sha256": "0ea885757e16d02328604ab19ebb798c62af1169edd0e535e842bb4fd2b4d361"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/82aa56cdc524395a52477a00bf1f3bfa06c57e2a/README.md",
+      "bytes": 15010,
+      "sha256": "76898271119678f9228fc43f3fe052e98acab7775f580c37d44054a5664c6ba4"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/82aa56cdc524395a52477a00bf1f3bfa06c57e2a/reports/all-experiments.md",
+      "bytes": 4542,
+      "sha256": "6f1035107a6543e85d683b72260f79a86aae5e1feac069d2993c1a229cfa2911"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/82aa56cdc524395a52477a00bf1f3bfa06c57e2a/reports/experiment-continuation-interrupted.md",
+      "bytes": 1393,
+      "sha256": "9ca9fd0d63c6a596a19d0c96f95ca874f3306a96964d802d26f3f1d7ac4d67ca"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/82aa56cdc524395a52477a00bf1f3bfa06c57e2a/reports/experiment-continuation-seed0-gen100.md",
+      "bytes": 23105,
+      "sha256": "0b5706337619c2cfb43bc638548f1b78ca70b80b6880bc99961cdc36e0a464da"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/82aa56cdc524395a52477a00bf1f3bfa06c57e2a/reports/experiment-pilot.md",
+      "bytes": 20385,
+      "sha256": "c7776a2cb6eda566e7d142450fe876d4791613c4ab1068253fba5910723672d3"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/82aa56cdc524395a52477a00bf1f3bfa06c57e2a/reports/figures/accuracy.png",
+      "bytes": 37425,
+      "sha256": "eea6e4242e4b92c5d1f357ea8909180e4df3e087c9274074504377007667bb8b"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/82aa56cdc524395a52477a00bf1f3bfa06c57e2a/reports/figures/continuation-seed0-gen100/accuracy.png",
+      "bytes": 34738,
+      "sha256": "0ec02d6a5dd39eeda0ff320f25d0dea6eee88b3cfacdb788389e93e23764270f"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/82aa56cdc524395a52477a00bf1f3bfa06c57e2a/reports/figures/continuation-seed0-gen100/training.png",
+      "bytes": 241913,
+      "sha256": "b7c7d6f0fda9eff371fdcdd8fa7c10fd7946f2f4388ab176d83ef3261dac8056"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/82aa56cdc524395a52477a00bf1f3bfa06c57e2a/reports/figures/training.png",
+      "bytes": 177632,
+      "sha256": "148402d1fad308e7c2911ef88903d1ee43242e8e55d98c8aab74ca967a21ff6d"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/82aa56cdc524395a52477a00bf1f3bfa06c57e2a/reports/reviews/archive-2026-11-26.json",
+      "bytes": 2919,
+      "sha256": "ff078df3682694b0c529e7542e9faa75ac440b8f1c7f9a840f2f3c7ce1ed01e7"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/82aa56cdc524395a52477a00bf1f3bfa06c57e2a/reports/reviews/embedding-inputs-2026-11-26.json",
+      "bytes": 622,
+      "sha256": "17e2a98e456d8cd2dcb6cd5cbe63e4b72ab6f7b60d86335cfff0929062d5101d"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/82aa56cdc524395a52477a00bf1f3bfa06c57e2a/reports/reviews/registered-rule-evidence-2026-11-26.json",
+      "bytes": 130861,
+      "sha256": "7d2c9a53ca55433c6b4459207cb6b57c95b0383f8e594634659c5e510bb6c964"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/82aa56cdc524395a52477a00bf1f3bfa06c57e2a/reports/reviews/scientific-audit-2026-11-26.md",
+      "bytes": 11339,
+      "sha256": "3f7745acfa7f30224621795de63cf17284f5d6e3939b3e4447c509f433240dd4"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/82aa56cdc524395a52477a00bf1f3bfa06c57e2a/reports/summaries/continuation-seed0-gen100.json",
+      "bytes": 74109,
+      "sha256": "90b39602d66bcb54b98188b84d84de5780b07ec158e803f44a0d579c000cc42d"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/82aa56cdc524395a52477a00bf1f3bfa06c57e2a/reports/summaries/pilot.json",
+      "bytes": 67533,
+      "sha256": "c7e041c2f076b368c2cb4f44e0d9ed7a530a33083145c3ceddc7091561114f7e"
+    }
+  ],
+  "collection": "https://huggingface.co/collections/BurnyCoder/evolution-strategies-with-llm-novelty-6aeef0a424ee9d502250b8ff",
+  "hub_revisions": {
+    "BurnyCoder/novelty-es-qwen2.5-0.5b-main-seed0": "02e97de22cad4cd066ab24a6e2c1459652ffec34",
+    "BurnyCoder/novelty-es-qwen2.5-0.5b-reward-only-seed0": "4e112f75c74fe19a427096e7ef49c29741cae7d4",
+    "BurnyCoder/novelty-es-pilot-artifacts": "6f6b9ca42e9af7dd20ab1b45c78813f10b6c7f6c",
+    "BurnyCoder/novelty-es-qwen2.5-0.5b-main-seed0-gen100": "f03b70fb8f55ba70cf12c4a12307aa166e66b5d3",
+    "BurnyCoder/novelty-es-qwen2.5-0.5b-reward-only-seed0-gen100": "c1f4788486c8920a562b6e420fbc86bb538e80a7",
+    "BurnyCoder/novelty-es-continuation-seed0-gen100-artifacts": "b9ab37e76edef57974f03aa93f6d037c59ee73bc"
+  }
+}

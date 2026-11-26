@@ -45,6 +45,13 @@ uv run python scripts/verify_scientific_release.py --pilot-dir $pilot --continua
 
 For the embedding-length calculation, install the pinned MiniLM tokenizer and sentence configuration in the local Hub cache if needed. Only text assets are required. The dated [review](../reports/reviews/scientific-audit-2026-11-26.md) links the row-level evidence and claim map.
 
+The [Hub receipt](../reports/reviews/publication-2026-11-26.json) pins each corrected card, paper and evidence file. The [deployment receipt](../reports/reviews/deployment-2026-11-26.json) identifies the GitHub merge and the bytes served by both Pages dashboards. To check a staged copy against that release, use its original staged artifacts. Freshly rendered PDFs can carry a different PDF creation timestamp.
+
+```powershell
+$revision = (Get-Content reports/reviews/deployment-2026-11-26.json -Raw | ConvertFrom-Json).github_revision
+uv run python scripts/verify_audit_deployment.py --release-dir "$checks/release" --revision $revision --hub-receipt reports/reviews/publication-2026-11-26.json --output "$checks/deployment.json"
+```
+
 ## Regenerate both releases together
 
 ```powershell

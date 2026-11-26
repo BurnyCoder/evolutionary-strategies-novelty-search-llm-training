@@ -116,7 +116,7 @@ def main():
                     revision=revision,
                     files=files,
                     created_at=created.isoformat(),
-                    seconds_after_final_phase=created.timestamp() - times["phases"]["final"]["deadline"],
+                    seconds_after_final_phase_deadline=created.timestamp() - times["phases"]["final"]["deadline"],
                     seconds_before_overall_deadline=times["deadline"] - created.timestamp(),
                 )
             )
