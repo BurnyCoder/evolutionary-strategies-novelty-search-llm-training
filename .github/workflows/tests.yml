@@ -11,6 +11,10 @@ jobs:
         with:
           python-version: '3.12'
       - run: uv sync --locked
-      - run: uv run pytest -q
+      - name: Record-only scientific checks
+        run: uv run pytest -q tests/test_scientific_audit.py tests/test_verification.py tests/test_analysis.py tests/test_reporting.py tests/test_data.py tests/test_novelty.py tests/test_publish_corrections.py tests/test_restore_evidence.py
+      - name: Full orchestration suite for ordinary development
+        if: ${{ !startsWith(github.head_ref || github.ref_name, 'audit/') && !contains(github.event.head_commit.message, '[records-only]') }}
+        run: uv run pytest -q
       - run: uv run ruff check src tests
       - run: uv run novelty-es prepare

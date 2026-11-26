@@ -1,0 +1,29 @@
+{
+  "pilot": {
+    "pdf_sha256": "0ea885757e16d02328604ab19ebb798c62af1169edd0e535e842bb4fd2b4d361",
+    "pages": 5,
+    "render_dpi": 84,
+    "visually_checked_pages": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "same_pixels_as_visually_inspected_render": true
+  },
+  "continuation-seed0-gen100": {
+    "pdf_sha256": "7eb24e300e158cdc2bdd977bed02574deda3542392de3e51cb1ef385efd87a04",
+    "pages": 6,
+    "render_dpi": 84,
+    "visually_checked_pages": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "same_pixels_as_visually_inspected_render": true
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "static/pilot": {
+    "comparison": "Primary difference (main minus control): 0.000 percentage points; paired 95% interval [-0.244, 0.244], across 2048 test problems.",
+    "grading_note": "A balanced-tag regrade changes 9 novelty-arm and 11 control-arm training rewards in this stage. The post-hoc two-sided exact McNemar p-value is 1.000. The checkpoints reflect the historical rewards. Independent grading audit",
+    "example_checked": "test-00001",
+    "novelty_chart_and_full_range": true,
+    "javascript_errors": []
+  },
+  "static/continuation": {
+    "comparison": "Primary difference (main minus control): -0.342 percentage points; paired 95% interval [-1.025, 0.342], across 2048 fresh problems.",
+    "grading_note": "A balanced-tag regrade changes 39 novelty-arm and 37 control-arm training rewards in this stage. The post-hoc two-sided exact McNemar p-value is 0.3916. The checkpoints reflect the historical rewards. Independent grading audit",
+    "example_checked": "fresh-00001",
+    "novelty_chart_and_full_range": true,
+    "javascript_errors": []
+  },
+  "live/pilot": {
+    "comparison": "Primary difference (main minus control): 0.000 percentage points; paired 95% interval [-0.244, 0.244], across 2048 test problems.",
+    "grading_note": "A balanced-tag regrade changes 9 novelty-arm and 11 control-arm training rewards in this stage. The post-hoc two-sided exact McNemar p-value is 1.000. The checkpoints reflect the historical rewards. Independent grading audit",
+    "example_checked": "test-00001",
+    "novelty_chart_and_full_range": true,
+    "javascript_errors": []
+  },
+  "live/continuation": {
+    "comparison": "Primary difference (main minus control): -0.342 percentage points; paired 95% interval [-1.025, 0.342], across 2048 fresh problems.",
+    "grading_note": "A balanced-tag regrade changes 39 novelty-arm and 37 control-arm training rewards in this stage. The post-hoc two-sided exact McNemar p-value is 0.3916. The checkpoints reflect the historical rewards. Independent grading audit",
+    "example_checked": "fresh-00001",
+    "novelty_chart_and_full_range": true,
+    "javascript_errors": []
+  }
+}

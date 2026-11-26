@@ -46,14 +46,23 @@ def dashboard_state(directory: Path) -> dict:
     }
 
 
-def serve(directory: Path, port: int) -> None:
+def serve(directory: Path, port: int, audit: dict | None = None) -> None:
     """Bind only localhost; static Pages output uses the same presentation template."""
+    completed_summary = None
+    if audit:
+        from .reporting import summarize
+
+        completed_summary = summarize(directory, include_historical_assertions=False)
+        completed_summary["scientific_audit"] = audit
 
     class Handler(BaseHTTPRequestHandler):
         def do_GET(self):
             route = urlsplit(self.path).path
             if route == "/api/status":
-                body = json.dumps(dashboard_state(directory), allow_nan=False).encode()
+                state = dashboard_state(directory)
+                if completed_summary is not None:
+                    state["summary"] = completed_summary
+                body = json.dumps(state, allow_nan=False).encode()
                 content_type = "application/json; charset=utf-8"
             elif route in ("/", "/index.html"):
                 body = Path("web/index.html").read_bytes()

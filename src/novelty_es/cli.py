@@ -20,6 +20,7 @@ def main() -> None:
     parser.add_argument("--data-dir", type=Path)
     parser.add_argument("--fresh-dir", type=Path)
     parser.add_argument("--output-root", type=Path)
+    parser.add_argument("--audit-evidence", type=Path, help="Bind a dated scientific reanalysis to both report releases.")
     args = parser.parse_args()
     if args.command in ("verify", "report-all"):
         required = ["pilot_dir", "continuation_dir", "output_root"]
@@ -37,13 +38,20 @@ def main() -> None:
         else:
             import shutil
 
-            from .reporting import refresh_corrections, report
+            from .audit_reporting import EVIDENCE, summary_for, write_review
+            from .reporting import report
 
             args.output_root.mkdir(parents=True, exist_ok=True)
             shutil.copyfile("README.md", args.output_root / "README.md")
-            report(args.pilot_dir, args.output_root, staged=True)
-            report(args.continuation_dir, args.output_root, staged=True)
-            refresh_corrections(args.output_root)
+            source = args.audit_evidence or EVIDENCE
+            evidence = json.loads(source.read_text(encoding="utf-8")) if source.is_file() else None
+            if args.audit_evidence and not evidence:
+                parser.error("--audit-evidence must identify a readable scientific audit")
+            for name, directory in (("pilot", args.pilot_dir), ("continuation", args.continuation_dir)):
+                audit = summary_for(evidence, directory, name) if evidence else None
+                report(directory, args.output_root, staged=True, audit=audit)
+            if evidence:
+                write_review(source, args.output_root)
         return
     config = json.loads(args.config.read_text(encoding="utf-8"))
     if args.command == "prepare":
@@ -82,13 +90,17 @@ def main() -> None:
             run_pilot(config, args.run_dir)
             report(args.run_dir)
     elif args.command == "report":
+        from .audit_reporting import applicable_summary
         from .reporting import report
 
-        report(args.run_dir, args.output_root or Path("."), staged=args.output_root is not None)
+        report(args.run_dir, args.output_root or Path("."), staged=args.output_root is not None,
+               audit=applicable_summary(args.run_dir, args.audit_evidence))
     elif args.command == "dashboard":
+        from .audit_reporting import applicable_summary
         from .dashboard import serve
 
-        serve(args.run_dir, int(os.environ.get("NOVELTY_DASHBOARD_PORT", "8765")))
+        serve(args.run_dir, int(os.environ.get("NOVELTY_DASHBOARD_PORT", "8765")),
+              applicable_summary(args.run_dir, args.audit_evidence))
     elif args.command == "publish":
         from .publishing import publish
 

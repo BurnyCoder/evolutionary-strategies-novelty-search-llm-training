@@ -2867,62 +2867,11 @@
       "parameter_elements": 494032768
     },
     "seed": 0,
-    "initializations": {
-      "main": {
-        "checked_at": "2026-11-07T04:57:19.449952+00:00",
-        "condition": "main",
-        "generation": 0,
-        "model_id": "Qwen/Qwen2.5-0.5B-Instruct",
-        "model_revision": "7ae557604adf67be50417f59c2c2f167def9a775",
-        "training_code_revision": "9f8d30ef0103e3532ebefeafe7f55b8f8d163a80",
-        "weighting": "zscore_task_plus_novelty_v1",
-        "novelty_weight": 1.0,
-        "unique_tensors": 290,
-        "parameter_elements": 494032768,
-        "architecture": {
-          "num_hidden_layers": 24,
-          "hidden_size": 896,
-          "intermediate_size": 4864,
-          "num_attention_heads": 14,
-          "num_key_value_heads": 2,
-          "vocab_size": 151936,
-          "max_position_embeddings": 32768,
-          "tie_word_embeddings": true
-        },
-        "all_pretrained_tensors_exactly_equal_in_fp32": true,
-        "initial_archive_empty": true,
-        "absolute_deadline": 1794067007.1504683
-      },
-      "reward_only": {
-        "checked_at": "2026-11-07T06:38:33.868772+00:00",
-        "condition": "reward_only",
-        "generation": 0,
-        "model_id": "Qwen/Qwen2.5-0.5B-Instruct",
-        "model_revision": "7ae557604adf67be50417f59c2c2f167def9a775",
-        "training_code_revision": "9f8d30ef0103e3532ebefeafe7f55b8f8d163a80",
-        "weighting": "zscore_task_plus_novelty_v1",
-        "novelty_weight": 1.0,
-        "unique_tensors": 290,
-        "parameter_elements": 494032768,
-        "architecture": {
-          "num_hidden_layers": 24,
-          "hidden_size": 896,
-          "intermediate_size": 4864,
-          "num_attention_heads": 14,
-          "num_key_value_heads": 2,
-          "vocab_size": 151936,
-          "max_position_embeddings": 32768,
-          "tie_word_embeddings": true
-        },
-        "all_pretrained_tensors_exactly_equal_in_fp32": true,
-        "initial_archive_empty": true,
-        "absolute_deadline": 1794067007.1504683
-      }
-    },
-    "historical_audit_fields": "initializations, recovery_audit and restart_replay_audit preserve older assertions; see the independent correction evidence for current checks.",
+    "initializations": {},
+    "historical_audit_fields": "Excluded from this reanalysis. See the immutable original releases for historical assertions.",
     "novelty_weight": 1.0,
     "finding": "The directional improvement hypothesis was not supported in this seed: main accuracy did not exceed reward-only ES. The paired interval includes zero, so this does not establish a performance difference.",
-    "generated_at": "2026-11-12T12:11:23.787392+00:00",
+    "generated_at": "2026-11-26T12:29:02.801772+00:00",
     "interval_scope": "Problem uncertainty conditional on one training seed; excludes seed variability.",
     "interval_caveat": "Percentile bootstrap intervals can collapse at observed boundaries or when paired outcomes are identical. A zero-width interval does not prove zero population error or equivalence on unseen problems.",
     "discordance": {
@@ -2971,20 +2920,7 @@
         "absolute_deadline": 1794067007.1504683
       }
     ],
-    "recovery_audit": {
-      "checked_at": "2026-11-07T05:41:15.301+00:00",
-      "condition": "original",
-      "split": "sampled",
-      "before_sha256": "10f4d15e6946fa25b09bf78a635003b3a6f4de637a26f4b05769485a20f52af2",
-      "before_rows": 2128,
-      "after_rows_at_check": 3136,
-      "replayed_batch_start": 2112,
-      "replayed_batch_rows": 16,
-      "all_prior_and_replayed_generation_fields_equal": true,
-      "excluded_field": "batch_seconds",
-      "absolute_deadline": 1794067007.1504683,
-      "scope": "Observed storage-failure recovery; not a claim about arbitrary restarts or environments"
-    },
+    "recovery_audit": {},
     "restart_replay_audit": {},
     "logged_generation_work": [
       {
@@ -3048,7 +2984,34 @@
         "generated_tokens": 5142
       }
     ],
-    "elapsed_seconds": 20151.339267730713
+    "elapsed_seconds": 20151.339267730713,
+    "scientific_audit": {
+      "date": "2026-11-26",
+      "review": "https://github.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/blob/main/reports/reviews/scientific-audit-2026-11-26.md",
+      "experiment_sha256": "acd8122d7cfe211334d273370fe2a7c4115a30dd648c641a89319f55bfcd6c31",
+      "malformed_training": {
+        "main": 9,
+        "reward_only": 11
+      },
+      "changed_probe_gates": 0,
+      "populations": 13,
+      "strict_primary": {
+        "n": 2048,
+        "difference": 0.0,
+        "low": -0.00244140625,
+        "high": 0.00244140625,
+        "main_only": 3,
+        "control_only": 3,
+        "both_correct": 20,
+        "both_wrong": 2022,
+        "exact_two_sided_p": 1.0
+      },
+      "repetition_penalty": 1.1,
+      "primary_correct_changes": {
+        "main": 0,
+        "reward_only": 0
+      }
+    }
   },
   "evaluation_progress": {
     "original": {

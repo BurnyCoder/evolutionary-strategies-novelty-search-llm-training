@@ -23,6 +23,7 @@ import numpy as np
 from matplotlib.ticker import MaxNLocator, PercentFormatter
 
 from .analysis import novelty_intervention, paired_bootstrap, pass_at_k
+from .audit_reporting import QWEN, REVIEW_URL, audit_description
 from .dashboard import dashboard_state, read_json
 from .runtime import atomic_json
 from .verification import export_description, separate_output
@@ -84,7 +85,7 @@ def _paired_evaluations(first: dict, second: dict, replicates: int, split: str =
     return paired_bootstrap([a[key] for key in ordered], [b[key] for key in ordered], replicates)
 
 
-def summarize(directory: Path) -> dict:
+def summarize(directory: Path, *, include_historical_assertions: bool = True) -> dict:
     """Build a machine-readable audit and registered comparison from raw evaluations."""
     experiment = read_json(directory / "experiment.json", {})
     config = experiment.get("config", read_json(Path("configs/pilot.json"), {}))
@@ -105,7 +106,7 @@ def summarize(directory: Path) -> dict:
         "initializations": {
             name: read_json(
                 Path(config.get("continuation", {}).get("parent_directory", directory)) / name / "initialization-audit.json", {}
-            ) for name in ("main", "reward_only")
+            ) for name in ("main", "reward_only") if include_historical_assertions
         },
         "historical_audit_fields": "initializations, recovery_audit and restart_replay_audit preserve older assertions; see the independent correction evidence for current checks.",
         "novelty_weight": config["novelty_weight"],
@@ -130,6 +131,10 @@ def summarize(directory: Path) -> dict:
             "evaluation_seconds": evaluation["seconds"],
             "complete": False,
         }
+        if condition != "original" and training:
+            target = config.get("continuation", {}).get("target_generation", experiment.get("calibration", {}).get("generations"))
+            method["training_complete"] = bool(method["training_complete"] and training.get("complete")
+                and training.get("generation") == training.get("generations") and (target is None or training.get("generation") == target))
         for split in greedy_splits:
             expected = config["probe_count"] if split == "probes" else manifest["splits"][split]["count"]
             method[split] = _split_summary(evaluation["sets"].get(split, []), expected, config["bootstrap_replicates"])
@@ -211,7 +216,9 @@ def summarize(directory: Path) -> dict:
             summary["finding"] = (
                 "The directional improvement hypothesis was not supported in this seed: main accuracy did not exceed reward-only ES."
             )
-            if primary["high"] >= 0:
+            if primary["high"] < 0:
+                summary["finding"] += " The paired problem interval supports a lower accuracy for the main checkpoint at this seed."
+            else:
                 summary["finding"] += " The paired interval includes zero, so this does not establish a performance difference."
         elif primary["low"] > 0:
             summary["finding"] = (
@@ -240,8 +247,10 @@ def summarize(directory: Path) -> dict:
     summary["failures"] = experiment.get("failures", [])
     summary["protocol_amendments"] = experiment.get("protocol_amendments", [])
     summary["execution_repairs"] = experiment.get("execution_repairs", [])
-    summary["recovery_audit"] = read_json(directory / "recovery-audit.json", {})
-    summary["restart_replay_audit"] = read_json(directory / "restart-replay-audit.json", {})
+    summary["recovery_audit"] = read_json(directory / "recovery-audit.json", {}) if include_historical_assertions else {}
+    summary["restart_replay_audit"] = read_json(directory / "restart-replay-audit.json", {}) if include_historical_assertions else {}
+    if not include_historical_assertions:
+        summary["historical_audit_fields"] = "Excluded from this reanalysis. See the immutable original releases for historical assertions."
     summary["logged_generation_work"] = logged_generation_work(directory / "events.jsonl")
     summary["elapsed_seconds"] = (
         experiment.get("finished_at", time.time()) - experiment["started_at"] if "started_at" in experiment else 0
@@ -390,19 +399,22 @@ def measurement_scope(summary: dict) -> str:
         "These are not GPU compute-hour measurements. "
         "MiniLM receives complete response strings but truncates at its [pinned 256 WordPiece-token limit]"
         "(https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/blob/1110a243fdf4706b3f48f1d95db1a4f5529b4d41/sentence_bert_config.json). "
-        "The verifier accepts restricted [Python expression syntax](https://docs.python.org/3.12/reference/expressions.html), either bare or inside one answer tag; "
-        "surrounding prose is ignored when one tag is present. "
+        "The historical verifier accepts restricted [Python expression syntax](https://docs.python.org/3.12/reference/expressions.html), either bare or in one complete answer block. "
+        "It can ignore surrounding prose and extra unmatched delimiters. "
         + summary["interval_scope"]
     )
 
 
-def correction_note(slug: str) -> str:
+def correction_note(slug: str, audit: dict | None = None) -> str:
     """Link dated documentation revisions to the original immutable publication receipt."""
     receipt = "publication.json" if slug == "pilot" else f"publication-{slug}.json"
     root = "https://github.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training"
     published = read_json(Path("reports") / receipt, {})
     raw = (f"[Immutable raw measurements]({published['artifacts']}/tree/{published['revisions']['artifacts']}). "
            if published else "")
+    if audit:
+        return (audit_description(audit) + f" [Independent scientific audit and row-level evidence]({REVIEW_URL}). "
+                + raw + f"[Pinned decoding defaults]({QWEN}).")
     return ("Documentation correction dated 2026-11-12; raw evidence and weights are unchanged. "
             + raw +
             f"[Predecessor revisions]({root}/blob/cf0a402/reports/{receipt}). "
@@ -426,42 +438,9 @@ def refresh_readme(path: Path, summary: dict, table: list[list[str]]) -> None:
         f"\n{summary['finding']}\n\n{outcome_description(summary)}\n\n{markdown_table(table)}\n\n"
         f"{summary['interval_scope']} [Full report](reports/experiment-{slug}.md).\n"
     )
-    path.write_text(before + start + result + end + after, encoding="utf-8")
-
-
-def refresh_corrections(output_root: Path) -> None:
-    """Render the dated correction's empirical block from independently saved results."""
-    name = "independent-corrections-2026-11-12.md"
-    source = Path("reports") / name
-    if not source.exists():
-        return
-    verified = read_json(Path("reports/independent-verification-2026-11-12.json"), {})
-    tokenized = read_json(Path("reports/embedding-inputs-2026-11-12.json"), {})
-    if not verified or not tokenized:
-        return
-    rows = [["Study / primary split", "Main correct / problems", "Control correct / problems", "Difference (pp)",
-             "Paired 95% interval (pp)", "Main candidate weights changed"]]
-    tokens = [["Log", "Probe response events", "Above embedding cap", "Maximum input tokens", "Cap including special tokens"]]
-    for name, item in verified["studies"].items():
-        split = "test" if name == "pilot" else "fresh"
-        main, control = (item["evaluations"][condition][split] for condition in ("main", "reward_only"))
-        primary = item["primary"]
-        rows.append([f"{name} / {split}", f"{main['correct']} / {main['responses']}",
-                     f"{control['correct']} / {control['responses']}", f"{100 * primary['difference']:.3f}",
-                     f"[{100 * primary['low']:.3f}, {100 * primary['high']:.3f}]",
-                     str(item["trace"]["coefficients"]["main"]["candidates_weight_changed"])])
-        measured = tokenized[name]
-        tokens.append([name, *[str(measured[key]) for key in ('logged_probe_responses', 'above_limit', 'max_tokens', 'limit')]])
-    start, end = "<!-- BEGIN INDEPENDENT VERIFIED RESULTS -->", "<!-- END INDEPENDENT VERIFIED RESULTS -->"
-    text = source.read_text(encoding="utf-8")
-    block = (markdown_table(rows) + "\n\nIntervals resample problems conditional on the realized training seed. "
-             "Changed-weight counts are cumulative recorded populations, not additional continuation-only counts.\n\n"
-             + markdown_table(tokens) + "\n\nProbe-event counts include repeated logged responses; the continuation log excludes its pilot prefix. "
-             "Sources: [independent raw-record checks](independent-verification-2026-11-12.json) and "
-             "[pinned-tokenizer measurements](embedding-inputs-2026-11-12.json).\n")
-    target = output_root / "reports" / source.name
-    target.parent.mkdir(parents=True, exist_ok=True)
-    target.write_text(text.split(start)[0] + start + "\n" + block + end + text.split(end)[1], encoding="utf-8")
+    if audit := summary.get("scientific_audit"):
+        result += f"\n{audit_description(audit)} [Evidence]({REVIEW_URL}).\n"
+    path.write_text(before + start + result + end + after, encoding="utf-8", newline="\n")
 
 
 def outcome_description(summary: dict) -> str:
@@ -534,8 +513,8 @@ def continuation_description(experiment: dict) -> str:
         budget = recovery_description(experiment) + " "
     return (
         f"This follow-up continues each arm's own generation-{spec['parent_generation']} FP32 checkpoint "
-        f"to a fixed target of {spec['target_generation']} generations, preserving the archive, RNGs and global schedules. "
-        "The duration is the only training change. The original pilot was already observed and published. "
+        f"to a fixed target of {spec['target_generation']} generations. The protocol specifies carrying over the archive, RNGs and global schedules. "
+        "The intended training intervention was duration. The original pilot was already observed and published. "
         f"The new primary endpoint is the fresh {spec['fresh_manifest']['splits']['fresh']['count']}-problem set, "
         "excluding all earlier number multisets. The original test is secondary. Parent checkpoints receive fresh-only "
         "evaluation after continuation training, so the change contrast pairs four outcomes per problem. "
@@ -559,8 +538,7 @@ def recovery_description(experiment: dict) -> str:
         f"including {config['train_seconds'] / 3600:g} for unfinished control training and "
         f"{config['final_seconds'] / 3600:g} for final work, capped by the original whole-week deadline. "
         "This amends the pretrained-stage allocation and may displace later studies. The main checkpoint is reused unchanged. "
-        "The historical recovery audit reports exact preservation of non-metadata checkpoint fields and pending candidates; "
-        "the initial recovery checkpoint was subsequently overwritten, so that initialization claim cannot now be fully rechecked. "
+        "The initially rewritten recovery checkpoint was subsequently overwritten. Its complete initialization state cannot now be verified. "
         "Training hours add the recorded phase intervals before and after restart; the offline gap is excluded from these intervals, "
         "but remains part of the expired attempt's wall-clock history. Model-execution elapsed time refers to the recovery clock. "
         "The earlier execution allowance was not met, regardless of recovery completion."
@@ -714,7 +692,7 @@ def write_paper(path: Path, experiment: dict, summary: dict, figures: Path, tabl
         f"Each generation evaluates {config['population']} independent Gaussian candidates (sigma {config['sigma']}) "
         f"on {config['rotating_count']} rotating training problems and {config['probe_count']} fixed training probes. "
         f"Population-z-scored task reward is combined with {config['novelty_weight']} times correctness-gated cosine novelty for the main condition. "
-        f"The archive retains {config['memory_size']} correct embeddings per probe after seeded insertion. "
+        f"The archive retains up to {config['memory_size']} embeddings per probe after historical correctness gating and seeded insertion. "
         f"These coefficients weight noise directly, without another normalization; effective alpha is {config['alpha']}. "
         "FP32 masters reconstruct BF16 candidates afresh and tied tensors are updated once. Prefix regeneration and backpropagation are absent.",
     )
@@ -753,7 +731,7 @@ def write_paper(path: Path, experiment: dict, summary: dict, figures: Path, tabl
         "Data, evaluation and preregistered analysis",
         "Synthetic problems have exact rational witnesses. Global number-multiset isolation prevents permutations or alternative targets crossing splits. "
         "Only supplied integer literals and binary +, -, *, / in Python expression syntax are accepted [10]. "
-        "The grader accepts either a bare expression or the contents of one answer tag (surrounding prose is ignored). "
+        "The historical grader accepts a bare expression or one complete answer block. An extra unmatched delimiter can be ignored. "
         "Unary signs, powers, floor division, extra literals and unparenthesized line breaks are rejected. "
         "Greedy accuracy on the designated primary split at the final scheduled checkpoint is primary. "
         "The directional hypothesis is falsified for this pilot if main minus control accuracy is nonpositive. "
@@ -775,6 +753,8 @@ def write_paper(path: Path, experiment: dict, summary: dict, figures: Path, tabl
         f"of correct samples. Intervals use {config['bootstrap_replicates']} paired resamples, seed {config['data_seed']}."
     )
     section("Results and claims", html.escape(summary["finding"]))
+    if audit := summary.get("scientific_audit"):
+        section("Independent grading and paired sensitivity analysis", html.escape(audit_description(audit)))
     cells = [[Paragraph(html.escape(cell.replace("Original-test", "Original test")), styles["BodyText"]) for cell in row] for row in table]
     result = Table(cells, colWidths=[64, 67, 87, 64, 52, 52, 66], repeatRows=1)
     result.setStyle(
@@ -963,7 +943,10 @@ def write_paper(path: Path, experiment: dict, summary: dict, figures: Path, tabl
         ("8. Evaluating Large Language Models Trained on Code", "https://arxiv.org/abs/2107.03374"),
         ("9. Pinned MiniLM input limit", f"https://huggingface.co/{config['embedding_id']}/blob/{config['embedding_revision']}/sentence_bert_config.json"),
         ("10. Python expression syntax", "https://docs.python.org/3.12/reference/expressions.html"),
-        ("Dated corrections and evidence limits", "https://github.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/blob/main/reports/independent-corrections-2026-11-12.md"),
+        ("Dated corrections and evidence limits", REVIEW_URL if summary.get("scientific_audit") else
+         "https://github.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/blob/main/reports/independent-corrections-2026-11-12.md"),
+        ("Qwen generation defaults", QWEN),
+        ("Exact matched-pair sensitivity analysis", "https://pmc.ncbi.nlm.nih.gov/articles/PMC9447366/"),
         ("Immutable raw responses, configurations and logs", evidence_url),
         (
             "Research protocol and source",
@@ -1003,11 +986,13 @@ def write_paper(path: Path, experiment: dict, summary: dict, figures: Path, tabl
     ).build(story, onFirstPage=footer, onLaterPages=footer)
 
 
-def report(directory: Path, output_root: Path = Path("."), *, staged: bool = False) -> dict:
+def report(directory: Path, output_root: Path = Path("."), *, staged: bool = False, audit: dict | None = None) -> dict:
     """Regenerate a release; staged mode never writes into the evidence directory."""
     if staged:
         separate_output(output_root, [directory])
-    summary = summarize(directory)
+    summary = summarize(directory, include_historical_assertions=audit is None)
+    if audit:
+        summary["scientific_audit"] = audit
     experiment = read_json(directory / "experiment.json", {})
     continued = bool(summary.get("continuation"))
     slug = experiment["config"]["experiment"] if continued else "pilot"
@@ -1027,7 +1012,7 @@ def report(directory: Path, output_root: Path = Path("."), *, staged: bool = Fal
             "The recovery registration was published before any fresh held-out evaluation. "
             "The source files and original deadlines remain immutable in restart-parent/.\n\n"
             "[Recovery registration](preregistration-recovery.md). [Pinned source evidence](../configs/continuation-recovery.json).\n",
-            encoding="utf-8",
+            encoding="utf-8", newline="\n",
         )
     plot_results(directory, summary, figures)
     primary = summary["primary"]
@@ -1041,7 +1026,7 @@ def report(directory: Path, output_root: Path = Path("."), *, staged: bool = Fal
         f'# {slug} experiment\n\nLibor "Burny" Burian · {datetime.now().date().isoformat()}\n\n'
         + (continuation_description(experiment) + "\n\n" + markdown_table(continuation_table(summary)) + "\n\n" if continued else "")
         + (restart_replay_description(summary) + "\n\n" if summary.get("restart_replay_audit") else "")
-        + correction_note(slug) + "\n\n" + measurement_scope(summary) + "\n\n"
+        + correction_note(slug, audit) + "\n\n" + measurement_scope(summary) + "\n\n"
         +
         f"{summary['finding']}\n\n{comparison}\n\n{summary['interval_scope']}\n\n"
         f"{outcome_description(summary)}\n\n"
@@ -1107,7 +1092,7 @@ def report(directory: Path, output_root: Path = Path("."), *, staged: bool = Fal
         "no general-language benchmark; descriptive secondary analyses. Bootstrap intervals omit seed variability. "
         "CPU tests, reporting, audits and backups overlapped training, so timing is not an isolated systems benchmark.\n"
     )
-    (reports / f"experiment-{slug}.md").write_text(text, encoding="utf-8")
+    (reports / f"experiment-{slug}.md").write_text(text, encoding="utf-8", newline="\n")
     refresh_readme(output_root / "README.md", summary, table)
     # A per-study registry makes aggregation independent of regeneration order.
     atomic_json(reports / "summaries" / f"{slug}.json", summary)
@@ -1117,12 +1102,14 @@ def report(directory: Path, output_root: Path = Path("."), *, staged: bool = Fal
         item = read_json(saved, {})
         aggregate += f"\n## {saved.stem}\n\n{item['finding']}\n\n{markdown_table(result_table(item))}\n\n"
         aggregate += f"{outcome_description(item)}\n\n[Full report](experiment-{saved.stem}.md).\n"
+        if item.get("scientific_audit"):
+            aggregate += f"\n{audit_description(item['scientific_audit'])} [Audit]({REVIEW_URL}).\n"
     aggregate += ("\nES evaluates random parameter perturbations and weights their update by measured reward. "
                   "Main adds correct-response novelty; control uses task reward alone. The original pretrained checkpoint is frozen. "
                   "Both trained arms use the same rotating training problems and fixed probes. There are no executed scratch, "
                   "random-search or archive-ablation studies in this release.\n\n"
-                  "[Method and architecture](../README.md). [Evidence limitations](independent-corrections-2026-11-12.md).\n")
-    (reports / "all-experiments.md").write_text(aggregate, encoding="utf-8")
+                  "[Method and architecture](../README.md). [Scientific evidence and limitations](reviews/scientific-audit-2026-11-26.md).\n")
+    (reports / "all-experiments.md").write_text(aggregate, encoding="utf-8", newline="\n")
     site = output_root / "docs/site"
     if continued:
         site /= slug
@@ -1145,19 +1132,19 @@ def report(directory: Path, output_root: Path = Path("."), *, staged: bool = Fal
                 + summary["finding"]
                 + "\n\n" + outcome_description(summary) + "\n\n"
                 + markdown_table(table)
-                + "\n\n" + measurement_scope(summary) + "\n\n" + correction_note(slug)
+                + "\n\n" + measurement_scope(summary) + "\n\n" + correction_note(slug, audit)
                 + "\n\nResearch-only arithmetic adaptation, with no evidence of general language improvements. "
                 "Intervals exclude training-seed variability. See the full preregistration, source, provenance and limitations at "
                 "https://github.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training .\n\n"
                 f"Base revision: `{config['model_revision']}`. Training and evaluation use the recorded seed and configuration.\n",
-                encoding="utf-8",
+                encoding="utf-8", newline="\n",
             )
     # The artifact repository is a documented research release, not a flat example dataset.
     # Hub card format: https://huggingface.co/docs/hub/datasets-cards .
     (release / "README.md").write_text(
         "---\nlicense: apache-2.0\nlanguage:\n- en\ntags:\n- evolution-strategies\n- reproducibility\n---\n\n"
         f"# Novelty ES {slug} evidence\n\n" + summary["finding"] + "\n\n" + markdown_table(table)
-        + "\n\n" + measurement_scope(summary) + "\n\n" + correction_note(slug)
+        + "\n\n" + measurement_scope(summary) + "\n\n" + correction_note(slug, audit)
         + ("\n\n" + continuation_description(experiment) if continued else "")
         + "\n\n" + summary["interval_scope"] + "\n\n"
         "This repository contains raw evaluations, timestamped generation traces, configuration and code provenance, "
@@ -1177,7 +1164,7 @@ def report(directory: Path, output_root: Path = Path("."), *, staged: bool = Fal
         "[ES at Scale](https://arxiv.org/abs/2509.24372); it is not a reproduction. "
         "Amendment A preceded all training updates but followed calibration and partial original-model evaluation. "
         "This single-seed arithmetic study provides no evidence about general language quality or seed robustness.\n",
-        encoding="utf-8",
+        encoding="utf-8", newline="\n",
     )
     shutil.copyfile("LICENSE", release / "LICENSE")
     write_paper(output_root / f"output/pdf/novelty-es-{slug}.pdf", experiment, summary, figures, table)

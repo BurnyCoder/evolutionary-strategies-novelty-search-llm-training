@@ -1,10 +1,10 @@
 # pilot experiment
 
-Libor "Burny" Burian · 2026-11-12
+Libor "Burny" Burian · 2026-11-26
 
-Documentation correction dated 2026-11-12; raw evidence and weights are unchanged. [Immutable raw measurements](https://huggingface.co/datasets/BurnyCoder/novelty-es-pilot-artifacts/tree/949e2dcb385bc2b7088c40444ef879b76596317d). [Predecessor revisions](https://github.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/blob/cf0a402/reports/publication.json). [Independent corrections and evidence gaps](https://github.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/blob/main/reports/independent-corrections-2026-11-12.md). Old audit verdicts are retained as historical records, not independent proof. Generation-zero tensors and a complete historical embedding/archive trajectory are unavailable.
+The historical scorer accepted one complete answer block even when an extra delimiter appeared. Applying the balanced-tag reading to the saved training responses changes 9 novelty-arm and 11 control-arm rewards in this training stage, including 0 changes to fixed-probe novelty eligibility. On the saved final outputs the balanced-tag difference is +0.000 percentage points (paired 95% interval -0.244 to +0.244). The novelty checkpoint alone solved 3 problems and the control alone solved 3. The post-hoc two-sided exact McNemar p-value is 1. Both decoding paths inherit a repetition penalty of 1.1. The measured checkpoints reflect the historical rewards. The outcomes of training with balanced tags are unknown. [Independent scientific audit and row-level evidence](https://github.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/blob/main/reports/reviews/scientific-audit-2026-11-26.md). [Immutable raw measurements](https://huggingface.co/datasets/BurnyCoder/novelty-es-pilot-artifacts/tree/949e2dcb385bc2b7088c40444ef879b76596317d). [Pinned decoding defaults](https://huggingface.co/Qwen/Qwen2.5-0.5B-Instruct/blob/7ae557604adf67be50417f59c2c2f167def9a775/generation_config.json).
 
-Accuracy columns use one greedy response per problem. Hard is the five-number split. pass@1, pass@8 and sampled diversity always use the fixed original-test subset, including in the continuation. Probes are training examples. Stored evaluation tokens include reused original-model outcomes; parent fresh evaluations are separate from the three-condition diagnostic table. Training tokens are cumulative committed-candidate tokens. Phase wall hours include overhead; for the continuation they cover added work only, and control time excludes offline downtime and the unknown unlogged outage tail. These are not GPU compute-hour measurements. MiniLM receives complete response strings but truncates at its [pinned 256 WordPiece-token limit](https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/blob/1110a243fdf4706b3f48f1d95db1a4f5529b4d41/sentence_bert_config.json). The verifier accepts restricted [Python expression syntax](https://docs.python.org/3.12/reference/expressions.html), either bare or inside one answer tag; surrounding prose is ignored when one tag is present. Problem uncertainty conditional on one training seed; excludes seed variability.
+Accuracy columns use one greedy response per problem. Hard is the five-number split. pass@1, pass@8 and sampled diversity always use the fixed original-test subset, including in the continuation. Probes are training examples. Stored evaluation tokens include reused original-model outcomes; parent fresh evaluations are separate from the three-condition diagnostic table. Training tokens are cumulative committed-candidate tokens. Phase wall hours include overhead; for the continuation they cover added work only, and control time excludes offline downtime and the unknown unlogged outage tail. These are not GPU compute-hour measurements. MiniLM receives complete response strings but truncates at its [pinned 256 WordPiece-token limit](https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/blob/1110a243fdf4706b3f48f1d95db1a4f5529b4d41/sentence_bert_config.json). The historical verifier accepts restricted [Python expression syntax](https://docs.python.org/3.12/reference/expressions.html), either bare or in one complete answer block. It can ignore surrounding prose and extra unmatched delimiters. Problem uncertainty conditional on one training seed; excludes seed variability.
 
 The directional improvement hypothesis was not supported in this seed: main accuracy did not exceed reward-only ES. The paired interval includes zero, so this does not establish a performance difference.
 
@@ -482,20 +482,7 @@ All values below come from persisted outcomes. Missing conditions remain missing
       "absolute_deadline": 1794067007.1504683
     }
   ],
-  "recovery_audit": {
-    "checked_at": "2026-11-07T05:41:15.301+00:00",
-    "condition": "original",
-    "split": "sampled",
-    "before_sha256": "10f4d15e6946fa25b09bf78a635003b3a6f4de637a26f4b05769485a20f52af2",
-    "before_rows": 2128,
-    "after_rows_at_check": 3136,
-    "replayed_batch_start": 2112,
-    "replayed_batch_rows": 16,
-    "all_prior_and_replayed_generation_fields_equal": true,
-    "excluded_field": "batch_seconds",
-    "absolute_deadline": 1794067007.1504683,
-    "scope": "Observed storage-failure recovery; not a claim about arbitrary restarts or environments"
-  },
+  "recovery_audit": {},
   "initial_code_revision": "ddcd928c1392fa2eb5beaff5b7b6f192dfa04817",
   "training_code_revision": "9f8d30ef0103e3532ebefeafe7f55b8f8d163a80"
 }

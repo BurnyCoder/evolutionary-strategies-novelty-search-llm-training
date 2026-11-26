@@ -1,0 +1,20 @@
+{
+  "pilot": {
+    "logged_probe_responses": 18240,
+    "above_limit": 0,
+    "correct_above_limit": 0,
+    "max_tokens": 161,
+    "limit": 256,
+    "embedding_revision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+    "config_sha256": "fc1993fde0a95c24ec6c022539d41cf6e2f7c9721e5415d6fb6897472a9cd4b7"
+  },
+  "continuation": {
+    "logged_probe_responses": 77760,
+    "above_limit": 0,
+    "correct_above_limit": 0,
+    "max_tokens": 143,
+    "limit": 256,
+    "embedding_revision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+    "config_sha256": "fc1993fde0a95c24ec6c022539d41cf6e2f7c9721e5415d6fb6897472a9cd4b7"
+  }
+}

@@ -2811,62 +2811,11 @@
     "parameter_elements": 494032768
   },
   "seed": 0,
-  "initializations": {
-    "main": {
-      "checked_at": "2026-11-07T04:57:19.449952+00:00",
-      "condition": "main",
-      "generation": 0,
-      "model_id": "Qwen/Qwen2.5-0.5B-Instruct",
-      "model_revision": "7ae557604adf67be50417f59c2c2f167def9a775",
-      "training_code_revision": "9f8d30ef0103e3532ebefeafe7f55b8f8d163a80",
-      "weighting": "zscore_task_plus_novelty_v1",
-      "novelty_weight": 1.0,
-      "unique_tensors": 290,
-      "parameter_elements": 494032768,
-      "architecture": {
-        "num_hidden_layers": 24,
-        "hidden_size": 896,
-        "intermediate_size": 4864,
-        "num_attention_heads": 14,
-        "num_key_value_heads": 2,
-        "vocab_size": 151936,
-        "max_position_embeddings": 32768,
-        "tie_word_embeddings": true
-      },
-      "all_pretrained_tensors_exactly_equal_in_fp32": true,
-      "initial_archive_empty": true,
-      "absolute_deadline": 1794067007.1504683
-    },
-    "reward_only": {
-      "checked_at": "2026-11-07T06:38:33.868772+00:00",
-      "condition": "reward_only",
-      "generation": 0,
-      "model_id": "Qwen/Qwen2.5-0.5B-Instruct",
-      "model_revision": "7ae557604adf67be50417f59c2c2f167def9a775",
-      "training_code_revision": "9f8d30ef0103e3532ebefeafe7f55b8f8d163a80",
-      "weighting": "zscore_task_plus_novelty_v1",
-      "novelty_weight": 1.0,
-      "unique_tensors": 290,
-      "parameter_elements": 494032768,
-      "architecture": {
-        "num_hidden_layers": 24,
-        "hidden_size": 896,
-        "intermediate_size": 4864,
-        "num_attention_heads": 14,
-        "num_key_value_heads": 2,
-        "vocab_size": 151936,
-        "max_position_embeddings": 32768,
-        "tie_word_embeddings": true
-      },
-      "all_pretrained_tensors_exactly_equal_in_fp32": true,
-      "initial_archive_empty": true,
-      "absolute_deadline": 1794067007.1504683
-    }
-  },
-  "historical_audit_fields": "initializations, recovery_audit and restart_replay_audit preserve older assertions; see the independent correction evidence for current checks.",
+  "initializations": {},
+  "historical_audit_fields": "Excluded from this reanalysis. See the immutable original releases for historical assertions.",
   "novelty_weight": 1.0,
   "finding": "The directional improvement hypothesis was not supported in this seed: main accuracy did not exceed reward-only ES. The paired interval includes zero, so this does not establish a performance difference.",
-  "generated_at": "2026-11-12T12:11:29.674527+00:00",
+  "generated_at": "2026-11-26T12:29:12.701280+00:00",
   "interval_scope": "Problem uncertainty conditional on one training seed; excludes seed variability.",
   "interval_caveat": "Percentile bootstrap intervals can collapse at observed boundaries or when paired outcomes are identical. A zero-width interval does not prove zero population error or equivalence on unseen problems.",
   "discordance": {
@@ -2939,20 +2888,7 @@
   "protocol_amendments": [],
   "execution_repairs": [],
   "recovery_audit": {},
-  "restart_replay_audit": {
-    "checked_at": "2026-11-11T21:26:30.635998+00:00",
-    "generation_index": 31,
-    "candidate_index": 19,
-    "replayed_rows": 16,
-    "mismatches": [],
-    "all_exact": true,
-    "ignored_fields": [
-      "timestamp",
-      "batch_seconds"
-    ],
-    "source_trace_sha256": "34a4983448642b699a3061632571aef400162e5f353cba18aa3c989f2ec94d4b",
-    "scope": "Actual GPU response/token/verifier replay for the unfinished candidate; not a full trajectory replay."
-  },
+  "restart_replay_audit": {},
   "logged_generation_work": [
     {
       "condition": "main",
@@ -3009,5 +2945,32 @@
       "generated_tokens": 21023
     }
   ],
-  "elapsed_seconds": 19017.62396979332
+  "elapsed_seconds": 19017.62396979332,
+  "scientific_audit": {
+    "date": "2026-11-26",
+    "review": "https://github.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/blob/main/reports/reviews/scientific-audit-2026-11-26.md",
+    "experiment_sha256": "1ce85f03fadea587fcf2dfbe615f0de924df2bcbea8b708d1a422373c427b389",
+    "malformed_training": {
+      "main": 39,
+      "reward_only": 37
+    },
+    "changed_probe_gates": 1,
+    "populations": 41,
+    "strict_primary": {
+      "n": 2048,
+      "difference": -0.00341796875,
+      "low": -0.01025390625,
+      "high": 0.00341796875,
+      "main_only": 21,
+      "control_only": 28,
+      "both_correct": 130,
+      "both_wrong": 1869,
+      "exact_two_sided_p": 0.3916029105474905
+    },
+    "repetition_penalty": 1.1,
+    "primary_correct_changes": {
+      "main": 0,
+      "reward_only": 0
+    }
+  }
 }

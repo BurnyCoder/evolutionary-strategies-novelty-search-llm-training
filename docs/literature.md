@@ -1,5 +1,7 @@
 # Literature and reuse audit
 
+The study's synthetic Countdown variant requires all supplied numbers and permits rational or negative intermediate values. The classical formulation uses at most one copy of each supplied number and positive natural-number intermediates. Scores describe the registered synthetic task. [Registered generator](../reports/preregistration.md#frozen-configuration-and-data) · [Hutton, The Countdown Problem](https://people.cs.nott.ac.uk/pszgmh/countdown.pdf). The [independent scientific review](../reports/reviews/scientific-audit-2026-11-26.md) documents the implemented grading and decoding rules.
+
 Initially reviewed on 2026-11-07; independently rechecked on 2026-11-12. The first experiment is an adaptation of an LLM novelty objective to full-weight evolution strategies (ES). Published findings below belong to their authors; none are results of this project. The review distinguishes changing model parameters, changing prompts, and evolving generated artifacts. The central ExTra, ES at Scale and pass@k papers were read in full for this correction; peripheral entries support only the narrow classifications stated here, not validation of their reported performance.
 
 ## Closest parameter-training methods
