@@ -2,7 +2,7 @@
 
 These commands use existing evidence only. They perform no training, resumed training or new model evaluation. Both historical allowances have expired. The [continuation registration](../reports/preregistration-continuation.md), [recovery registration](../reports/preregistration-recovery.md) and original configuration/deadlines remain unchanged.
 
-The original attempt stopped during control training. Recovery retained the completed main model and continued the unfinished control under a separately registered allowance. The old attempt remains incomplete under its own deadline. See the [generated report](../reports/experiment-continuation-seed0-gen100.md) and [dated corrections](../reports/independent-corrections-2026-11-12.md) for the evidence and its limits.
+The original attempt stopped during control training. Recovery retained the completed main model and continued the unfinished control under a separately registered allowance. The old attempt remains incomplete under its own deadline. The [generated report](../reports/experiment-continuation-seed0-gen100.md) and [independent scientific audit](../reports/reviews/scientific-audit-2026-11-26.md) link the evidence for both outcomes.
 
 ## Restore immutable releases
 
