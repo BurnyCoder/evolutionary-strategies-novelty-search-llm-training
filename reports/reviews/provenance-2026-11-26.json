@@ -89,7 +89,7 @@
         }
       },
       "created_at": "2026-11-07T09:39:30+00:00",
-      "seconds_after_final_phase": -2300.441597223282,
+      "seconds_after_final_phase_deadline": -2300.441597223282,
       "seconds_before_overall_deadline": 22637.150468349457
     },
     {
@@ -134,7 +134,7 @@
         }
       },
       "created_at": "2026-11-07T09:45:50+00:00",
-      "seconds_after_final_phase": -1920.4415972232819,
+      "seconds_after_final_phase_deadline": -1920.4415972232819,
       "seconds_before_overall_deadline": 22257.150468349457
     },
     {
@@ -239,7 +239,7 @@
         }
       },
       "created_at": "2026-11-07T10:41:48+00:00",
-      "seconds_after_final_phase": 1437.5584027767181,
+      "seconds_after_final_phase_deadline": 1437.5584027767181,
       "seconds_before_overall_deadline": 18899.150468349457
     },
     {
@@ -284,7 +284,7 @@
         }
       },
       "created_at": "2026-11-12T02:57:36+00:00",
-      "seconds_after_final_phase": -5033.203491687775,
+      "seconds_after_final_phase_deadline": -5033.203491687775,
       "seconds_before_overall_deadline": 15803.950737953186
     },
     {
@@ -329,7 +329,7 @@
         }
       },
       "created_at": "2026-11-12T03:02:21+00:00",
-      "seconds_after_final_phase": -4748.203491687775,
+      "seconds_after_final_phase_deadline": -4748.203491687775,
       "seconds_before_overall_deadline": 15518.950737953186
     },
     {
@@ -486,7 +486,7 @@
         }
       },
       "created_at": "2026-11-12T03:36:08+00:00",
-      "seconds_after_final_phase": -2721.2034916877747,
+      "seconds_after_final_phase_deadline": -2721.2034916877747,
       "seconds_before_overall_deadline": 13491.950737953186
     }
   ]
