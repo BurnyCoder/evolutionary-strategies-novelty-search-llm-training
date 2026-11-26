@@ -29,9 +29,12 @@ def read(path: Path):
 
 
 def sha256(path: Path) -> str:
-    """Stream large checkpoints rather than reading their bytes into memory."""
-    with path.open("rb") as stream:
-        return hashlib.file_digest(stream, "sha256").hexdigest()
+    """Hash identical bytes with bounded, large reads on high-latency evidence volumes."""
+    digest = hashlib.sha256()
+    with path.open("rb", buffering=0) as stream:
+        for block in iter(lambda: stream.read(16 << 20), b""):
+            digest.update(block)
+    return digest.hexdigest()
 
 
 def separate_output(output: Path, sources: list[Path]) -> None:

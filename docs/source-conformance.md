@@ -1,6 +1,6 @@
 # Paper and source correspondence
 
-This is an audit of an ES–ExTra adaptation, not a claim to reproduce either paper's full algorithm or reported performance. [Amendment A](../reports/preregistration.md#amendment-a-source-aligned-weighting-before-either-trained-condition) was published after partial original-model evaluation, before either trained arm. No old-rule training checkpoint is used.
+The [independent scientific review](../reports/reviews/scientific-audit-2026-11-26.md) distinguishes the recorded Boolean correctness mask from a strict reading of the written delimiter rule. This distinction affects the rewards used to fit the released checkpoints. The ES–ExTra adaptation uses [Amendment A](../reports/preregistration.md#amendment-a-source-aligned-weighting-before-either-trained-condition), published after partial original-model evaluation and before either trained arm.
 
 | Component | Source and current implementation | Remaining difference or reason |
 |---|---|---|
@@ -14,7 +14,7 @@ This is an audit of an ES–ExTra adaptation, not a claim to reproduce either pa
 
 ## Executed checks
 
-The machine-readable results linked below are historical records. The independent 2026-11-12 review checks sources and raw artifacts separately; see the [claim ledger](../reports/claim-ledger.json). Generation-zero snapshots are no longer retained, so initialization equality cannot be independently repeated today. Final export configuration and tensor counts now come directly from the restored exports, rather than an old initialization flag.
+The [source comparison](../reports/reviews/source-conformance-2026-11-26.json) reruns the cited numerical helpers on synthetic arrays. The [scientific claim map](../reports/reviews/claim-map-2026-11-26.md) links those comparisons to the historical implementation and saved experiment. The restored exports provide final configuration and tensor counts. Generation-zero snapshots are unavailable for an independent equality check.
 
 The [pinned MiniLM configuration](https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/blob/1110a243fdf4706b3f48f1d95db1a4f5529b4d41/sentence_bert_config.json) limits response embeddings to 256 WordPiece tokens including special tokens. Passing a full response string to `encode` does not bypass that truncation. The [verifier](../src/novelty_es/data.py) accepts restricted Python expression syntax, not every mathematically readable arithmetic layout. Both behaviors are preserved in this correction.
 

@@ -6,6 +6,7 @@ ES at Scale's Academic Public License permits this noncommercial research use.
 The comparison covers shared numerical kernels, not equivalence of full trainers.
 """
 
+import argparse
 import contextlib
 import hashlib
 import importlib.util
@@ -43,6 +44,9 @@ def reference(repository: str, revision: str, source: str, license_name: str, na
 
 def main():
     """Compare common nonempty-memory cases; dedicated unit tests cover empty history."""
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--output", type=Path, default=Path("reports/source-conformance.json"))
+    args = parser.parse_args()
     torch.set_num_threads(1)
     extra, extra_provenance = reference(
         "allen4747/extra", "ea53e68036356f8f276e261e886fbbc102633be3",
@@ -92,8 +96,8 @@ def main():
         "passed": True, "sources": [extra_provenance, es_provenance],
         "scope": "Shared cosine kernel with correct-only input, nonempty history, no warmup/group rescaling; ES population z-scores. Not full-trainer equivalence.",
     }
-    path = Path("reports/source-conformance.json")
-    path.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
+    args.output.parent.mkdir(exist_ok=True, parents=True)
+    args.output.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8", newline="\n")
     print(json.dumps({key: value for key, value in result.items() if key != "sources"}, indent=2))
 
 

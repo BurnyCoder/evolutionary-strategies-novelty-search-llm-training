@@ -1,5 +1,7 @@
 # Analysis notes added during the pilot
 
+The [2026-11-26 scientific review](reviews/scientific-audit-2026-11-26.md) independently compares the historical rewards and the written answer-tag rule. Entries below describe the reasoning at their original dates.
+
 2026-11-12 annotation: the dated entries below are historical records, not independent verification. Raw-response regrading and source/chronology checks are linked in the [correction report](independent-corrections-2026-11-12.md). In particular, generation-zero and initial recovery tensors were not retained; original-initialization claims cannot now be fully re-established from tensors. Observed replay comparisons are narrower than general restart equivalence.
 
 ## 2026-11-07: descriptive intervention and resource checks

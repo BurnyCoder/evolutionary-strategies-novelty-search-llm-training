@@ -25,6 +25,26 @@ uv run novelty-es verify --pilot-dir artifacts/restored/pilot --continuation-dir
 
 All input and output paths are explicit. The verifier rejects overlapping output/input trees, hashes the inputs before and after, regrades saved responses using an independent exact arithmetic parser, verifies evaluation coverage and dataset separation, reconciles training records and coefficients, recomputes the primary intervals, and compares exported tensors with the saved masters. It constructs no model. Historical audit success flags are not its inputs. Missing generation-zero tensors and missing intermediate embeddings are reported as evidence gaps.
 
+## Reproduce the independent scientific audit
+
+Use the restored directories from the preceding steps. These commands use the project environment and saved records only. The first command checks the historical scoring, tensors and schedules. The second independently decodes tokens, checks rendered prompts and grades responses under a balanced-tag reading. The provenance check uses the GitHub CLI and public Hub metadata.
+
+```powershell
+$pilot = 'artifacts/restored/pilot'
+$recovered = 'artifacts/restored/continuation'
+$checks = 'output/audit-2026-11-26'
+uv run novelty-es verify --pilot-dir $pilot --continuation-dir $recovered --data-dir data --fresh-dir data/continuation --output-root "$checks/verification"
+uv run python scripts/audit_records.py --pilot-dir $pilot --continuation-dir $recovered --data-dir data --fresh-dir data/continuation --output "$checks/registered-rule-evidence.json"
+uv run python scripts/audit_archive.py --pilot-dir $pilot --continuation-dir $recovered --data-dir data --output "$checks/archive.json"
+uv run python scripts/audit_provenance.py --pilot-dir $pilot --continuation-dir $recovered --verification "$checks/verification/verification.json" --audit "$checks/registered-rule-evidence.json" --output "$checks/provenance.json"
+uv run python scripts/check_embedding_inputs.py --pilot-dir $pilot --continuation-dir $recovered --output "$checks/embedding-inputs.json"
+uv run python scripts/audit_upstream.py --output "$checks/source-conformance.json"
+uv run novelty-es report-all --pilot-dir $pilot --continuation-dir $recovered --audit-evidence "$checks/registered-rule-evidence.json" --output-root "$checks/release"
+uv run python scripts/verify_scientific_release.py --pilot-dir $pilot --continuation-dir $recovered --verification "$checks/verification/verification.json" --release-dir "$checks/release" --output "$checks/presentations.json"
+```
+
+For the embedding-length calculation, install the pinned MiniLM tokenizer and sentence configuration in the local Hub cache if needed. Only text assets are required. The dated [review](../reports/reviews/scientific-audit-2026-11-26.md) links the row-level evidence and claim map.
+
 ## Regenerate both releases together
 
 ```powershell

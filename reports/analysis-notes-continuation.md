@@ -1,5 +1,7 @@
 # Interpretation of the longer comparison
 
+The [2026-11-26 scientific review](reviews/scientific-audit-2026-11-26.md) qualifies the comparison as an observation of checkpoints trained with the historical parser. A balanced answer-tag rule changes some recorded training rewards. The fresh endpoint can be regraded on the saved outputs; the counterfactual trained checkpoints are unknown.
+
 Libor "Burny" Burian · 2026-11-12. These notes were written after final evaluation. All empirical values and intervals are generated in the [experiment report](experiment-continuation-seed0-gen100.md); no endpoint, stopping rule or checkpoint was selected from these outcomes.
 
 Longer training improved both arms relative to their earlier checkpoints on the same fresh problems. The novelty arm did not outperform reward-only ES on the registered fresh primary endpoint, and the paired interval includes zero. This is neither evidence of a novelty benefit nor proof of equivalence. The observed old-test difference favors reward-only ES, but that set had already been observed; its interval is descriptive, secondary and unadjusted. It cannot replace the fresh primary comparison. Both harder-problem performance and sampled expression diversity remain in the generated tables, irrespective of direction.

@@ -37,12 +37,11 @@ def github_events(pilot, recovery, audit):
         frozen = json.loads(subprocess.check_output(["git", "show", f"{rev}:{path}"]))
         if frozen != value:
             raise ValueError(f"Run metadata differs from registration {rev}:{path}")
-    first_training = c["recovery"]["source_phases"]["main"]["started_at"]
     checks = [
         (1, "81fcbb9", p["started_at"], "pilot registration and core"),
         (7, "158becd", p["phases"]["main"]["started_at"], "weighting amendment"),
         (19, "f25f171", interrupted["started_at"], "continuation registration"),
-        (20, None, first_training, "continuation core"),
+        (20, None, interrupted["started_at"], "continuation core"),
         (21, "f874d78", c["started_at"], "recovery registration"),
     ]
     result = []
@@ -122,7 +121,7 @@ def main():
                 )
             )
     args.output.parent.mkdir(exist_ok=True, parents=True)
-    args.output.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
+    args.output.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8", newline="\n")
 
 
 if __name__ == "__main__":
