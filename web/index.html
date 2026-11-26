@@ -62,7 +62,7 @@ function render(){
   if(!auditNote){auditNote=document.createElement('p');auditNote.id='grading-audit';el('comparison').after(auditNote);}
   const audit=summary.scientific_audit;
   const source=document.createElement('a');source.href='https://github.com/BurnyCoder/evolutionary-strategies-novelty-search-llm-training/blob/main/reports/reviews/scientific-audit-2026-11-26.md';source.textContent='Independent grading audit';
-  const detail=audit?`A balanced-tag regrade changes ${audit.malformed_training.main} novelty-arm and ${audit.malformed_training.reward_only} control-arm training rewards in this stage. The paired exact sensitivity p-value is ${audit.strict_primary.exact_two_sided_p.toPrecision(4)}. `:'The historical scorer can accept an extra unmatched answer delimiter. ';
+  const detail=audit?`A balanced-tag regrade changes ${audit.malformed_training.main} novelty-arm and ${audit.malformed_training.reward_only} control-arm training rewards in this stage. The post-hoc two-sided exact McNemar p-value is ${audit.strict_primary.exact_two_sided_p.toPrecision(4)}. The checkpoints reflect the historical rewards. `:'The historical scorer can accept an extra unmatched answer delimiter. ';
   auditNote.replaceChildren(detail,source);
   el('phase').textContent=(e.phase||'not_started').replaceAll('_',' ');
   if(e.continuation)el('study').textContent=`Matched continuation · generation ${e.continuation.parent_generation} to ${e.continuation.target_generation} · fresh primary endpoint · one training seed`;

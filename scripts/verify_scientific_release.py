@@ -25,9 +25,15 @@ def verify_study(key, raw, stage, verified, evidence):
     for arm, method in summary["methods"].items():
         for split, strict in data["evaluations"][arm].items():
             if split == "sampled":
+                changed_correct_responses = any(
+                    x["condition"] == arm and x["split"] == split and (x["historical_correct"] or x["registered_correct"])
+                    for x in data["evaluation_discrepancies"]
+                )
                 for k in ("pass1", "pass8", "mean_unique_correct_structures"):
                     if not 0 <= strict[k] <= (16 if k == "mean_unique_correct_structures" else 1):
                         raise ValueError(f"{arm} {k} outside support")
+                    if not changed_correct_responses and not equal(strict[k], method[split][k]):
+                        raise ValueError(f"{arm} {k} disagrees with the independently graded sampled responses")
             elif not equal(method[split]["accuracy"], strict["historical_correct"] / strict["responses"]):
                 raise ValueError(f"{arm}/{split} historical accuracy mismatch")
     note = audit_description(audit)
@@ -72,11 +78,7 @@ def main():
     result["review_sha256"] = sha256(stage / REVIEW)
     result["evidence_sha256"] = sha256(stage / EVIDENCE)
     # This file index distinguishes reviewed presentations from source evidence and immutable historical claims.
-    paths = (
-        subprocess.check_output(["git", "ls-files", "-z", "--cached", "--others", "--exclude-standard"])
-        .decode()
-        .split("\0")
-    )
+    paths = subprocess.check_output(["git", "ls-files", "-z", "--cached"]).decode().split("\0")
     result["surface_index"] = {}
     for name in sorted(filter(None, paths)):
         if name == a.output.as_posix() or name.startswith("reports/reviews/publication-"):

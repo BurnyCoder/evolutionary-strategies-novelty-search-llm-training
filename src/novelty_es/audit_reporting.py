@@ -150,7 +150,8 @@ def write_review(path, output):
                     f"Full-credit example in {name}, {x['condition']}, update {x['update']}, candidate {x['candidate']}, "
                     f"problem `{x['problem_id']}`. The opening/closing delimiter counts are {x['opening_tags']}/{x['closing_tags']}. "
                     f"The stored candidate mean reward was {x['historical_candidate_quality']:.6f}; regrading the same responses gives "
-                    f"{x['registered_candidate_quality']:.6f}."
+                    f"{x['registered_candidate_quality']:.6f}. Its recorded update coefficient was {x['recorded_weight']:+.6f}. "
+                    f"On the same population the stricter score gives {x['fixed_novelty_registered_weight']:+.6f}."
                 )
     rows.extend(
         [
@@ -176,6 +177,42 @@ def write_review(path, output):
             "A greedy correct-tree count equals the number of successes. Canonical trees from multiple samples measure syntactic "
             "variation within problems. The training-probe and harder-distribution results have distinct denominators. "
             "[Chen et al., Eq. 1](https://arxiv.org/pdf/2107.03374).",
+            "",
+        ]
+    )
+    rows.extend(
+        [
+            "",
+            "Each evaluation or validation discrepancy changes the recorded descriptive reward or legality flag for "
+            "that response. These responses have no candidate fitness, archive entry or novelty eligibility. "
+            "Evaluation tables count reused baseline outcomes in each release. The evidence identifies them for cross-study deduplication.",
+            "",
+        ]
+    )
+    longer = evidence["studies"]["continuation"]["comparisons"]
+    rows.extend(
+        [
+            "### Change on the same fresh problems",
+            "",
+            "| Secondary comparison | Difference (pp) | Paired 95% interval (pp) |",
+            "|---|---:|---|",
+        ]
+    )
+    for key, label in (
+        ("main_change", "Novelty final minus parent"),
+        ("reward_only_change", "Control final minus parent"),
+        ("difference_in_changes", "Novelty change minus control change"),
+    ):
+        contrast = longer[key]
+        rows.append(
+            f"| {label} | {100 * contrast['difference']:+.3f} | [{100 * contrast['low']:+.3f}, {100 * contrast['high']:+.3f}] |"
+        )
+    rows.extend(
+        [
+            "",
+            "The last row first combines all four Boolean outcomes within each problem and then resamples problems. "
+            "Both arms improved on these problems with further training. The interval for their difference in improvement "
+            "includes zero. These secondary contrasts are unadjusted for multiplicity.",
             "",
         ]
     )

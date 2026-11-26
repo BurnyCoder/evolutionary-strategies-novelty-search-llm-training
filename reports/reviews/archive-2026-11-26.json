@@ -1,0 +1,92 @@
+{
+  "pilot_candidate_seed_matches": 1140,
+  "added_candidate_seed_matches": 4860,
+  "arms": {
+    "main": {
+      "snapshots": {
+        "pilot\\main\\checkpoint.pt": {
+          "generation": 19,
+          "archive_rows": 17,
+          "overlapping_vector_comparisons": 0,
+          "insertion_rng_matches": true
+        },
+        "restart-parent\\main\\checkpoint.pt": {
+          "generation": 100,
+          "archive_rows": 34,
+          "overlapping_vector_comparisons": 23,
+          "insertion_rng_matches": true
+        },
+        "continuation\\main\\checkpoint.pt": {
+          "generation": 100,
+          "archive_rows": 34,
+          "overlapping_vector_comparisons": 34,
+          "insertion_rng_matches": true
+        }
+      },
+      "retained_identified_vectors": 100,
+      "stages": {
+        "pilot": {
+          "incorrect_gate_zero": 9049,
+          "fully_checkable_candidate_means": 514,
+          "fully_checkable_with_correct_probe": 6,
+          "correct_missing_distance_inputs": 65,
+          "correct_empty_pool": 2,
+          "correct_with_tensor_distance": 4,
+          "max_abs_mean_error": 0.0
+        },
+        "added": {
+          "incorrect_gate_zero": 35094,
+          "fully_checkable_candidate_means": 431,
+          "fully_checkable_with_correct_probe": 2,
+          "correct_missing_distance_inputs": 3774,
+          "correct_with_tensor_distance": 8,
+          "correct_empty_pool": 4,
+          "max_abs_mean_error": 0.0
+        }
+      }
+    },
+    "reward_only": {
+      "snapshots": {
+        "pilot\\reward_only\\checkpoint.pt": {
+          "generation": 19,
+          "archive_rows": 15,
+          "overlapping_vector_comparisons": 0,
+          "insertion_rng_matches": true
+        },
+        "restart-parent\\reward_only\\checkpoint.pt": {
+          "generation": 31,
+          "archive_rows": 19,
+          "overlapping_vector_comparisons": 3,
+          "insertion_rng_matches": true
+        },
+        "continuation\\reward_only\\checkpoint.pt": {
+          "generation": 100,
+          "archive_rows": 33,
+          "overlapping_vector_comparisons": 6,
+          "insertion_rng_matches": true
+        }
+      },
+      "retained_identified_vectors": 74,
+      "stages": {
+        "pilot": {
+          "incorrect_gate_zero": 9057,
+          "fully_checkable_candidate_means": 520,
+          "fully_checkable_with_correct_probe": 4,
+          "correct_missing_distance_inputs": 59,
+          "correct_empty_pool": 1,
+          "correct_with_tensor_distance": 3,
+          "max_abs_mean_error": 0.0
+        },
+        "added": {
+          "incorrect_gate_zero": 35105,
+          "fully_checkable_candidate_means": 406,
+          "fully_checkable_with_correct_probe": 3,
+          "correct_missing_distance_inputs": 3767,
+          "correct_empty_pool": 5,
+          "correct_with_tensor_distance": 3,
+          "max_abs_mean_error": 0.0
+        }
+      }
+    }
+  }
+}
